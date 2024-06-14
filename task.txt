@@ -1,11 +1,11 @@
 pending task list
 
-### project init
-### git init and work in development version
-### theme create (font, color etc)
-### folder structure create
-### layout create
+### project init                                            -->// Done
+### git init and work in development version                -->// Done
+### theme create (font, color etc)                          -->// Done
+### folder structure and layout create                      -->// Done
+### ui layout create (collapsable sidebar and sticky header)
 ### header and sidebar create
-### authentication system (login and registration)
+### authentication system (login and registration)          -->// Partial Done(login complete)
 ### user profile page(update profile option)
 
