@@ -1,0 +1,11 @@
+pending task list
+
+### project init
+### git init and work in development version
+### theme create (font, color etc)
+### folder structure create
+### layout create
+### header and sidebar create
+### authentication system (login and registration)
+### user profile page(update profile option)
+
