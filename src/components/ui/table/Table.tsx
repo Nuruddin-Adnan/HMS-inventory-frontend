@@ -425,7 +425,7 @@ export default function Table({
                     <div className="flex justify-between whitespace-nowrap py-3 px-2">
                       <span className="text-xs">Print On: {format(new Date(), 'dd/MM/yyyy p')}</span>
                       <span className="text-xs">Print By: {user ? user?.email : ''}</span>
-                      <span className="text-xs">Powered By: Md. Nuruddin Adnan</span>
+                      <span className="text-xs">Powered By: {process.env.NEXT_PUBLIC_POWERED_BY}</span>
                     </div>
                   </td>
                 </tr>

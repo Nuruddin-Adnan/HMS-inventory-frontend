@@ -26,4 +26,54 @@ body {
   font-size: 14px;
 }
 
+/* user layout start */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px;
+  z-index: 999;
+  transition: all 0.2s linear;
+/*   padding: 1rem; */
+}
+
+.sidebar.collapsed {
+  left: auto;
+  right: 100%;
+  transition: all 0.2s linear;
+}
+
+@media (max-width: 1279px) {
+  .sidebar {
+      left: auto;
+      right: 100%;
+      transition: all 0.2s linear;
+    }
+
+    .sidebar.collapsed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 250px;
+      z-index: 999;
+      transition: all 0.2s linear;
+    /*   padding: 1rem; */
+    }
+}
+
+.content-wrapper {
+  width: auto;
+  margin-left: auto;
+  transition: all 0.2s linear;
+}
+
+@media (min-width: 1280px) {
+    .content-wrapper.collapsed {
+      width: calc(100% - 250px);
+    }
+}
+/*//End of user layout  */
+
 
