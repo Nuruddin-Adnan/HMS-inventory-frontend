@@ -8,8 +8,8 @@ export default async function CreateUser() {
   // const { data: permissions } = await getAllPermissions();
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="card mx-auto">
+    <div>
+      <div className="card mx-auto max-w-6xl">
         <div className="border-b border-gray-200 2xl:p-4 p-3">
           <h2 className="font-bold 2xl:text-2xl text-xl text-textPrimary">
             Create User

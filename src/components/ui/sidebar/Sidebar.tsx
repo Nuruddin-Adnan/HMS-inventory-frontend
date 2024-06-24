@@ -7,37 +7,96 @@ import {
 } from "@headlessui/react";
 import {
   SquaresPlusIcon,
-  UsersIcon,
-  ShieldCheckIcon,
-  MapPinIcon,
+  CurrencyDollarIcon,
+  ShoppingBagIcon,
+  ChartBarIcon,
+  ShoppingCartIcon,
+  TagIcon,
+  BuildingStorefrontIcon,
   ClipboardDocumentListIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
+import { IoWalletOutline } from "react-icons/io5";
+import { HiOutlineReceiptTax } from "react-icons/hi";
+import { BiSupport } from "react-icons/bi";
+import { FaQuestion } from "react-icons/fa6";
 import Image from "next/image";
 import logoFull from "../../../../public/logo.svg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navigation = [
-  { name: "Dashboard", href: "/user/dashboard", icon: SquaresPlusIcon },
-  { name: "Permission", href: "/user/permission", icon: ShieldCheckIcon },
-  { name: "User", href: "/user/user", icon: UsersIcon },
+const navigations = [
   {
-    name: "Report format",
-    href: "/user/report-format",
-    icon: ClipboardDocumentListIcon,
+    heading: "MENU",
+    headingClassName: "pl-4 pt-2 pb-4",
+    navItems: [
+      { name: "Dashboard", href: "/user/dashboard", icon: SquaresPlusIcon },
+      { name: "Product", href: "/user/product", icon: ShoppingBagIcon },
+      { name: "Stock", href: "/user/stock", icon: ChartBarIcon },
+      { name: "Customer", href: "/user/customer", icon: UserIcon },
+      {
+        group: "Sales",
+        items: [
+          { name: "POS", href: "/user/order/create" },
+          { name: "Sales History", href: "/user/order" },
+        ],
+        icon: ShoppingCartIcon,
+      },
+      {
+        group: "Purchases",
+        items: [
+          { name: "New Purchase", href: "/user/purchase/create" },
+          { name: "Purchase History", href: "/user/purchase" },
+          { name: "Suppliers Management", href: "/user/Supplier" },
+        ],
+        icon: TagIcon,
+      },
+      {
+        group: "Inventory",
+        items: [
+          { name: "Shelves", href: "/user/shelve" },
+          { name: "Category", href: "/user/category" },
+          { name: "Generics", href: "/user/generic" },
+          { name: "Brands", href: "/user/brand" },
+        ],
+        icon: BuildingStorefrontIcon,
+      },
+    ],
   },
-];
-
-const bdgeoNavigation = [
-  { name: "Division", href: "/user/dashboard" },
-  { name: "District", href: "/admin/bd/district" },
-  { name: "Upazila", href: "/admin/bd/upazila" },
-];
-
-
-// Settings
-const settingsNavigation = [
-  { name: "Report Mode", href: "/admin/report-mode" },
+  {
+    heading: "ACCOUNTS",
+    navItems: [
+      {
+        group: "Reports",
+        items: [
+          { name: "Sales Reports", href: "/user/sales-report" },
+          { name: "Purchase Reports", href: "/user/purchase-report" },
+          { name: "Stocks Reports", href: "/user/stocks-report" },
+          { name: "Income Statement ", href: "/user/income-statement" },
+        ],
+        icon: ClipboardDocumentListIcon,
+      },
+      { name: "Expenses", href: "/user/expense", icon: IoWalletOutline },
+    ],
+  },
+  {
+    heading: "SETTINGS",
+    navItems: [
+      { name: "Tax", href: "/user/settings/tax", icon: HiOutlineReceiptTax },
+      {
+        name: "Currency",
+        href: "/user/settings/currency",
+        icon: CurrencyDollarIcon,
+      },
+    ],
+  },
+  {
+    heading: "HELP",
+    navItems: [
+      { name: "FAQs", href: "/user/faq", icon: FaQuestion },
+      { name: "Contact Support", href: "/user/support", icon: BiSupport },
+    ],
+  },
 ];
 
 function classNames(...classes: any) {
@@ -52,23 +111,25 @@ export default function Sidebar({
 
   return (
     <aside>
-      <nav className="h-screen bg-gray-800 text-gray-100  w-[250px] overflow-auto flex flex-col justify-between  scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
+      <nav className="h-screen bg-gray-800 text-gray-100  overflow-auto flex flex-col justify-between  scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
         <div>
           <div className="p-3 top-0 sticky  z-[999] border-b border-gray-600 bg-gray-800">
-            <div className="text-2xl font-semibold pt-0.5 flex items-center gap-2">
+            <Link
+              href="/"
+              className="text-2xl font-semibold pt-0.5 flex items-center gap-2"
+            >
               <Image src={logoFull} alt="Logo" className="flex-shrink-0" />
               <h2 className="truncate">
                 {process.env.NEXT_PUBLIC_APP_NAME || "Your app name"}
               </h2>
-            </div>
+            </Link>
           </div>
 
           {/* Sidebar links */}
-          <div className="space-y-0 mt-4">
-            <div className="px-4  pb-2 flex gap-4 items-center justify-between border-b border-b-gray-600">
-              <p>MENU</p>
+          <div className="space-y-0 mt-4 relative">
+            <div className="absolute right-4 top-0">
               <button
-                className="rounded-full size-8 grid place-items-center bg-gray-900 xl:hidden"
+                className="rounded-full size-9 grid place-items-center bg-gray-900 xl:hidden"
                 onClick={() => handleSidebarCollapsed()}
               >
                 <svg
@@ -87,209 +148,88 @@ export default function Sidebar({
                 </svg>
               </button>
             </div>
-            {navigation.map((item: any, index: number) => (
-              <Link
-                key={index}
-                href={item.href}
-                className={
-                  pathname.startsWith(item.href)
-                    ? "flex items-center py-2 px-4  bg-gray-700 text-white"
-                    : "flex items-center py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
-                }
-              >
-                <item.icon className="h-6 w-6 mr-2" />
-                {item.name}
-              </Link>
+            {/* full navigation start */}
+            {navigations.map((nav: any, index: number) => (
+              <div key={index}>
+                <p
+                  className={`${
+                    nav?.headingClassName
+                      ? nav?.headingClassName
+                      : "pl-4 pt-6 pb-2"
+                  } text-gray-400`}
+                >
+                  {nav?.heading}
+                </p>
+                {nav.navItems.map((item: any, index: number) => {
+                  if (!item.group) {
+                    return (
+                      <Link
+                        key={index}
+                        href={item.href}
+                        className={
+                          pathname.startsWith(item.href)
+                            ? "flex items-center py-2 px-4  bg-gray-700 text-white"
+                            : "flex items-center py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+                        }
+                      >
+                        <item.icon className="h-6 w-6 mr-2" />
+                        {item.name}
+                      </Link>
+                    );
+                  } else {
+                    return (
+                      <Disclosure as="div" key={index}>
+                        {({ open }) => (
+                          <>
+                            <DisclosureButton className="w-full py-1.5 px-4 flex justify-between leading-7 transition duration-200 hover:bg-gray-700 hover:text-white">
+                              <div className="flex">
+                                <div>
+                                  <item.icon className="h-6 w-6 mr-2" />
+                                </div>
+                                <span className="text-start">{item.group}</span>
+                              </div>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                className={classNames(
+                                  open ? "rotate-90" : "",
+                                  "size-5 flex-none mt-1 text-zinc-400"
+                                )}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="m8.25 4.5 7.5 7.5-7.5 7.5"
+                                />
+                              </svg>
+                            </DisclosureButton>
+                            <DisclosurePanel className="space-y-0 pr-4 pl-7">
+                              {item.items.map((item: any) => (
+                                <Link
+                                  key={item.name}
+                                  href={item.href}
+                                  className={
+                                    pathname.startsWith(item.href)
+                                      ? "block pl-4 py-0.5 text-sm leading-7  bg-gray-700 text-white border-l border-l-gray-600"
+                                      : "block pl-4 py-0.5 text-sm leading-7 transition duration-200 hover:bg-gray-700 text-gray-400 hover:text-white border-l border-l-gray-600"
+                                  }
+                                >
+                                  {item.name}
+                                </Link>
+                              ))}
+                            </DisclosurePanel>
+                          </>
+                        )}
+                      </Disclosure>
+                    );
+                  }
+                })}
+              </div>
             ))}
-
-            <Disclosure as="div">
-              {({ open }) => (
-                <>
-                  <DisclosureButton className="w-full py-1.5 px-4 flex justify-between leading-7 transition duration-200 hover:bg-gray-700 hover:text-white">
-                    <div className="flex">
-                      <div>
-                        <MapPinIcon className="h-6 w-6 mr-2" />
-                      </div>
-                      <span className="text-start">BD GEO</span>
-                    </div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className={classNames(
-                        open ? "rotate-90" : "",
-                        "size-5 flex-none mt-1 text-zinc-400"
-                      )}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                      />
-                    </svg>
-                  </DisclosureButton>
-                  <DisclosurePanel className="space-y-0 px-4">
-                    {bdgeoNavigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={
-                          pathname.startsWith(item.href)
-                            ? "block pl-8 py-0.5 text-sm leading-7  bg-gray-700 text-white "
-                            : "block pl-8 py-0.5 text-sm leading-7 transition duration-200 hover:bg-gray-700 hover:text-white "
-                        }
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </DisclosurePanel>
-                </>
-              )}
-            </Disclosure>
-
-            <Disclosure as="div">
-              {({ open }) => (
-                <>
-                  <DisclosureButton className="w-full py-1.5 px-4 flex justify-between leading-7 transition duration-200 hover:bg-gray-700 hover:text-white">
-                    <div className="flex">
-                      <div>
-                        <MapPinIcon className="h-6 w-6 mr-2" />
-                      </div>
-                      <span className="text-start">BD GEO</span>
-                    </div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className={classNames(
-                        open ? "rotate-90" : "",
-                        "size-5 flex-none mt-1 text-zinc-400"
-                      )}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                      />
-                    </svg>
-                  </DisclosureButton>
-                  <DisclosurePanel className="space-y-0 px-4">
-                    {bdgeoNavigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={
-                          pathname.startsWith(item.href)
-                            ? "block pl-8 py-0.5 text-sm leading-7  bg-gray-700 text-white "
-                            : "block pl-8 py-0.5 text-sm leading-7 transition duration-200 hover:bg-gray-700 hover:text-white "
-                        }
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </DisclosurePanel>
-                </>
-              )}
-            </Disclosure>
-
-            <Disclosure as="div">
-              {({ open }) => (
-                <>
-                  <DisclosureButton className="w-full py-1.5 px-4 flex justify-between leading-7 transition duration-200 hover:bg-gray-700 hover:text-white">
-                    <div className="flex">
-                      <div>
-                        <MapPinIcon className="h-6 w-6 mr-2" />
-                      </div>
-                      <span className="text-start">BD GEO</span>
-                    </div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className={classNames(
-                        open ? "rotate-90" : "",
-                        "size-5 flex-none mt-1 text-zinc-400"
-                      )}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                      />
-                    </svg>
-                  </DisclosureButton>
-                  <DisclosurePanel className="space-y-0 px-4">
-                    {bdgeoNavigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={
-                          pathname.startsWith(item.href)
-                            ? "block pl-8 py-0.5 text-sm leading-7  bg-gray-700 text-white "
-                            : "block pl-8 py-0.5 text-sm leading-7 transition duration-200 hover:bg-gray-700 hover:text-white "
-                        }
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </DisclosurePanel>
-                </>
-              )}
-            </Disclosure>
-
-            <p className="pl-4 pt-6 pb-2">SETTINGS MENU</p>
-            <Disclosure as="div">
-              {({ open }) => (
-                <>
-                  <DisclosureButton className="w-full py-1.5 px-4 flex justify-between leading-7 transition duration-200 hover:bg-gray-700 hover:text-white">
-                    <div className="flex">
-                      <div>
-                        <MapPinIcon className="h-6 w-6 mr-2" />
-                      </div>
-                      <span className="text-start">BD GEO</span>
-                    </div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className={classNames(
-                        open ? "rotate-90" : "",
-                        "size-5 flex-none mt-1 text-zinc-400"
-                      )}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                      />
-                    </svg>
-                  </DisclosureButton>
-                  <DisclosurePanel className="space-y-0 px-4">
-                    {bdgeoNavigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={
-                          pathname.startsWith(item.href)
-                            ? "block pl-8 py-0.5 text-sm leading-7  bg-gray-700 text-white "
-                            : "block pl-8 py-0.5 text-sm leading-7 transition duration-200 hover:bg-gray-700 hover:text-white "
-                        }
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </DisclosurePanel>
-                </>
-              )}
-            </Disclosure>
+            {/*//End of full navigation */}
           </div>
         </div>
 
