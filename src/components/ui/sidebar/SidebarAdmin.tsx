@@ -50,7 +50,7 @@ export default function SidebarAdmin({
 
   return (
     <aside>
-      <nav className="h-screen bg-gray-800 text-gray-100  w-[250px] overflow-auto flex flex-col justify-between  scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
+      <nav className="h-screen bg-gray-800 text-gray-100  overflow-auto flex flex-col justify-between  scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
         <div>
           <div className="p-3 top-0 sticky  z-[999] border-b border-gray-600 bg-gray-800">
             <Link

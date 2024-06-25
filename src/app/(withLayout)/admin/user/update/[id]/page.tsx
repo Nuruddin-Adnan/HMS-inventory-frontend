@@ -2,16 +2,25 @@ import React from "react";
 import { getSingleUser } from "@/api-services/user/getSingleUser";
 import UserUpdateForm from "./userUpdateForm";
 import { getAllPermissions } from "@/api-services/permission/getAllPermissions";
+import { getUserServer } from "@/lib/user";
+import { redirect } from "next/navigation";
 
 export default async function UpdateUser({
   params,
 }: {
   params: { id: string };
 }) {
+  const user = getUserServer();
+
+  const allowedRoles = new Set(["super_admin", "admin"]);
+  if (!allowedRoles.has(user!?.role)) {
+    redirect("/");
+  }
+
   const userPromise = getSingleUser(params.id);
   const permissionsPromise = getAllPermissions();
 
-  const [user, permissions] = await Promise.all([userPromise, permissionsPromise])
+  const [singleUser, permissions] = await Promise.all([userPromise, permissionsPromise])
 
   return (
     <div>
@@ -22,7 +31,7 @@ export default async function UpdateUser({
           </h2>
         </div>
         <div className="2xl:px-4 px-3 2xl:py-5 py-4">
-          <UserUpdateForm data={user?.data} permissionsData={permissions?.data} />
+          <UserUpdateForm data={singleUser?.data} permissionsData={permissions?.data} />
         </div>
       </div>
     </div>
