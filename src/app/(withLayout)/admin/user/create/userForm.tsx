@@ -13,11 +13,7 @@ import { IPermission } from "@/types/permission";
 import { redirect } from "next/navigation";
 import { useState, useRef } from "react";
 
-export default function UserForm({
-  data,
-}: {
-  data: IPermission[];
-}) {
+export default function UserForm({ data }: { data: IPermission[] }) {
   const [loading, setLoading] = useState(false);
   const [permissions, setPermissions] = useState<string[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
@@ -79,9 +75,8 @@ export default function UserForm({
     { title: "account admin", value: "account_admin" },
     { title: "store incharge", value: "store_incharge" },
     { title: "general user", value: "general_user" },
-    { title: "salseman", value: "salseman" },
+    { title: "salesman", value: "salesman" },
   ];
-
 
   return (
     <div className="border border-gray-200 rounded-lg p-4 shadow">
@@ -96,12 +91,22 @@ export default function UserForm({
       >
         <div className="grid lg:grid-cols-2 2xl:gap-4 gap-3">
           <Input type="text" name="email" label="User Name/email*" />
-          <Select options={roleOptions} name="role" label="User Role*" className="min-h-[34px]" />
+          <Select
+            options={roleOptions}
+            name="role"
+            label="User Role*"
+            className="min-h-[34px]"
+          />
         </div>
         <div className="grid xl:grid-cols-3 2xl:gap-4 gap-3">
           <Input type="text" name="name" label="Full Name*" />
           <Input type="text" name="phoneNumber" label="Phone Number" />
-          <Input type="file" name="signature" label="Signature" className="lg:h-[34px]" />
+          <Input
+            type="file"
+            name="signature"
+            label="Signature"
+            className="lg:h-[34px]"
+          />
         </div>
         <div className="grid lg:grid-cols-2 2xl:gap-4 gap-3">
           <Textarea name="address" label="Address" />

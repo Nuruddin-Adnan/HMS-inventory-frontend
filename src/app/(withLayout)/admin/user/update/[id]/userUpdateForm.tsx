@@ -128,14 +128,13 @@ export default function UserUpdateForm({
     { title: "account admin", value: "account_admin" },
     { title: "store incharge", value: "store_incharge" },
     { title: "general user", value: "general_user" },
-    { title: "salseman", value: "salseman" },
+    { title: "salesman", value: "salesman" },
   ];
 
   const statusOptions = [
     { title: "active", value: "active" },
     { title: "deactive", value: "deactive" },
   ];
-
 
   return (
     <>

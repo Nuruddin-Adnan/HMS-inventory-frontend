@@ -47,7 +47,7 @@ const navigations = [
         items: [
           { name: "New Purchase", href: "/user/purchase/create" },
           { name: "Purchase History", href: "/user/purchase" },
-          { name: "Suppliers Management", href: "/user/Supplier" },
+          { name: "Suppliers Management", href: "/user/supplier" },
         ],
         icon: TagIcon,
       },
@@ -152,10 +152,11 @@ export default function Sidebar({
             {navigations.map((nav: any, index: number) => (
               <div key={index}>
                 <p
-                  className={`${nav?.headingClassName
+                  className={`${
+                    nav?.headingClassName
                       ? nav?.headingClassName
                       : "pl-4 pt-6 pb-2"
-                    } text-gray-400`}
+                  } text-gray-400`}
                 >
                   {nav?.heading}
                 </p>
