@@ -66,16 +66,7 @@ const navigations = [
   {
     heading: "ACCOUNTS",
     navItems: [
-      {
-        group: "Reports",
-        items: [
-          { name: "Sales Reports", href: "/user/sales-report" },
-          { name: "Purchase Reports", href: "/user/purchase-report" },
-          { name: "Stocks Reports", href: "/user/stocks-report" },
-          { name: "Income Statement ", href: "/user/income-statement" },
-        ],
-        icon: ClipboardDocumentListIcon,
-      },
+      { name: "Reports", href: "/user/reports-&-printing", icon: ClipboardDocumentListIcon },
       { name: "Expenses", href: "/user/expense", icon: IoWalletOutline },
     ],
   },
@@ -152,11 +143,10 @@ export default function Sidebar({
             {navigations.map((nav: any, index: number) => (
               <div key={index}>
                 <p
-                  className={`${
-                    nav?.headingClassName
-                      ? nav?.headingClassName
-                      : "pl-4 pt-6 pb-2"
-                  } text-gray-400`}
+                  className={`${nav?.headingClassName
+                    ? nav?.headingClassName
+                    : "pl-4 pt-6 pb-2"
+                    } text-gray-400`}
                 >
                   {nav?.heading}
                 </p>

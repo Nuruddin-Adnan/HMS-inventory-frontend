@@ -1,4 +1,7 @@
 pending task list
 
 ### product filter
+### filter by Category
+### filter by Brand
+### filter by Generic Name
 

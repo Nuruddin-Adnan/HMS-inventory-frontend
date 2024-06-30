@@ -62,7 +62,10 @@ export default function ProductTable({ products }: { products: any[] }) {
       ),
     },
     { key: "unit", label: "Unit" },
-    { key: "price", label: "Price" },
+    {
+      key: "price", label: "Price", customClass: "text-right w-24 pr-5",
+      render: (row: any) => <div className="capitalize text-right font-medium pr-4">{row?.price}</div>,
+    },
     {
       key: "discountPercent",
       label: "Discount %",

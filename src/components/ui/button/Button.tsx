@@ -13,6 +13,7 @@ export default function Button(props: any) {
           "text-lg py-2 px-4": size === 'lg',
           " text-white border bg-primary border-primary ": variant === 'primary',
           " text-primary border bg-[#E0EFFF]  border-gray-300": variant === 'primary-light',
+          " border bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] border-[#ff000040] ": variant === 'danger',
           // " text-white border bg-primary border-primary ": variant === 'success',
           // " text-white border bg-primary border-primary ": variant === 'info',
           // " text-white border bg-primary border-primary ": variant === 'warning',

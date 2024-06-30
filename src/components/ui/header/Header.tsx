@@ -32,7 +32,11 @@ export default function Header({
     // Check if running on the client side
     if (typeof window !== "undefined") {
       if (user) {
-        setUserNameFirstLetter(user.name.charAt(0).toUpperCase());
+        const nameParts = user.name.split(' ');
+        const firstName = nameParts[0];
+        const lastName = nameParts[nameParts.length - 1];
+        const initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+        setUserNameFirstLetter(initials);
       }
     }
   }, [user]);
