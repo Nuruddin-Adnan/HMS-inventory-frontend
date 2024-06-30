@@ -33,9 +33,16 @@ export default function Header({
     if (typeof window !== "undefined") {
       if (user) {
         const nameParts = user.name.split(' ');
-        const firstName = nameParts[0];
-        const lastName = nameParts[nameParts.length - 1];
-        const initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+        let initials;
+
+        if (nameParts.length > 1) {
+          const firstName = nameParts[0];
+          const lastName = nameParts[nameParts.length - 1];
+          initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+        } else {
+          initials = nameParts[0].charAt(0).toUpperCase() + nameParts[0].charAt(1).toUpperCase();
+        }
+
         setUserNameFirstLetter(initials);
       }
     }
