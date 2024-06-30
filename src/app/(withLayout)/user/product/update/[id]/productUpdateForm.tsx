@@ -11,10 +11,21 @@ import tagRevalidate from "@/lib/tagRevalidate";
 import { redirect } from "next/navigation";
 import { useState, useRef } from "react";
 import ReactSelect, { SelectInstance } from "react-select";
-import CreatableSelect from 'react-select/creatable';
+import CreatableSelect from "react-select/creatable";
 
-
-export default function ProductUpdateForm({ data, categories, brands, generics, shelves }: { data: any, categories: any, brands: any, generics: any, shelves: any }) {
+export default function ProductUpdateForm({
+  data,
+  categories,
+  brands,
+  generics,
+  shelves,
+}: {
+  data: any;
+  categories: any;
+  brands: any;
+  generics: any;
+  shelves: any;
+}) {
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const unitSelectRef = useRef<SelectInstance | null>(null);
@@ -39,7 +50,7 @@ export default function ProductUpdateForm({ data, categories, brands, generics, 
       ...provided,
       padding: "0px 4px",
     }),
-  }
+  };
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
@@ -50,11 +61,14 @@ export default function ProductUpdateForm({ data, categories, brands, generics, 
     const discountAmount = (formData.get("discountAmount") ?? "") as string;
 
     const priceAsNumber: number = convertStringToNumber(price);
-    const discountPercentAsNumber: number = convertStringToNumber(discountPercent);
-    const discountAmountAsNumber: number = convertStringToNumber(discountAmount);
+    const discountPercentAsNumber: number =
+      convertStringToNumber(discountPercent);
+    const discountAmountAsNumber: number =
+      convertStringToNumber(discountAmount);
 
     const payload = {
       name: (formData.get("name") ?? "") as string,
+      code: (formData.get("code") ?? "") as string,
       category: (formData.get("category") ?? "") as string,
       genericName: (formData.get("genericName") ?? "") as string,
       brand: (formData.get("brand") ?? "") as string,
@@ -80,7 +94,6 @@ export default function ProductUpdateForm({ data, categories, brands, generics, 
     setLoading(false);
   };
 
-
   const categoryOptions = categories.map((item: any) => {
     return { title: `${item?.name}`, value: item?._id };
   });
@@ -94,7 +107,7 @@ export default function ProductUpdateForm({ data, categories, brands, generics, 
   });
 
   const shelveOptions = shelves.map((item: any) => {
-    return { label: `${item?.name}`, value: item?._id };
+    return { label: `${item?.name}`, value: item?.name };
   });
 
   return (
@@ -106,9 +119,21 @@ export default function ProductUpdateForm({ data, categories, brands, generics, 
       >
         <div className="grid lg:grid-cols-4 2xl:gap-4 gap-3">
           <div className="lg:col-span-2">
-            <Input type="text" name="name" label="Product Name*" defaultValue={data?.name} autoFocus />
+            <Input
+              type="text"
+              name="name"
+              label="Product Name*"
+              defaultValue={data?.name}
+              autoFocus
+            />
           </div>
-          <div className="grid col-span-2 grid-cols-2 2xl:gap-4 gap-3">
+          <div className="grid col-span-2 grid-cols-3 2xl:gap-4 gap-3">
+            <Input
+              type="text"
+              name="code"
+              label="Product Code"
+              defaultValue={data?.code}
+            />
             <Select
               options={categoryOptions}
               name="category"
@@ -121,7 +146,7 @@ export default function ProductUpdateForm({ data, categories, brands, generics, 
               name="status"
               label="Status*"
               className="min-h-[34px]"
-              defaultValue={data.status}
+              defaultValue={data?.status}
             />
           </div>
         </div>
@@ -134,7 +159,10 @@ export default function ProductUpdateForm({ data, categories, brands, generics, 
               isClearable={true}
               options={genericOptions}
               styles={reactSelectStyles}
-              defaultValue={{ label: data?.genericName, value: data?.genericName }}
+              defaultValue={{
+                label: data?.genericName,
+                value: data?.genericName,
+              }}
             />
           </label>
           <label>
@@ -155,7 +183,10 @@ export default function ProductUpdateForm({ data, categories, brands, generics, 
               isClearable={true}
               options={shelveOptions}
               styles={reactSelectStyles}
-              defaultValue={{ label: data?.shelve[0]?.name, value: data?.shelve[0]?._id }}
+              defaultValue={{
+                label: data?.shelve,
+                value: data?.shelve,
+              }}
             />
           </label>
         </div>
@@ -171,11 +202,30 @@ export default function ProductUpdateForm({ data, categories, brands, generics, 
               defaultValue={{ label: data?.unit, value: data?.unit }}
             />
           </label>
-          <Input type="number" name="price" label="Product price*" defaultValue={data?.price} />
-          <Input type="number" name="discountPercent" label="Discount %*" defaultValue={data?.discountPercent} />
-          <Input type="number" name="discountAmount" label="Discount Amount" defaultValue={data?.discountAmount} />
+          <Input
+            type="number"
+            name="price"
+            label="Product price*"
+            defaultValue={data?.price}
+          />
+          <Input
+            type="number"
+            name="discountPercent"
+            label="Discount %*"
+            defaultValue={data?.discountPercent}
+          />
+          <Input
+            type="number"
+            name="discountAmount"
+            label="Discount Amount"
+            defaultValue={data?.discountAmount}
+          />
         </div>
-        <Textarea label="Description" name="description" defaultValue={data?.description} />
+        <Textarea
+          label="Description"
+          name="description"
+          defaultValue={data?.description}
+        />
         <div className="text-right">
           <Button type="submit" variant="primary" loading={loading}>
             Update

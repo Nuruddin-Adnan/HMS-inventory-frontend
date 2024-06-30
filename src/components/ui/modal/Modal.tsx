@@ -1,7 +1,13 @@
 "use client";
 
 import cn from "@/lib/cn";
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
 import { Fragment, useState } from "react";
 
 export default function Modal({
@@ -42,7 +48,7 @@ export default function Modal({
     <>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-[99999]" onClose={closeModal}>
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -52,11 +58,11 @@ export default function Modal({
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black/25 z-[99999]" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 overflow-y-auto z-[99999]">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -65,13 +71,13 @@ export default function Modal({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel
+                <DialogPanel
                   className={cn(
                     "w-full max-w-xl transform overflow-hidden rounded-xl bg-white p-5 sm:p-6 text-left align-middle shadow-xl transition-all",
                     className
                   )}
                 >
-                  <Dialog.Title
+                  <DialogTitle
                     className={cn("flex gap-1 justify-between", titleClassName)}
                   >
                     <span>
@@ -102,7 +108,7 @@ export default function Modal({
                         </button>
                       </div>
                     )}
-                  </Dialog.Title>
+                  </DialogTitle>
                   <div>{children}</div>
 
                   {footerCloseBtn && (
@@ -125,8 +131,8 @@ export default function Modal({
                       </button>
                     </div>
                   )}
-                </Dialog.Panel>
-              </Transition.Child>
+                </DialogPanel>
+              </TransitionChild>
             </div>
           </div>
         </Dialog>

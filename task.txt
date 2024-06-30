@@ -1,8 +1,4 @@
 pending task list
 
-### supplier create // test and check
-### supplier update // work start form here
-### supplier delete 
-### product CRUD 
-### stock CRUD 
+### product filter
 

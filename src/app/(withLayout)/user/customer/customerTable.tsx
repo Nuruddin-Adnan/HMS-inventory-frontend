@@ -25,7 +25,7 @@ export default function CustomerTable({ customers }: { customers: any[] }) {
 
   const columns = [
     { key: "CUSID", label: "ID" },
-    { key: "name", label: "Customer Name" },
+    { key: "name", label: "Customer Name", customClass: "whitespace-nowrap" },
     { key: "age", label: "Age" },
     {
       key: "gender",
@@ -42,7 +42,7 @@ export default function CustomerTable({ customers }: { customers: any[] }) {
       customClass: "pl-8",
       render: (row: any) => {
         return (
-          <span className="whitespace-nowrap ">
+          <span className="whitespace-nowrap">
             {format(new Date(row?.createdAt), "dd/MM/yyyy p")}
           </span>
         );

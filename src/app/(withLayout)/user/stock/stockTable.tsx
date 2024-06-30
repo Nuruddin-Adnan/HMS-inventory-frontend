@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteProduct } from "@/api-services/product/deleteProduct";
+import { deleteStock } from "@/api-services/stock/deleteStock";
 import Table from "@/components/ui/table/Table";
 import { getUser } from "@/lib/getUser";
 import tagRevalidate from "@/lib/tagRevalidate";
@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
-export default function ProductTable({ products }: { products: any[] }) {
+export default function StockTable({ stocks }: { stocks: any[] }) {
   const [role, updateRole] = useState("");
   const router = useRouter();
   const user = getUser();
@@ -24,55 +24,25 @@ export default function ProductTable({ products }: { products: any[] }) {
   }, [user]);
 
   const columns = [
-    { key: "code", label: "Code" },
-    { key: "tag", label: "Tag" },
     {
-      key: "category",
-      label: "Category",
-      render: (row: any) => (
-        <div className="capitalize">{row?.category[0]?.name}</div>
-      ),
+      key: "code",
+      label: "Code",
+      render: (row: any) => <div>{row?.product[0]?.code}</div>,
+    },
+    { key: "productName", label: "Product Name" },
+    {
+      key: "unit",
+      label: "Unit",
+      render: (row: any) => <div>{row?.product[0]?.unit}</div>,
     },
     {
-      key: "name",
-      label: "Product Name",
-      render: (row: any) => (
-        <div className="whitespace-nowrap">{row?.name}</div>
-      ),
+      key: "price",
+      label: "Price",
+      render: (row: any) => <div>{row?.product[0]?.price}</div>,
     },
-    {
-      key: "genericName",
-      label: "Generic Name",
-      render: (row: any) => (
-        <div className="whitespace-nowrap">{row?.genericName}</div>
-      ),
-    },
-    {
-      key: "brand",
-      label: "Brand",
-      render: (row: any) => (
-        <div className="whitespace-nowrap">{row?.brand}</div>
-      ),
-    },
-    {
-      key: "shelve",
-      label: "Shelve",
-      render: (row: any) => (
-        <div className="whitespace-nowrap">{row?.shelve}</div>
-      ),
-    },
-    { key: "unit", label: "Unit" },
-    { key: "price", label: "Price" },
-    {
-      key: "discountPercent",
-      label: "Discount %",
-      render: (row: any) => <div>{parseInt(row?.discountPercent)}</div>,
-    },
-    {
-      key: "discountAmount",
-      label: "Discount",
-      render: (row: any) => <div>{parseInt(row?.discountAmount)}</div>,
-    },
+    { key: "quantity", label: "Quantity" },
+    { key: "alertQuantity", label: "Alert" },
+    { key: "totalSell", label: "Total Sell" },
     {
       key: "createdAt",
       label: "Entry On",
@@ -105,7 +75,7 @@ export default function ProductTable({ products }: { products: any[] }) {
 
   const handleEdit = (rowKey: any) => {
     // Implement edit logic here
-    router.push(`/user/product/update/${rowKey}`);
+    router.push(`/user/stock/update/${rowKey}`);
   };
 
   const handleDelete = (rowKey: any) => {
@@ -120,8 +90,8 @@ export default function ProductTable({ products }: { products: any[] }) {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteProduct(rowKey);
-        await tagRevalidate("product");
+        await deleteStock(rowKey);
+        await tagRevalidate("stock");
       }
     });
   };
@@ -132,17 +102,17 @@ export default function ProductTable({ products }: { products: any[] }) {
       <Table
         caption={
           <h2 className="hidden pt-3 print:block text-black text-xl font-bold underline">
-            Products
+            Stocks
           </h2>
         }
         columns={columns}
-        data={products}
+        data={stocks}
         uniqueKey="_id"
         customTfClass="text-right whitespace-nowrap"
         customThClass="whitespace-nowrap"
         create={
-          new Set(["super_admin", "admin", "store_incharge"]).has(role)
-            ? "/user/product/create"
+          new Set(["super_admin", "admin"]).has(role)
+            ? "/user/stock/create"
             : undefined
         }
         onEdit={handleEdit}

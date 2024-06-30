@@ -56,7 +56,7 @@ export default function BrandUpdateForm({ data }: { data: any }) {
           options={statusOptions}
           name="status"
           label="Status*"
-          defaultValue={data.status}
+          defaultValue={data?.status}
         />
         <div className="text-right">
           <Button type="submit" variant="primary" loading={loading}>
