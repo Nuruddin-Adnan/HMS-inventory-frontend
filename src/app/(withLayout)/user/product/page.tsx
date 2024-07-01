@@ -13,20 +13,28 @@ export default async function Product({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const page = searchParams["page"] ?? "1";
-  const limit = searchParams["limit"] ?? "100";
+  const limit = searchParams["limit"] ?? "2";
   const query = searchParams["query"] ?? "";
+  const category = searchParams["category"] ?? "";
+  const brand = searchParams["brand"] ?? "";
+  const genericName = searchParams["genericName"] ?? "";
+  const status = searchParams["status"] ?? "";
 
   const { data: products, meta } = await getAllProducts(
     `sort=status -createdAt&page=${page}&limit=${limit}${query && `&search=${query}`
-    }&fields=-createdBy -updatedBy`
+    }${category && `&category=${category}`}${brand && `&brand=${brand}`}${genericName && `&genericName=${genericName}`
+    }${status && `&status=${status}`}&fields=-createdBy -updatedBy`
   );
 
   const categoriesPromise = getAllCategories("status=active&fields=name _id");
   const brandsPromise = getAllBrands("status=active&fields=name");
   const genericsPromise = getAllGenerics("status=active&fields=name");
 
-  const [categories, brands, generics] = await Promise.all([categoriesPromise, brandsPromise, genericsPromise,])
-
+  const [categories, brands, generics] = await Promise.all([
+    categoriesPromise,
+    brandsPromise,
+    genericsPromise,
+  ]);
 
   return (
     <div className="card py-4 w-auto">
@@ -37,8 +45,12 @@ export default async function Product({
         <div className="lg:block hidden">
           <SearchControl placeholder="By name, code & tag..." />
         </div>
-        <PaginationControls totalPages={meta.total} limit={100} />
-        <FilterProduct categories={categories?.data} brands={brands?.data} generics={generics?.data} />
+        <PaginationControls totalPages={meta.total ?? 0} limit={2} />
+        <FilterProduct
+          categories={categories?.data}
+          brands={brands?.data}
+          generics={generics?.data}
+        />
       </div>
       <div className="px-4">
         <ProductTable products={products} />

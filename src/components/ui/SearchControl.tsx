@@ -2,7 +2,7 @@
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { useDebouncedCallback } from 'use-debounce';
+import { useDebouncedCallback } from "use-debounce";
 
 export default function SearchControl({
   placeholder = "search...",
@@ -27,7 +27,7 @@ export default function SearchControl({
     <div className="relative">
       <MagnifyingGlassIcon className="w-5 h-5 absolute left-1.5 top-1/2 -translate-y-1/2" />
       <input
-        type="text"
+        type="search"
         placeholder={placeholder}
         onChange={(e) => {
           handleSearch(e.target.value);

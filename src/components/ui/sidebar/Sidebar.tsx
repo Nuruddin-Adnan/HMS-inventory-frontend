@@ -45,8 +45,7 @@ const navigations = [
       {
         group: "Purchases",
         items: [
-          { name: "New Purchase", href: "/user/purchase/create" },
-          { name: "Purchase History", href: "/user/purchase" },
+          { name: "Purchase", href: "/user/purchase" },
           { name: "Suppliers Management", href: "/user/supplier" },
         ],
         icon: TagIcon,

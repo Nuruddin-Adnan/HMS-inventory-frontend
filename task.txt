@@ -1,7 +1,6 @@
 pending task list
 
-### product filter
-### filter by Category
-### filter by Brand
-### filter by Generic Name
+### *** pagination update. It remove the other filters both for filter and search. Need to modify the code
+### purchase table update
+###  purchase other page -> CRUD
 

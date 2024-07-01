@@ -38,11 +38,37 @@ export default function StockTable({ stocks }: { stocks: any[] }) {
     {
       key: "price",
       label: "Price",
-      render: (row: any) => <div>{row?.product[0]?.price}</div>,
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">
+          {row?.product[0]?.price}
+        </div>
+      ),
     },
-    { key: "quantity", label: "Quantity" },
-    { key: "alertQuantity", label: "Alert" },
-    { key: "totalSell", label: "Total Sell" },
+    {
+      key: "quantity",
+      label: "Quantity",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">{row?.quantity}</div>
+      ),
+    },
+    {
+      key: "alertQuantity",
+      label: "Alert",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">{row?.alertQuantity}</div>
+      ),
+    },
+    {
+      key: "totalSell",
+      label: "Total Sell",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">{row?.totalSell}</div>
+      ),
+    },
     {
       key: "createdAt",
       label: "Entry On",

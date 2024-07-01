@@ -1,30 +1,30 @@
+import { getAllPurchases } from "@/api-services/purchase/getAllPurchases";
 import PaginationControls from "@/components/ui/PaginationControls";
 import SearchControl from "@/components/ui/SearchControl";
-import BrandTable from "./brandTable";
-import { getAllBrands } from "@/api-services/brand/getAllBrands";
+import PurchaseTable from "./purchaseTable";
 
-export default async function Brand({
+export default async function Purchase({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const page = searchParams["page"] ?? "1";
-  const limit = searchParams["limit"] ?? "100";
+  const limit = searchParams["limit"] ?? "3";
   const query = searchParams["query"] ?? "";
 
-  const { data: brands, meta } = await getAllBrands(
+  const { data: purchases, meta } = await getAllPurchases(
     `sort=status -createdAt&page=${page}&limit=${limit}${query && `&search=${query}`
-    }&fields=name createdAt status`
+    }&fields=-createdBy -updatedBy`
   );
 
   return (
     <div className="card py-4">
       <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
         <SearchControl placeholder="Search by name..." />
-        <PaginationControls totalPages={meta.total ?? 0} limit={100} />
+        <PaginationControls totalPages={meta.total ?? 0} limit={3} />
       </div>
       <div className="px-4">
-        <BrandTable brands={brands} />
+        <PurchaseTable purchases={purchases} />
       </div>
     </div>
   );

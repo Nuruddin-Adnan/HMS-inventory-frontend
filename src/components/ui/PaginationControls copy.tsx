@@ -14,7 +14,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
   totalPages,
   limit,
 }) => {
-  const { replace } = useRouter();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -26,25 +26,18 @@ const PaginationControls: FC<PaginationControlsProps> = ({
   const hasPrevPage = start > 0;
   const hasNextPage = end < totalPages;
 
-  const createPageURL = (oparator: boolean) => {
-    const params = new URLSearchParams(searchParams);
-    if (oparator) {
-      params.set('page', (Number(currentPage) + 1) as unknown as string);
-    } else {
-      params.set('page', (Number(currentPage) - 1) as unknown as string);
-    }
-    params.set('limit', limit as unknown as string)
-    replace(`${pathname}?${params.toString()}`);
-  };
-
-
   return (
     <div className="flex items-center gap-2">
       <Button
-        className={`py-1 px-2 bg-gray-200 border border-gray-300 ${!hasPrevPage && "text-gray-500"
-          }`}
+        className={`py-1 px-2 bg-gray-200 border border-gray-300 ${
+          !hasPrevPage && "text-gray-500"
+        }`}
         disabled={!hasPrevPage}
-        onClick={() => createPageURL(false)}
+        onClick={() => {
+          router.push(
+            `${pathname}?page=${Number(currentPage) - 1}&limit=${limit}`
+          );
+        }}
       >
         <ChevronLeftIcon className="size-6" />
       </Button>
@@ -54,13 +47,19 @@ const PaginationControls: FC<PaginationControlsProps> = ({
       </div>
 
       <Button
-        className={`py-1 px-2 bg-gray-200 border border-gray-300 ${!hasNextPage && "text-gray-500"
-          }`}
+        className={`py-1 px-2 bg-gray-200 border border-gray-300 ${
+          !hasNextPage && "text-gray-500"
+        }`}
         disabled={!hasNextPage}
-        onClick={() => createPageURL(true)}
+        onClick={() => {
+          router.push(
+            `${pathname}?page=${Number(currentPage) + 1}&limit=${limit}`
+          );
+        }}
       >
         <ChevronRightIcon className="size-6" />
       </Button>
+      {/* <a href={!hasNextPage ? '#' : `${pathname}?page=${Number(currentPage) + 1}&limit=${limit}`}>next page</a> */}
     </div>
   );
 };

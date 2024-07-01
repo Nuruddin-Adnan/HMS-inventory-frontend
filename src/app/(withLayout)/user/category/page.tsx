@@ -21,7 +21,7 @@ export default async function Category({
     <div className="card py-4">
       <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
         <SearchControl placeholder="Search by name..." />
-        <PaginationControls totalPages={meta.total} limit={100} />
+        <PaginationControls totalPages={meta.total ?? 0} limit={100} />
       </div>
       <div className="px-4">
         <CategoryTable categories={categories} />

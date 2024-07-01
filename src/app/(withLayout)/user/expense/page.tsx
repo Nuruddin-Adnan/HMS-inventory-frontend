@@ -30,7 +30,7 @@ export default async function Expense({
         <ExpenseTable expenses={expenses} />
       </Suspense>
       <div className="px-4 py-2 flex justify-end">
-        <PaginationControls totalPages={meta.total} limit={10} />
+        <PaginationControls totalPages={meta.total ?? 0} limit={10} />
       </div>
     </div>
   );

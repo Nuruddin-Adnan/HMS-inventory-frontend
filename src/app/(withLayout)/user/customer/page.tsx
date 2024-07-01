@@ -13,8 +13,7 @@ export default async function Customer({
   const query = searchParams["query"] ?? "";
 
   const { data: customers, meta } = await getAllCustomers(
-    `sort=status -createdAt&page=${page}&limit=${limit}${
-      query && `&search=${query}`
+    `sort=status -createdAt&page=${page}&limit=${limit}${query && `&search=${query}`
     }&fields=-createdBy -updatedBy`
   );
 
@@ -22,7 +21,7 @@ export default async function Customer({
     <div className="card py-4">
       <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
         <SearchControl placeholder="Search by name & contact no..." />
-        <PaginationControls totalPages={meta.total} limit={100} />
+        <PaginationControls totalPages={meta.total ?? 0} limit={100} />
       </div>
       <div className="px-4">
         <CustomerTable customers={customers} />

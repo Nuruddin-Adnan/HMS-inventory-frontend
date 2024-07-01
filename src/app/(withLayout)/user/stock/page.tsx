@@ -9,12 +9,11 @@ export default async function stock({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const page = searchParams["page"] ?? "1";
-  const limit = searchParams["limit"] ?? "100";
+  const limit = searchParams["limit"] ?? "2";
   const query = searchParams["query"] ?? "";
 
   const { data: stocks, meta } = await getAllStocks(
-    `sort=status -createdAt&page=${page}&limit=${limit}${
-      query && `&search=${query}`
+    `sort=status -createdAt&page=${page}&limit=${limit}${query && `&search=${query}`
     }&fields=-createdBy -updatedBy`
   );
 
@@ -22,7 +21,7 @@ export default async function stock({
     <div className="card py-4">
       <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
         <SearchControl placeholder="Search by name..." />
-        <PaginationControls totalPages={meta.total} limit={100} />
+        <PaginationControls totalPages={meta.total ?? 0} limit={2} />
       </div>
       <div className="px-4">
         <StockTable stocks={stocks} />
