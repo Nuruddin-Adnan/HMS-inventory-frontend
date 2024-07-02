@@ -89,6 +89,8 @@ export default function ProductUpdateForm({
       }
 
       await tagRevalidate("product");
+      await tagRevalidate("stock");
+      await tagRevalidate("purchase");
       redirect("/user/product");
     }
     setLoading(false);

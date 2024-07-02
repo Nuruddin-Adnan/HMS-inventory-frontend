@@ -2,7 +2,15 @@
 
 import Table from "@/components/ui/table/Table";
 import { getUser } from "@/lib/getUser";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import {
+  EllipsisVerticalIcon,
+  InboxArrowDownIcon,
+  PencilIcon,
+  ReceiptRefundIcon,
+} from "@heroicons/react/24/outline";
 import { format } from "date-fns";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -22,24 +30,59 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
 
   const columns = [
     {
-      key: "code",
-      label: "Code",
-      render: (row: any) => <div>{row?.product[0]?.code}</div>,
+      key: "createdAt",
+      label: "Entry On",
+      render: (row: any) => {
+        return (
+          <span className="whitespace-nowrap">
+            {format(new Date(row?.createdAt), "dd/MM/yyyy p")}
+          </span>
+        );
+      },
     },
-    { key: "productName", label: "Product Name" },
     {
-      key: "unit",
-      label: "Unit",
-      render: (row: any) => <div>{row?.product[0]?.unit}</div>,
+      key: "productName",
+      label: "Product Name",
+      render: (row: any) => (
+        <div className="whitespace-nowrap">
+          {row?.productName} <br />
+          Code: {row?.product[0]?.code}
+        </div>
+      ),
     },
+    {
+      key: "supplier",
+      label: "Supplier",
+      render: (row: any) => (
+        <div className="whitespace-nowrap">
+          <span className="block">
+            {" "}
+            {row?.supplier?.name} ({row?.supplier?.contactNo})
+          </span>
+          <span className="block">{row?.supplier?.brandInfo?.name}</span>
+        </div>
+      ),
+    },
+    { key: "invoiceNo", label: "Invoice No" },
+    { key: "lotNo", label: "Lot No" },
+    {
+      key: "expiryDate",
+      label: "Expiry Date",
+      render: (row: any) => {
+        return (
+          <span className="whitespace-nowrap">
+            {format(new Date(row?.expiryDate), "dd/MM/yyyy")}
+          </span>
+        );
+      },
+    },
+    { key: "unit", label: "Unit" },
     {
       key: "price",
       label: "Price",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">
-          {row?.product[0]?.price}
-        </div>
+        <div className="text-right font-medium pr-4">{row?.price}</div>
       ),
     },
     {
@@ -51,55 +94,102 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
       ),
     },
     {
-      key: "alertQuantity",
-      label: "Alert",
+      key: "total",
+      label: "Total",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.alertQuantity}</div>
+        <div className="text-right font-medium pr-4">{row?.total}</div>
       ),
     },
     {
-      key: "totalSell",
-      label: "Total Sell",
+      key: "advance",
+      label: "Advance",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.totalSell}</div>
+        <div className="text-right font-medium pr-4">{row?.advance}</div>
       ),
     },
     {
-      key: "createdAt",
-      label: "Entry On",
-      customClass: "pl-8",
-      render: (row: any) => {
-        return (
-          <span className="whitespace-nowrap">
-            {format(new Date(row?.createdAt), "dd/MM/yyyy p")}
-          </span>
-        );
-      },
+      key: "due",
+      label: "Due",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">{row?.due}</div>
+      ),
     },
     {
-      key: "status",
+      key: "paymentStatus",
       label: "Status",
       customClass: "text-center",
       render: (row: any) => (
         <div
           className={
-            row.status === "active"
-              ? "bg-[#28A745] bg-opacity-[.12] text-[#28A745] font-medium rounded-full text-center m-auto w-20"
-              : "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-20 !py-0"
+            row?.paymentStatus === "paid"
+              ? "bg-[#28A745] bg-opacity-[.12] text-[#28A745] font-medium rounded-full text-center m-auto w-28"
+              : row?.paymentStatus.includes("refund")
+                ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0"
+                : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0"
           }
         >
-          {row?.status}
+          <span className="capitalize">
+            {" "}
+            {row?.paymentStatus && row?.paymentStatus.replace("-", " ")}
+          </span>
         </div>
       ),
     },
-  ];
+    {
+      key: "refundQuantity",
+      label: "Refund Quantity",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">{row?.refundQuantity}</div>
+      ),
+    },
+    {
+      key: "Action",
+      label: "Action",
+      customClass: "bg-white sticky right-0 print:hidden z-[999]",
+      customDataClass: (row: any) =>
+        "sticky right-0 bg-white print:hidden z-[999]",
+      render: (row: any) => (
+        <Menu>
+          <MenuButton className="bg-white p-1 rounded-full border border-gray-100 text-gray-500">
+            <EllipsisVerticalIcon className="size-6 bg-white" />
+          </MenuButton>
 
-  const handleEdit = (rowKey: any) => {
-    // Implement edit logic here
-    router.push(`/user/purchase/update/${rowKey}`);
-  };
+          <MenuItems
+            transition
+            anchor="bottom end"
+            className="w-52 z-[999] origin-top-right rounded-xl border border-white/5 bg-white p-1 text-sm/6  transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 shadow"
+          >
+            <MenuItem>
+              <Link href={`/user/purchase/update/${row?.BILLID}`} className="group flex w-full items-center gap-2 rounded-lg py-1 px-3 hover:bg-gray-200">
+                <PencilIcon className="size-4 fill-white/30" />
+                Edit
+              </Link>
+            </MenuItem>
+            {row?.due > 0 && (
+              <MenuItem>
+                <Link href={`/user/purchase/due/${row?.BILLID}`} className="group flex w-full items-center gap-2 rounded-lg py-1 px-3 hover:bg-gray-200">
+                  <InboxArrowDownIcon className="size-4 fill-white/30" />
+                  Due Collection
+                </Link>
+              </MenuItem>
+            )}
+            {row?.paymentStatus !== "full-refund" && (
+              <MenuItem>
+                <Link href={`/user/purchase/refund/${row?.BILLID}`} className="group flex w-full items-center gap-2 rounded-lg py-1 px-3 hover:bg-gray-200 ">
+                  <ReceiptRefundIcon className="size-4 fill-white/30" />
+                  Refund
+                </Link>
+              </MenuItem>
+            )}
+          </MenuItems>
+        </Menu>
+      ),
+    },
+  ];
 
   return (
     <div>
@@ -112,20 +202,20 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
         }
         columns={columns}
         data={purchases}
-        uniqueKey="_id"
+        uniqueKey="BILLID"
         customTfClass="text-right whitespace-nowrap"
         customThClass="whitespace-nowrap"
+        customTdClass="py-0.5 text-sm"
         create={
           new Set(["super_admin", "admin", "store_incharge"]).has(role)
             ? "/user/purchase/create"
             : undefined
         }
-        onEdit={handleEdit}
-        action={
-          new Set(["super_admin", "admin", "store_incharge"]).has(role)
-            ? true
-            : false
-        }
+        // action={
+        //   new Set(["super_admin", "admin", "store_incharge"]).has(role)
+        //     ? true
+        //     : false
+        // }
         responsive
         sort
         print

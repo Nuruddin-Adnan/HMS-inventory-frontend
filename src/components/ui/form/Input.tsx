@@ -21,6 +21,7 @@ export default function Input({
   onFocus,
   labelClassName,
   disabled = false,
+  readOnly = false,
   required = false,
   autoFocus = false,
 }: {
@@ -44,6 +45,7 @@ export default function Input({
   onFocus?: any;
   labelClassName?: string;
   disabled?: boolean;
+  readOnly?: boolean;
   required?: boolean;
   autoFocus?: boolean;
 }) {
@@ -87,6 +89,7 @@ export default function Input({
           className
         )}
         disabled={disabled}
+        readOnly={readOnly}
         required={required}
       />
     </div>

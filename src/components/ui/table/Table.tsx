@@ -38,7 +38,7 @@ export default function Table({
   serialized = false,
   sumFields = [],
   sumFieldsFixed = 0,
-  pageStyle = '',
+  pageStyle = "",
 }: {
   title?: React.ReactNode;
   caption?: React.ReactNode;
@@ -81,7 +81,7 @@ export default function Table({
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-    pageStyle: pageStyle
+    pageStyle: pageStyle,
   });
 
   function renderNestedCell(row: any, key: any) {
@@ -101,9 +101,9 @@ export default function Table({
     return typeof a === "number" && typeof b === "number"
       ? a - b
       : String(a).localeCompare(String(b), undefined, {
-        numeric: true,
-        sensitivity: "base",
-      });
+          numeric: true,
+          sensitivity: "base",
+        });
   };
 
   const handleSort = (key: any) => {
@@ -194,14 +194,13 @@ export default function Table({
 
   return (
     <>
-      {
-        (title || search || print || create) &&
+      {(title || search || print || create) && (
         <div className="flex items-center justify-between mb-4 border-b border-gray-200 2xl:p-4 p-3">
-          {title &&
+          {title && (
             <h2 className="font-bold 2xl:text-2xl text-xl text-textPrimary">
               {title}
             </h2>
-          }
+          )}
           <div className="flex space-x-2">
             {search && (
               <div className="relative">
@@ -234,24 +233,44 @@ export default function Table({
             )}
           </div>
         </div>
-      }
+      )}
       {/* Table  */}
       <div ref={componentRef}>
         <div className="print:p-5">
-          <div className={responsive ? cn("w-full relative overflow-x-auto print:overflow-visible print:px-4 print:pb-4") : ""}>
+          <div
+            className={
+              responsive
+                ? cn(
+                    "w-full relative overflow-x-auto print:overflow-visible print:px-4 print:pb-4"
+                  )
+                : ""
+            }
+          >
             <table className={cn("w-full", customTableClass)}>
               <caption>{caption}</caption>
               <thead>
                 <tr>
                   {serialized && (
-                    <th className={cn(`max-w-max text-center py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 ${sort && "cursor-pointer"
-                      }`, customThClass)}>Sl.</th>
+                    <th
+                      className={cn(
+                        `max-w-max text-center py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 ${
+                          sort && "cursor-pointer"
+                        }`,
+                        customThClass
+                      )}
+                    >
+                      Sl.
+                    </th>
                   )}
                   {columns.map((column: any) => (
                     <th
                       key={column.key}
-                      className={cn(`max-w-max text-left py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 ${sort && "cursor-pointer"
-                        } ${column.customClass || ""} `, customThClass)}
+                      className={cn(
+                        `max-w-max text-left py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 ${
+                          sort && "cursor-pointer"
+                        } ${column.customClass || ""} `,
+                        customThClass
+                      )}
                       onClick={() => handleSort(column.key)}
                     >
                       {column.label}
@@ -264,8 +283,12 @@ export default function Table({
                   ))}
                   {action && (
                     <th
-                      className={cn(`max-w-max text-left py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 print:hidden sticky right-0 whitespace-nowrap bg-white ${sort && "cursor-pointer"
-                        }`, customThClass)}
+                      className={cn(
+                        `max-w-max text-left py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 print:hidden sticky right-0 whitespace-nowrap bg-white ${
+                          sort && "cursor-pointer"
+                        }`,
+                        customThClass
+                      )}
                     >
                       Action
                     </th>
@@ -276,14 +299,19 @@ export default function Table({
                 {data.map((row, index: number) => (
                   <tr
                     key={uniqueKey ? row[uniqueKey] : index}
-                    className={`${index % 2 === 0 && tableStriped ? "bg-gray-100" : ""
-                      } ${tableHover && "hover:bg-gray-200"}`}
+                    className={`${
+                      index % 2 === 0 && tableStriped ? "bg-gray-100" : ""
+                    } ${tableHover && "hover:bg-gray-200"}`}
                   >
                     {serialized && (
-                      <td className={cn(
-                        "text-center py-1 px-2 border-b border-gray-200 print:border-gray-600 print:py-0.5 print:text-[13px]",
-                        customTdClass
-                      )}>{index + 1}</td>
+                      <td
+                        className={cn(
+                          "text-center py-1 px-2 border-b border-gray-200 print:border-gray-600 print:py-0.5 print:text-[13px]",
+                          customTdClass
+                        )}
+                      >
+                        {index + 1}
+                      </td>
                     )}
                     {columns.map((column) => (
                       <td
@@ -291,16 +319,17 @@ export default function Table({
                         className={`${cn(
                           "py-1 px-2 border-b border-gray-200 print:border-gray-600 print:py-0.5 print:text-[13px]",
                           customTdClass
-                        )} ${column.customDataClass
-                          ? column.customDataClass(row)
-                          : ""
-                          }`}
+                        )} ${
+                          column.customDataClass
+                            ? column.customDataClass(row)
+                            : ""
+                        }`}
                       >
                         {column.render
                           ? column.render(row) // Call the custom rendering function if provided
                           : column.key.includes(".")
-                            ? renderNestedCell(row, column.key)
-                            : row[column.key]}
+                          ? renderNestedCell(row, column.key)
+                          : row[column.key]}
                       </td>
                     ))}
 
@@ -393,27 +422,33 @@ export default function Table({
                 <tfoot className="table-row-group">
                   <tr>
                     {serialized && (
-                      <td className={cn(
-                        "py-1 px-2 font-semibold max-w-max text-center",
-                        customTfClass
-                      )}></td>
+                      <td
+                        className={cn(
+                          "py-1 px-2 font-semibold max-w-max text-center",
+                          customTfClass
+                        )}
+                      ></td>
                     )}
                     {columns.map((column) => (
-                      <td key={column.key} className={cn(
-                        "py-1 px-2 font-semibold",
-                        customTfClass
-                      )}>
+                      <td
+                        key={column.key}
+                        className={cn("py-1 px-2 font-semibold", customTfClass)}
+                      >
                         {sumFields.includes(column.key)
-                          ? `${(getSumResults()[column.key]).toFixed(sumFieldsFixed)}`
+                          ? `${getSumResults()[column.key].toFixed(
+                              sumFieldsFixed
+                            )}`
                           : ""}
                       </td>
                     ))}
 
                     {action && (
-                      <td className={cn(
-                        "py-1 px-2 font-semibold max-w-max text-center",
-                        customTfClass
-                      )}></td>
+                      <td
+                        className={cn(
+                          "py-1 px-2 font-semibold max-w-max text-center",
+                          customTfClass
+                        )}
+                      ></td>
                     )}
                   </tr>
                 </tfoot>
@@ -421,18 +456,22 @@ export default function Table({
 
               <tfoot className="hidden print:table-footer-group">
                 <tr>
-                  <td colSpan={50} >
+                  <td colSpan={50}>
                     <div className="flex justify-between whitespace-nowrap py-3 px-2">
-                      <span className="text-xs">Print On: {format(new Date(), 'dd/MM/yyyy p')}</span>
-                      <span className="text-xs">Print By: {user ? user?.email : ''}</span>
-                      <span className="text-xs">Powered By: {process.env.NEXT_PUBLIC_POWERED_BY}</span>
+                      <span className="text-xs">
+                        Print On: {format(new Date(), "dd/MM/yyyy p")}
+                      </span>
+                      <span className="text-xs">
+                        Print By: {user ? user?.email : ""}
+                      </span>
+                      <span className="text-xs">
+                        Powered By: {process.env.NEXT_PUBLIC_POWERED_BY}
+                      </span>
                     </div>
                   </td>
                 </tr>
               </tfoot>
-
             </table>
-
           </div>
         </div>
       </div>

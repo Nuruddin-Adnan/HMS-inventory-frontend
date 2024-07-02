@@ -2,7 +2,6 @@
 
 import { getAllProductsClient } from "@/api-services/product/getAllProductsClient";
 import { createPurchase } from "@/api-services/purchase/createPurchase";
-import { createStock } from "@/api-services/stock/createStock";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/ui/form/Input";
 import Select from "@/components/ui/form/Select";
@@ -226,20 +225,21 @@ export default function PurchaseCreateForm({ products, suppliers }: { products: 
                   <Input type="number" name="quantity" label="Product quantity" inline className="lg:w-2/3" labelClassName="lg:w-1/3" value={quantity} onChange={(e: any) => setQuantity(e?.target?.value)} />
                   <Input type="number" name="price" label="Unit price" inline className="lg:w-2/3" labelClassName="lg:w-1/3" value={price} onChange={(e: any) => setPrice(e?.target?.value)} />
                 </div>
-                <div className="flex space-x-4 justify-between">
+                <div className="flex space-x-4 justify-between text-base whitespace-nowrap">
                   <div className="space-y-2 w-1/3">
                     <Select
                       options={paymentMethodOptions}
                       name="paymentMethod"
                       label="Payment Method"
-                      className="text-sm"
+                      className="text-base"
+                      labelClassName="text-base whitespace-nowrap"
                       defaultValue="cash"
                     />
                   </div>
                   <div className="grid 2xl:gap-4 gap-3 w-3/4">
                     <div className="grid  space-y-1 text-right items-center">
-                      <p className="text-textPrimary font-bold">
-                        Net Payable Amount :
+                      <p className="text-textPrimary font-bold ">
+                        Payable Amount :
                       </p>
                       <p className="text-textPrimary font-bold">
                         {quantity * price} TK
@@ -278,7 +278,7 @@ export default function PurchaseCreateForm({ products, suppliers }: { products: 
 
 
           {/* form end here */}
-          <div className="text-right">
+          <div className="text-right text-base">
             <Button
               type="reset"
               variant="primary-light"
