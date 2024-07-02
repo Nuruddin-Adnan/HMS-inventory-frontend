@@ -13,8 +13,7 @@ export default async function Purchase({
   const query = searchParams["query"] ?? "";
 
   const { data: purchases, meta } = await getAllPurchases(
-    `sort=-due -createdAt&page=${page}&limit=${limit}${
-      query && `&search=${query}`
+    `sort=-createdAt&page=${page}&limit=${limit}${query && `&search=${query}`
     }&fields=-createdBy -updatedBy`
   );
 
