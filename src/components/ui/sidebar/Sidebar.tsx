@@ -7,7 +7,6 @@ import {
 } from "@headlessui/react";
 import {
   SquaresPlusIcon,
-  CurrencyDollarIcon,
   ShoppingBagIcon,
   ChartBarIcon,
   ShoppingCartIcon,
@@ -19,7 +18,6 @@ import {
 import { IoWalletOutline } from "react-icons/io5";
 import { HiOutlineReceiptTax } from "react-icons/hi";
 import { BiSupport } from "react-icons/bi";
-import { FaQuestion } from "react-icons/fa6";
 import Image from "next/image";
 import logoFull from "../../../../public/logo.svg";
 import Link from "next/link";
@@ -65,25 +63,21 @@ const navigations = [
   {
     heading: "ACCOUNTS",
     navItems: [
-      { name: "Reports", href: "/user/reports-&-printing", icon: ClipboardDocumentListIcon },
+      {
+        name: "Reports",
+        href: "/user/reports-&-printing",
+        icon: ClipboardDocumentListIcon,
+      },
       { name: "Expenses", href: "/user/expense", icon: IoWalletOutline },
     ],
   },
   {
     heading: "SETTINGS",
-    navItems: [
-      { name: "Tax", href: "/user/settings/tax", icon: HiOutlineReceiptTax },
-      {
-        name: "Currency",
-        href: "/user/settings/currency",
-        icon: CurrencyDollarIcon,
-      },
-    ],
+    navItems: [{ name: "Tax", href: "/user/tax", icon: HiOutlineReceiptTax }],
   },
   {
     heading: "HELP",
     navItems: [
-      { name: "FAQs", href: "/user/faq", icon: FaQuestion },
       { name: "Contact Support", href: "/user/support", icon: BiSupport },
     ],
   },
@@ -142,10 +136,11 @@ export default function Sidebar({
             {navigations.map((nav: any, index: number) => (
               <div key={index}>
                 <p
-                  className={`${nav?.headingClassName
-                    ? nav?.headingClassName
-                    : "pl-4 pt-6 pb-2"
-                    } text-gray-400`}
+                  className={`${
+                    nav?.headingClassName
+                      ? nav?.headingClassName
+                      : "pl-4 pt-6 pb-2"
+                  } text-gray-400`}
                 >
                   {nav?.heading}
                 </p>

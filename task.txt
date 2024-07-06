@@ -1,6 +1,6 @@
 pending task list
 
-### *** pagination update. It remove the other filters both for filter and search. Need to modify the code
-### purchase table update
-###  purchase other page -> CRUD
+### *** BACK button add to add create and update page
+### POS layout design (header with menu/header with small sidebar)
+### POS page design
 

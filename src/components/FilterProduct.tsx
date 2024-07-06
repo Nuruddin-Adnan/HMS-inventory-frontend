@@ -114,7 +114,7 @@ export default function FilterProduct({
       <div>
         <MenuButton>
           <Button
-            variant={appliFilter ? `danger` : "primary-light"}
+            variant={appliFilter ? `danger-light` : "primary-light"}
             className="py-1.5 px-2 border-transparent"
           >
             <FunnelIcon className="h-5 w-5" />

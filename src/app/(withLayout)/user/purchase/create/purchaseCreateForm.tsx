@@ -16,7 +16,13 @@ import { useState, useRef } from "react";
 import ReactSelect, { SelectInstance } from "react-select";
 import CreatableSelect from "react-select/creatable";
 
-export default function PurchaseCreateForm({ products, suppliers }: { products: any, suppliers: any }) {
+export default function PurchaseCreateForm({
+  products,
+  suppliers,
+}: {
+  products: any;
+  suppliers: any;
+}) {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [productCode, setProductCode] = useState<any>();
@@ -141,11 +147,17 @@ export default function PurchaseCreateForm({ products, suppliers }: { products: 
   };
 
   const productOptions = products.map((item: any) => {
-    return { label: `${item?.name} ⟶${item?.genericName} ⟶${item?.brand}`, value: item?._id };
+    return {
+      label: `${item?.name} ⟶${item?.genericName} ⟶${item?.brand}`,
+      value: item?._id,
+    };
   });
 
   const supplierOptions = suppliers.map((item: any) => {
-    return { label: `${item?.name} ⟶${item?.contactNo}`, value: item?._id };
+    return {
+      label: `${item?.name} ⟶${item?.contactNo} ⟶${item?.brand[0]?.name}`,
+      value: item?._id,
+    };
   });
 
   return (
@@ -180,7 +192,9 @@ export default function PurchaseCreateForm({ products, suppliers }: { products: 
           <div className="flex 2xl:gap-4 gap-3 lg:flex-row flex-col">
             <div className="lg:w-3/5 flex flex-col 2xl:gap-4 gap-3">
               <label>
-                <span className="font-semibold block pb-0.5">Product Name*</span>
+                <span className="font-semibold block pb-0.5">
+                  Product Name*
+                </span>
                 <ReactSelect
                   ref={productSelectRef}
                   name="product"
@@ -211,7 +225,9 @@ export default function PurchaseCreateForm({ products, suppliers }: { products: 
               <div className="grid lg:gap-52 gap-16">
                 <div className="grid  gap-3">
                   <label className="lg:flex items-center gap-4">
-                    <span className="font-semibold block lg:w-1/3">Purchase Unit:</span>
+                    <span className="font-semibold block lg:w-1/3">
+                      Purchase Unit:
+                    </span>
                     <div className="lg:w-2/3">
                       <CreatableSelect
                         ref={unitSelectRef}
@@ -222,74 +238,99 @@ export default function PurchaseCreateForm({ products, suppliers }: { products: 
                       />
                     </div>
                   </label>
-                  <Input type="number" name="quantity" label="Product quantity" inline className="lg:w-2/3" labelClassName="lg:w-1/3" value={quantity} onChange={(e: any) => setQuantity(e?.target?.value)} />
-                  <Input type="number" name="price" label="Unit price" inline className="lg:w-2/3" labelClassName="lg:w-1/3" value={price} onChange={(e: any) => setPrice(e?.target?.value)} />
+                  <Input
+                    type="number"
+                    name="quantity"
+                    label="Product quantity"
+                    inline
+                    className="lg:w-2/3"
+                    labelClassName="lg:w-1/3"
+                    value={quantity}
+                    onChange={(e: any) => setQuantity(e?.target?.value)}
+                  />
+                  <Input
+                    type="number"
+                    name="price"
+                    label="Unit price"
+                    inline
+                    className="lg:w-2/3"
+                    labelClassName="lg:w-1/3"
+                    value={price}
+                    onChange={(e: any) => setPrice(e?.target?.value)}
+                  />
                 </div>
-                <div className="flex space-x-4 justify-between text-base whitespace-nowrap">
-                  <div className="space-y-2 w-1/3">
-                    <Select
-                      options={paymentMethodOptions}
-                      name="paymentMethod"
-                      label="Payment Method"
-                      className="text-base"
-                      labelClassName="text-base whitespace-nowrap"
-                      defaultValue="cash"
-                    />
-                  </div>
-                  <div className="grid 2xl:gap-4 gap-3 w-3/4">
-                    <div className="grid  space-y-1 text-right items-center">
-                      <p className="text-textPrimary font-bold ">
-                        Payable Amount :
-                      </p>
-                      <p className="text-textPrimary font-bold">
-                        {quantity * price} TK
-                      </p>
-
-                      <div className="border-b col-span-2"></div>
-
-                      <p className="text-textPrimary">Advance Amount :</p>
-                      <div className="relative ml-auto w-2/3">
-                        <Input
-                          name="advance"
-                          type="number"
-                          step="0.001"
-                          onChange={(e: any) => setAdvance(e.target.value)}
-                          className="pr-6 border-blue-300"
-                          required
-                        />
-                        <span className="absolute top-1/2 right-2 -translate-y-1/2">
-                          TK
-                        </span>
-                      </div>
-
-                      <p className="text-textPrimary font-bold">Due Amount :</p>
-                      <p className="text-textPrimary font-bold">
-                        {(quantity * price) - advance > 0 ? (quantity * price) - advance : 0}
-                        TK
-                      </p>
+                <div className="lg:sticky bottom-5">
+                  <div className="flex space-x-4 justify-between text-base whitespace-nowrap">
+                    <div className="space-y-2 w-1/3">
+                      <Select
+                        options={paymentMethodOptions}
+                        name="paymentMethod"
+                        label="Payment Method"
+                        className="text-base"
+                        labelClassName="text-base whitespace-nowrap"
+                        defaultValue="cash"
+                      />
                     </div>
+                    <div className="grid 2xl:gap-4 gap-3 w-3/4">
+                      <div className="grid  space-y-1 text-right items-center">
+                        <p className="text-textPrimary font-bold ">
+                          Payable Amount :
+                        </p>
+                        <p className="text-textPrimary font-bold">
+                          {quantity * price} TK
+                        </p>
+
+                        <div className="border-b col-span-2"></div>
+
+                        <p className="text-textPrimary">Advance Amount :</p>
+                        <div className="relative ml-auto w-2/3">
+                          <Input
+                            name="advance"
+                            type="number"
+                            step="0.001"
+                            onChange={(e: any) => setAdvance(e.target.value)}
+                            className="pr-6 border-blue-300"
+                            required
+                          />
+                          <span className="absolute top-1/2 right-2 -translate-y-1/2">
+                            TK
+                          </span>
+                        </div>
+
+                        <p className="text-textPrimary font-bold">
+                          Due Amount :
+                        </p>
+                        <p className="text-textPrimary font-bold">
+                          {quantity * price - advance > 0
+                            ? quantity * price - advance
+                            : 0}
+                          TK
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-right text-base mt-5">
+                    <Button
+                      type="reset"
+                      variant="primary-light"
+                      className="mr-2"
+                      onClick={handleReset}
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      className="w-48 justify-center"
+                      loading={loading}
+                    >
+                      Purchase
+                    </Button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-
-
-
-
-          {/* form end here */}
-          <div className="text-right text-base">
-            <Button
-              type="reset"
-              variant="primary-light"
-              className="mr-2"
-              onClick={handleReset}
-            >
-              Reset
-            </Button>
-            <Button type="submit" variant="primary" className="w-48 justify-center" loading={loading}>
-              Purchase
-            </Button>
           </div>
         </form>
       </div>

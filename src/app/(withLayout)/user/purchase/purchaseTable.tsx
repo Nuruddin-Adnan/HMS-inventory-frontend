@@ -94,6 +94,14 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
       ),
     },
     {
+      key: "refundQuantity",
+      label: "Refund",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">{row?.refundQuantity}</div>
+      ),
+    },
+    {
       key: "total",
       label: "Total",
       customClass: "text-right w-24 pr-5",
@@ -127,8 +135,8 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
             row?.paymentStatus === "paid"
               ? "bg-[#28A745] bg-opacity-[.12] text-[#28A745] font-medium rounded-full text-center m-auto w-28"
               : row?.paymentStatus.includes("refund")
-                ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0"
-                : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0"
+              ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0"
+              : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0"
           }
         >
           <span className="capitalize">
@@ -139,19 +147,11 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
       ),
     },
     {
-      key: "refundQuantity",
-      label: "Refund Quantity",
-      customClass: "text-right w-24 pr-5",
-      render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.refundQuantity}</div>
-      ),
-    },
-    {
       key: "Action",
       label: "Action",
-      customClass: "bg-white sticky right-0 print:hidden z-[999]",
+      customClass: "bg-white sticky right-0 print:hidden z-[941]",
       customDataClass: (row: any) =>
-        "sticky right-0 bg-white print:hidden z-[999]",
+        "sticky right-0 bg-white print:hidden z-[940]",
       render: (row: any) => (
         <Menu>
           <MenuButton className="bg-white p-1 rounded-full border border-gray-100 text-gray-500">
@@ -164,22 +164,31 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
             className="w-52 z-[999] origin-top-right rounded-xl border border-white/5 bg-white p-1 text-sm/6  transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 shadow"
           >
             <MenuItem>
-              <Link href={`/user/purchase/update/${row?.BILLID}`} className="group flex w-full items-center gap-2 rounded-lg py-1 px-3 hover:bg-gray-200">
+              <Link
+                href={`/user/purchase/update/${row?.BILLID}`}
+                className="group flex w-full items-center gap-2 rounded-lg py-1 px-3 hover:bg-gray-200"
+              >
                 <PencilIcon className="size-4 fill-white/30" />
                 Edit
               </Link>
             </MenuItem>
             {row?.due > 0 && (
               <MenuItem>
-                <Link href={`/user/purchase/due/${row?.BILLID}`} className="group flex w-full items-center gap-2 rounded-lg py-1 px-3 hover:bg-gray-200">
+                <Link
+                  href={`/user/purchase/due/${row?.BILLID}`}
+                  className="group flex w-full items-center gap-2 rounded-lg py-1 px-3 hover:bg-gray-200"
+                >
                   <InboxArrowDownIcon className="size-4 fill-white/30" />
                   Due Collection
                 </Link>
               </MenuItem>
             )}
-            {row?.paymentStatus !== "full-refund" && (
+            {row?.quantity !== row?.refundQuantity && (
               <MenuItem>
-                <Link href={`/user/purchase/refund/${row?.BILLID}`} className="group flex w-full items-center gap-2 rounded-lg py-1 px-3 hover:bg-gray-200 ">
+                <Link
+                  href={`/user/purchase/refund/${row?.BILLID}`}
+                  className="group flex w-full items-center gap-2 rounded-lg py-1 px-3 hover:bg-gray-200 "
+                >
                   <ReceiptRefundIcon className="size-4 fill-white/30" />
                   Refund
                 </Link>

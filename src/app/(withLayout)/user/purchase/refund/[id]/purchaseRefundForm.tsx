@@ -1,23 +1,22 @@
 "use client";
 
-import { duePaymentPurchase } from "@/api-services/purchase/duePaymentPurchase";
+import { refundPurchase } from "@/api-services/purchase/refundPurchase";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/ui/form/Input";
 import Select from "@/components/ui/form/Select";
 import convertStringToNumber from "@/helpers/convertStringToNumber";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
-import { paymentMethodOptions } from "@/lib/selectOptions";
+import { paymentMethodOptions, refundMethodOptions } from "@/lib/selectOptions";
 import tagRevalidate from "@/lib/tagRevalidate";
 import { reactSelectStyles } from "@/styles/reactSelectStyles";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ReactSelect from "react-select";
-import CreatableSelect from "react-select/creatable";
 
-export default function PurchaseDueForm({ data }: { data: any }) {
+export default function PurchaseRefundForm({ data }: { data: any }) {
   const [loading, setLoading] = useState(false);
-  const [amount, setAmount] = useState<number>(0);
+  const [refundQuantity, setRefundQuantity] = useState<number>(0);
 
   const router = useRouter();
 
@@ -25,16 +24,19 @@ export default function PurchaseDueForm({ data }: { data: any }) {
     setLoading(true);
 
     // Convert  fields as number
-    const amount = (formData.get("amount") ?? "") as string;
-    const amountAsNumber: number = convertStringToNumber(amount);
+    const quantity = (formData.get("quantity") ?? "") as string;
+    const quantityAsNumber: number = convertStringToNumber(quantity);
 
     const payload = {
-      paymentMethod: (formData.get("paymentMethod") ?? "") as string,
-      amount: amountAsNumber,
+      refundMethod: (formData.get("refundMethod") ?? "") as string,
+      quantity: quantityAsNumber,
     };
 
     const nonEmptyPayload = removeEmptyFields(payload);
-    const result = await duePaymentPurchase(data?.BILLID, nonEmptyPayload);
+
+    console.log(nonEmptyPayload);
+
+    const result = await refundPurchase(data?.BILLID, nonEmptyPayload);
     if (result && result.success === true) {
       await tagRevalidate("purchase");
       router.back();
@@ -45,37 +47,32 @@ export default function PurchaseDueForm({ data }: { data: any }) {
   return (
     <>
       <div className="border border-gray-200 rounded-lg p-4 shadow">
-        <form className="mb-4">
-          <span className="block text-sm font-semibold text-textPrimary mb-1">
-            Product code
-          </span>
-          <div className="flex gap-2 items-center">
-            <Input
-              type="text"
-              name="code"
-              className="border-primary focus-visible:border-primary focus:border-primary"
-              value={data?.product[0]?.code}
-              disabled
-            />
-          </div>
-        </form>
         <form action={handleSubmit} className="grid 2xl:gap-4 gap-3">
           <div className="flex 2xl:gap-4 gap-3 lg:flex-row flex-col">
             <div className="lg:w-3/5 flex flex-col 2xl:gap-4 gap-3">
-              <label>
-                <span className="font-semibold block pb-0.5">
-                  Product Name*
-                </span>
-                <ReactSelect
-                  name="product"
-                  styles={reactSelectStyles}
-                  value={{
-                    label: `${data?.product[0]?.name} ⟶${data?.product[0]?.genericName} ⟶${data?.product[0]?.brand}`,
-                    value: data?.product[0]?._id,
-                  }}
-                  isDisabled={true}
+              <div className="grid lg:grid-cols-3  2xl:gap-4 gap-3">
+                <label className="lg:col-span-2">
+                  <span className="font-semibold block pb-0.5">
+                    Product Name*
+                  </span>
+                  <ReactSelect
+                    name="product"
+                    styles={reactSelectStyles}
+                    value={{
+                      label: `${data?.product[0]?.name} ⟶${data?.product[0]?.genericName} ⟶${data?.product[0]?.brand}`,
+                      value: data?.product[0]?._id,
+                    }}
+                    isDisabled={true}
+                  />
+                </label>
+                <Input
+                  type="text"
+                  name="code"
+                  label="Product code"
+                  value={data?.product[0]?.code}
+                  disabled
                 />
-              </label>
+              </div>
               <div className="grid grid-cols-2 2xl:gap-4 gap-3">
                 <label>
                   <span className="font-semibold block pb-0.5">Supplier*</span>
@@ -120,29 +117,22 @@ export default function PurchaseDueForm({ data }: { data: any }) {
             <div className="lg:w-2/5 2xl:gap-4 gap-3 lg:border-s lg:ps-4">
               <div className="grid 2xl:gap-52 gap-16">
                 <div className="grid  gap-3">
-                  <label className="lg:flex items-center gap-4">
-                    <span className="font-semibold block lg:w-1/3">
-                      Purchase Unit:
-                    </span>
-                    <div className="lg:w-2/3">
-                      <CreatableSelect
-                        name="unit"
-                        isClearable={true}
-                        styles={reactSelectStyles}
-                        defaultValue={{
-                          label: data?.unit,
-                          value: data?.unit,
-                        }}
-                        isDisabled
-                      />
-                    </div>
-                  </label>
+                  <Input
+                    type="text"
+                    name="unit"
+                    label="Unit"
+                    inline
+                    className="lg:w-2/3 border-red-500"
+                    labelClassName="lg:w-1/3"
+                    value={data?.unit}
+                    disabled
+                  />
                   <Input
                     type="number"
                     name="quantity"
-                    label="Product quantity"
+                    label="Purchase quantity"
                     inline
-                    className="lg:w-2/3"
+                    className="lg:w-2/3 border-red-500"
                     labelClassName="lg:w-1/3"
                     value={data?.quantity}
                     disabled
@@ -152,30 +142,30 @@ export default function PurchaseDueForm({ data }: { data: any }) {
                     name="price"
                     label="Unit price"
                     inline
-                    className="lg:w-2/3"
+                    className="lg:w-2/3 border-red-500"
                     labelClassName="lg:w-1/3"
                     value={data?.price}
                     disabled
                   />
                 </div>
                 <div className="lg:sticky bottom-5">
-                  <div className="flex space-x-4 justify-between text-base whitespace-nowrap">
-                    <div className="space-y-2 w-1/3">
+                  <div className="flex lg:flex-row flex-col gap-4 justify-between text-base whitespace-nowrap ">
+                    <div className="space-y-2 lg:w-1/3">
                       <Select
                         options={paymentMethodOptions}
-                        name="paymentMethod"
-                        label="Payment Method"
+                        name="refundMethod"
+                        label="Refund Method"
                         labelClassName="text-base"
                         defaultValue="cash"
                       />
                     </div>
-                    <div className="grid 2xl:gap-4 gap-3 w-2/3">
+                    <div className="grid 2xl:gap-4 gap-3 lg:w-2/3">
                       <div className="grid  space-y-1 text-right items-center">
                         <p className="text-textPrimary font-bold">
                           Payable Amount :
                         </p>
                         <p className="text-textPrimary font-bold">
-                          {data?.total} TK
+                          {data?.total - refundQuantity * data?.price} TK
                         </p>
                         <p className="text-textPrimary font-bold">
                           Previous Payment :
@@ -183,40 +173,61 @@ export default function PurchaseDueForm({ data }: { data: any }) {
                         <p className="text-textPrimary font-bold">
                           {data?.advance} TK
                         </p>
-
-                        <div className="border-b col-span-2"></div>
-
-                        <p className="text-textPrimary">New Pay Amount :</p>
-                        <div className="relative ml-auto w-2/3">
-                          <Input
-                            name="amount"
-                            type="number"
-                            step="0.001"
-                            className={`pr-6 text-lg ${
-                              data?.due - amount < 0
-                                ? "border-red-500"
-                                : "border-blue-300"
-                            }`}
-                            required
-                            onChange={(e: any) => setAmount(e.target.value)}
-                          />
-                          <span className="absolute top-1/2 right-2 -translate-y-1/2">
-                            TK
-                          </span>
-                        </div>
-
                         <p className="text-textPrimary font-bold">
                           Due Amount :
                         </p>
+                        <p>
+                          {data?.due}
+                          TK
+                        </p>
+
+                        <div className="border-b col-span-2"></div>
+
+                        <p className="text-red-500">Previous Refund:</p>
+                        <div className="relative ml-auto w-2/3">
+                          <Input
+                            type="number"
+                            className="text-red-500 border-red-500 text-right"
+                            value={data?.refundQuantity}
+                            disabled
+                          />
+                        </div>
+
+                        <p className="text-red-500">New Refund Quantity:</p>
+                        <div className="relative ml-auto w-2/3">
+                          <Input
+                            name="quantity"
+                            type="number"
+                            className="text-red-500 border-red-500 text-right"
+                            onChange={(e: any) =>
+                              setRefundQuantity(e.target.value)
+                            }
+                            autoFocus
+                          />
+                        </div>
+
                         <p
-                          className={`font-bold ${
-                            data?.due - amount < 0
+                          className={`font-medium ${
+                            data?.quantity -
+                              (data?.refundQuantity + Number(refundQuantity)) <
+                            0
                               ? "text-red-500"
-                              : "text-textPrimary"
+                              : "text-green-700"
                           }`}
                         >
-                          {data?.due - amount}
-                          TK
+                          Remaining quantity :
+                        </p>
+                        <p
+                          className={`font-medium ${
+                            data?.quantity -
+                              (data?.refundQuantity + Number(refundQuantity)) <
+                            0
+                              ? "text-red-500"
+                              : "text-green-700"
+                          }`}
+                        >
+                          {data?.quantity -
+                            (data?.refundQuantity + Number(refundQuantity))}
                         </p>
                       </div>
                     </div>
@@ -231,11 +242,11 @@ export default function PurchaseDueForm({ data }: { data: any }) {
                     </Button>
                     <Button
                       type="submit"
-                      variant="primary"
+                      variant="danger"
                       className="w-48 justify-center"
                       loading={loading}
                     >
-                      Due Payment
+                      Refund Purchase
                     </Button>
                   </div>
                 </div>

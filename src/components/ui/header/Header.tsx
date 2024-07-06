@@ -32,15 +32,19 @@ export default function Header({
     // Check if running on the client side
     if (typeof window !== "undefined") {
       if (user) {
-        const nameParts = user.name.split(' ');
+        const nameParts = user.name.split(" ");
         let initials;
 
         if (nameParts.length > 1) {
           const firstName = nameParts[0];
           const lastName = nameParts[nameParts.length - 1];
-          initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+          initials =
+            firstName.charAt(0).toUpperCase() +
+            lastName.charAt(0).toUpperCase();
         } else {
-          initials = nameParts[0].charAt(0).toUpperCase() + nameParts[0].charAt(1).toUpperCase();
+          initials =
+            nameParts[0].charAt(0).toUpperCase() +
+            nameParts[0].charAt(1).toUpperCase();
         }
 
         setUserNameFirstLetter(initials);
@@ -131,7 +135,7 @@ export default function Header({
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <MenuItems className="absolute right-0 bg-white z-10 mt-2 w-48 origin-top-right rounded-md bg- py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <MenuItems className="absolute z-[999] right-0 bg-white  mt-2 w-48 origin-top-right rounded-md bg- py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <MenuItem>
                         <Link
                           href="/user/profile"
