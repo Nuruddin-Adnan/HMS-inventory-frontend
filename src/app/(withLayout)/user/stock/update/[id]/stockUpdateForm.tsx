@@ -10,7 +10,7 @@ import { getUser } from "@/lib/getUser";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import { statusOptions } from "@/lib/selectOptions";
 import tagRevalidate from "@/lib/tagRevalidate";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import ReactSelect, { SelectInstance } from "react-select";
 
@@ -27,6 +27,8 @@ export default function StockUpdateForm({
   const productSelectRef = useRef<SelectInstance | null>(null);
 
   const user = getUser();
+
+  const router = useRouter();
 
   useEffect(() => {
     // Check if running on the client side
@@ -84,7 +86,7 @@ export default function StockUpdateForm({
       }
 
       await tagRevalidate("stock");
-      redirect("/user/stock");
+      router.back();
     }
     setLoading(false);
   };
@@ -135,7 +137,20 @@ export default function StockUpdateForm({
             />
           </div>
           <div className="text-right">
-            <Button type="submit" variant="primary" loading={loading}>
+            <Button
+              type="button"
+              variant="primary-light"
+              className="me-2"
+              onClick={() => router.back()}
+            >
+              Back
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              loading={loading}
+              className="px-10"
+            >
               Update
             </Button>
           </div>
@@ -178,7 +193,21 @@ export default function StockUpdateForm({
           />
         </div>
         <div className="text-right">
-          <Button type="submit" variant="primary" loading={loading}>
+          <Button
+            type="button"
+            variant="primary-light"
+            className="me-2"
+            onClick={() => router.back()}
+          >
+            Back
+          </Button>
+
+          <Button
+            type="submit"
+            variant="primary"
+            loading={loading}
+            className="px-10"
+          >
             Update
           </Button>
         </div>

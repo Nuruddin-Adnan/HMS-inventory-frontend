@@ -8,7 +8,7 @@ import Textarea from "@/components/ui/form/Textarea";
 import convertStringToNumber from "@/helpers/convertStringToNumber";
 import { productUnitOptions, statusOptions } from "@/lib/selectOptions";
 import tagRevalidate from "@/lib/tagRevalidate";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import ReactSelect, { SelectInstance } from "react-select";
 import CreatableSelect from "react-select/creatable";
@@ -29,9 +29,12 @@ export default function ProductUpdateForm({
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const unitSelectRef = useRef<SelectInstance | null>(null);
+  const fullUnitSelectRef = useRef<SelectInstance | null>(null);
   const brandSelectRef = useRef<SelectInstance | null>(null);
   const genericSelectRef = useRef<SelectInstance | null>(null);
   const shelveSelectRef = useRef<SelectInstance | null>(null);
+
+  const router = useRouter();
 
   const reactSelectStyles = {
     control: (baseStyles: any) => ({
@@ -57,10 +60,12 @@ export default function ProductUpdateForm({
 
     // Convert  fields as number
     const price = (formData.get("price") ?? "") as string;
+    const fullPrice = (formData.get("fullPrice") ?? "") as string;
     const discountPercent = (formData.get("discountPercent") ?? "") as string;
     const discountAmount = (formData.get("discountAmount") ?? "") as string;
 
     const priceAsNumber: number = convertStringToNumber(price);
+    const fullPriceAsNumber: number = convertStringToNumber(fullPrice);
     const discountPercentAsNumber: number =
       convertStringToNumber(discountPercent);
     const discountAmountAsNumber: number =
@@ -74,7 +79,9 @@ export default function ProductUpdateForm({
       brand: (formData.get("brand") ?? "") as string,
       shelve: (formData.get("shelve") ?? "") as string,
       unit: (formData.get("unit") ?? "") as string,
+      fullUnit: (formData.get("fullUnit") ?? "") as string,
       price: priceAsNumber,
+      fullPrice: fullPriceAsNumber,
       discountPercent: discountPercentAsNumber,
       discountAmount: discountAmountAsNumber,
       description: (formData.get("description") ?? "") as string,
@@ -91,7 +98,7 @@ export default function ProductUpdateForm({
       await tagRevalidate("product");
       await tagRevalidate("stock");
       await tagRevalidate("purchase");
-      redirect("/user/product");
+      router.back();
     }
     setLoading(false);
   };
@@ -223,13 +230,48 @@ export default function ProductUpdateForm({
             defaultValue={data?.discountAmount}
           />
         </div>
+        <div className="grid lg:grid-cols-2 2xl:gap-4 gap-3">
+          <label>
+            <span className="font-semibold block pb-0.5">
+              Sell Full Unit{" "}
+              <span className="font-normal opacity-80">(Optional)</span>
+            </span>
+            <CreatableSelect
+              ref={fullUnitSelectRef}
+              name="fullUnit"
+              options={productUnitOptions}
+              isClearable={true}
+              styles={reactSelectStyles}
+              defaultValue={{ label: data?.fullUnit, value: data?.fullUnit }}
+            />
+          </label>
+          <Input
+            type="number"
+            name="fullPrice"
+            label="Full Unit price (Optional)"
+            defaultValue={data?.fullPrice}
+          />
+        </div>
         <Textarea
           label="Description"
           name="description"
           defaultValue={data?.description}
         />
         <div className="text-right">
-          <Button type="submit" variant="primary" loading={loading}>
+          <Button
+            type="button"
+            variant="primary-light"
+            className="me-2"
+            onClick={() => router.back()}
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            className="px-10"
+            loading={loading}
+          >
             Update
           </Button>
         </div>

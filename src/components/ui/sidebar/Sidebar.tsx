@@ -35,7 +35,7 @@ const navigations = [
       {
         group: "Sales",
         items: [
-          { name: "POS", href: "/user/order/create" },
+          { name: "POS", href: "/pos" },
           { name: "Sales History", href: "/user/order" },
         ],
         icon: ShoppingCartIcon,

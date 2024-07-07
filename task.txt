@@ -2,5 +2,5 @@ pending task list
 
 ### *** BACK button add to add create and update page
 ### POS layout design (header with menu/header with small sidebar)
-### POS page design
+### *** reset funtion update -> reset all the state
 

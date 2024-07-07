@@ -148,7 +148,9 @@ export default function PurchaseCreateForm({
 
   const productOptions = products.map((item: any) => {
     return {
-      label: `${item?.name} ⟶${item?.genericName} ⟶${item?.brand}`,
+      label: `${item?.name} ${
+        item?.genericName ? `⟶${item?.genericName}` : ""
+      } ⟶${item?.brand}`,
       value: item?._id,
     };
   });

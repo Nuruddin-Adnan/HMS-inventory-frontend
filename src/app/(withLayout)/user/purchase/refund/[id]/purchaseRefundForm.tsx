@@ -34,8 +34,6 @@ export default function PurchaseRefundForm({ data }: { data: any }) {
 
     const nonEmptyPayload = removeEmptyFields(payload);
 
-    console.log(nonEmptyPayload);
-
     const result = await refundPurchase(data?.BILLID, nonEmptyPayload);
     if (result && result.success === true) {
       await tagRevalidate("purchase");
