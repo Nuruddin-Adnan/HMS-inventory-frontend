@@ -15,6 +15,8 @@ import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import tagRevalidate from "@/lib/tagRevalidate";
 import { createOrder } from "@/api-services/order/createOrder";
 import calculatePercentageToAmount from "@/helpers/calculatePercentageToAmount";
+import { useReactToPrint } from "react-to-print";
+import InvoiceLg from "@/components/InvoiceLg";
 
 type Product = {
   _id: string;
@@ -30,6 +32,11 @@ type Product = {
   quantity?: number;
   selectedUnit?: string;
 };
+
+const pageStyle = `
+@page{
+    size: portrait
+}`;
 
 export default function POSPForm({
   productsList,
@@ -57,11 +64,16 @@ export default function POSPForm({
   const [showDuplicateModal, setShowDuplicateModal] = useState<boolean>(false);
   const [customer, setCustomer] = useState<any>(null);
 
+  // print setup
+  const [isPrinting, setIsPrinting] = useState(false);
+  const printRef = useRef(null);
+  const promiseResolveRef = useRef<((value: any) => void) | null>(null);
+  const [invoiceData, setInvoiceData] = useState();
+
   const productOptions = productsList.map((product: any) => ({
     value: product?._id,
-    label: `${product?.name} ${
-      product?.genericName ? `⟶${product?.genericName}` : ""
-    } ⟶${product?.brand}`,
+    label: `${product?.name} ${product?.genericName ? `⟶${product?.genericName}` : ""
+      } ⟶${product?.brand}`,
   }));
 
   // sum product to get subtotal
@@ -69,7 +81,7 @@ export default function POSPForm({
     (acc, product) =>
       acc +
       (product.selectedUnit === "unit" ? product.price : product.fullPrice) *
-        product.quantity!,
+      product.quantity!,
     0
   );
 
@@ -98,6 +110,32 @@ export default function POSPForm({
     },
     [products]
   );
+
+  // We watch for the state to change here, and for the Promise resolve to be available
+  useEffect(() => {
+    if (isPrinting && promiseResolveRef.current) {
+      // Resolves the Promise, letting `react-to-print` know that the DOM updates are completed
+      promiseResolveRef.current(undefined);
+    }
+  }, [isPrinting]);
+
+  // print invoice
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    onBeforeGetContent: () => {
+      return new Promise((resolve) => {
+        promiseResolveRef.current = resolve;
+        setIsPrinting(true);
+      });
+    },
+    onAfterPrint: () => {
+      // Reset the Promise resolve so we can print again
+      promiseResolveRef.current = null;
+      setIsPrinting(false);
+      productCodeInputRef.current!.focus();
+    },
+    pageStyle: pageStyle,
+  });
 
   useEffect(() => {
     if (selectedProduct) {
@@ -230,6 +268,7 @@ export default function POSPForm({
     const receivedAsNumber: number = convertStringToNumber(received);
 
     const payload = {
+      CUSID: customer?.CUSID,
       items: orderItems,
       discountPercent: discountPercentAsNumber,
       discountAmount: discountAmountAsNumber,
@@ -241,15 +280,19 @@ export default function POSPForm({
     const nonEmptyPayload = removeEmptyFields(payload);
     const result = await createOrder(nonEmptyPayload);
     if (result && result.success === true) {
+      setInvoiceData(result?.data);
+      await tagRevalidate("order");
+      await tagRevalidate("stock");
+
+      // print
+      handlePrint();
+
+      // reset all the data and get ready for next order
       // Reset the form
       if (formRef.current) {
         formRef.current.reset();
       }
-
       handleReset();
-
-      await tagRevalidate("order");
-      await tagRevalidate("stock");
     }
     setLoading(false);
   };
@@ -285,8 +328,8 @@ export default function POSPForm({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row">
-      <div className="w-full lg:w-[70%] p-4">
+    <div className="flex flex-col gap-3 xl:flex-row h-[calc(100vh-86px)]">
+      <div className="w-full xl:w-[70%]">
         <div className="bg-gray-200 rounded p-4">
           <div className="flex items-center gap-5 max-w-xl">
             <h2 className="text-base font-bold whitespace-nowrap w-28 flex-shrink-0">
@@ -393,17 +436,17 @@ export default function POSPForm({
           </div>
         </div>
 
-        <div className="mt-4">
-          <div className="overflow-x-auto">
+        <div className="mt-3">
+          <div className="overflow-x-auto h-[calc(100vh-316px)] overflow-auto">
             <table className="min-w-full bg-white">
-              <thead className="bg-gray-300">
+              <thead className="">
                 <tr>
-                  <th className="py-2 px-4 border">Product</th>
-                  <th className="py-2 px-4 border">Quantity</th>
-                  <th className="py-2 px-4 border">Unit</th>
-                  <th className="py-2 px-4 border">Price</th>
-                  <th className="py-2 px-4 border">Total</th>
-                  <th className="py-2 px-4 border">Actions</th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Product</th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Quantity</th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Unit</th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Price</th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Total</th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -445,13 +488,13 @@ export default function POSPForm({
                         : product.fullUnit}
                     </td>
                     <td className="py-1 px-4 border text-center">
-                      $
+
                       {product.selectedUnit === "unit"
                         ? product.price
                         : product.fullPrice}
                     </td>
                     <td className="py-1 px-4 border text-center">
-                      $
+
                       {(product.selectedUnit === "unit"
                         ? product.price
                         : product.fullPrice) * product.quantity!}
@@ -472,7 +515,7 @@ export default function POSPForm({
         </div>
       </div>
 
-      <div className="w-full lg:w-[30%] p-4 flex flex-col justify-between bg-zinc-100">
+      <div className="w-full xl:w-[30%] p-4 rounded flex flex-col justify-between bg-gray-200">
         <div className="mb-4">
           <h2 className="text-lg font-bold bg-green-500 bg-opacity-20 text-green-700 py-1 px-4 rounded  text-center">
             <span className="me-5">Total: </span> {total} TK
@@ -544,20 +587,21 @@ export default function POSPForm({
                   </span>
                 </div>
 
-                <div className="border-b col-span-2"></div>
+                <div className="border-b col-span-2 border-b-gray-100"></div>
 
-                <div className="flex gap-5">
+                <p className="text-textPrimary">Payment Method :</p>
+                <div className="relative ml-auto w-2/3">
                   <Select
                     options={paymentMethodOptions}
                     name="paymentMethod"
-                    label="By: "
-                    className="text-base"
+                    className="text-base border-blue-300"
                     labelClassName="text-base whitespace-nowrap"
                     inline
                     defaultValue="cash"
                   />
-                  <p className="text-textPrimary">Received Amount :</p>
                 </div>
+
+                <p className="text-textPrimary">Received Amount :</p>
                 <div className="relative ml-auto w-2/3">
                   <Input
                     name="received"
@@ -565,7 +609,7 @@ export default function POSPForm({
                     step="0.001"
                     onChange={(e: any) => setReceived(e.target.value)}
                     onFocus={(e: any) => e.target.select()}
-                    className="pr-6 border-green-500"
+                    className="pr-6 border-green-500 py-2 text-base"
                     required
                   />
                   <span className="absolute top-1/2 right-2 -translate-y-1/2">
@@ -601,6 +645,14 @@ export default function POSPForm({
           onSelect={handleDuplicateProductSelect}
           onClose={() => setShowDuplicateModal(false)}
         />
+      )}
+
+      {isPrinting && (
+        <div style={{ display: "none" }}>
+          <div ref={printRef}>
+            <InvoiceLg order={invoiceData} />
+          </div>
+        </div>
       )}
     </div>
   );

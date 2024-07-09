@@ -12,7 +12,7 @@ import {
 } from "@headlessui/react";
 import { BellIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { getUser } from "@/lib/getUser";
 import { logoutUser } from "@/api-services/auth/logoutUser";
 import Avatar from "../Avatar";
@@ -20,8 +20,10 @@ import { RiFullscreenExitLine, RiFullscreenLine } from "react-icons/ri";
 
 export default function Header({
   handleSidebarCollapsed,
+  handleForceSidebarCollapsed
 }: {
   handleSidebarCollapsed?: any;
+  handleForceSidebarCollapsed?: any;
 }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [userNameFirstLetter, setUserNameFirstLetter] = useState("H");
@@ -69,6 +71,14 @@ export default function Header({
     }
   };
 
+  const handlePOS = () => {
+    handleForceSidebarCollapsed()
+    document.documentElement.requestFullscreen().then(() => {
+      setIsFullScreen(true);
+    });
+    router.push("/user/pos", { scroll: false });
+  }
+
   return (
     <Disclosure
       as="nav"
@@ -96,7 +106,7 @@ export default function Header({
                   </svg>
                 </button>
               </div>
-              <button className="border border-red-500 rounded py-1.5 px-4 font-bold inline-block text-red-600 mr-8 hover:bg-red-200 transition">
+              <button onClick={handlePOS} className="border border-red-500 rounded py-1.5 px-4 font-bold inline-block text-red-600 mr-8 hover:bg-red-200 transition">
                 POS
               </button>
               <div className="flex items-center space-x-3">

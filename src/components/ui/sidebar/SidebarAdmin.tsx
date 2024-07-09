@@ -12,7 +12,7 @@ import {
   NewspaperIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import logoFull from "../../../../public/logo.svg";
+import logo from "../../../../public/logo.svg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -57,7 +57,7 @@ export default function SidebarAdmin({
               href="/"
               className="text-2xl font-semibold pt-0.5 flex items-center gap-2"
             >
-              <Image src={logoFull} alt="Logo" className="flex-shrink-0" />
+              <Image src={logo} alt="Logo" width={50} className="flex-shrink-0" />
               <h2 className="truncate">
                 {process.env.NEXT_PUBLIC_APP_NAME || "Your app name"}
               </h2>
@@ -91,11 +91,10 @@ export default function SidebarAdmin({
             {navigations.map((nav: any, index: number) => (
               <div key={index}>
                 <p
-                  className={`${
-                    nav?.headingClassName
-                      ? nav?.headingClassName
-                      : "pl-4 pt-6 pb-2"
-                  } text-gray-400`}
+                  className={`${nav?.headingClassName
+                    ? nav?.headingClassName
+                    : "pl-4 pt-6 pb-2"
+                    } text-gray-400`}
                 >
                   {nav?.heading}
                 </p>

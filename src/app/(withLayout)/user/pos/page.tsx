@@ -2,7 +2,6 @@ import React from "react";
 import { getUserServer } from "@/lib/user";
 import { redirect } from "next/navigation";
 import { getAllStocks } from "@/api-services/stock/getAllStocks";
-import { getAllCustomers } from "@/api-services/customer/getAllCustomers";
 import POSForm from "./components/posForm";
 import { getAllTaxs } from "@/api-services/tax/getAllTaxs";
 

@@ -1,6 +1,12 @@
 pending task list
 
-### *** BACK button add to add create and update page
-### POS layout design (header with menu/header with small sidebar)
-### *** reset funtion update -> reset all the state
+### *** BACK button add to add create and update page               ---> //Partial
+### Invoice payment stataus add                                     ---> //Done
+### Invoice payment and refunds table add. Amount in word           ---> //Refund details remain
+### Small invoice design
+### POS page show last id
+### invoice print option by input invoice id
+### show order item
+### custom action for order item -> due collection, refund, 
+### backend refund functionality create for refund multiple product at a time
 
