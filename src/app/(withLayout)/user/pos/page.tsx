@@ -8,7 +8,7 @@ import { getAllTaxs } from "@/api-services/tax/getAllTaxs";
 export default async function CreateProduct() {
   const user = getUserServer();
 
-  const allowedRoles = new Set(["super_admin", "admin", "store_incharge"]);
+  const allowedRoles = new Set(["super_admin", "admin", "store_incharge", "salesman"]);
   if (!allowedRoles.has(user!?.role)) {
     redirect("/");
   }

@@ -9,7 +9,7 @@ import convertStringToNumber from "@/helpers/convertStringToNumber";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import { productUnitOptions } from "@/lib/selectOptions";
 import tagRevalidate from "@/lib/tagRevalidate";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import ReactSelect, { SelectInstance } from "react-select";
 import CreatableSelect from "react-select/creatable";
@@ -29,10 +29,11 @@ export default function ProductCreateForm({
   const [productCode, setProductCode] = useState<any>();
   const formRef = useRef<HTMLFormElement>(null);
   const unitSelectRef = useRef<SelectInstance | null>(null);
-  const fullUnitSelectRef = useRef<SelectInstance | null>(null);
   const brandSelectRef = useRef<SelectInstance | null>(null);
   const genericSelectRef = useRef<SelectInstance | null>(null);
   const shelveSelectRef = useRef<SelectInstance | null>(null);
+
+  const router = useRouter();
 
   const reactSelectStyles = {
     control: (baseStyles: any) => ({
@@ -58,12 +59,10 @@ export default function ProductCreateForm({
 
     // Convert  fields as number
     const price = (formData.get("price") ?? "") as string;
-    const fullPrice = (formData.get("fullPrice") ?? "") as string;
     const discountPercent = (formData.get("discountPercent") ?? "") as string;
     const discountAmount = (formData.get("discountAmount") ?? "") as string;
 
     const priceAsNumber: number = convertStringToNumber(price);
-    const fullPriceAsNumber: number = convertStringToNumber(fullPrice);
     const discountPercentAsNumber: number =
       convertStringToNumber(discountPercent);
     const discountAmountAsNumber: number =
@@ -77,9 +76,7 @@ export default function ProductCreateForm({
       brand: (formData.get("brand") ?? "") as string,
       shelve: (formData.get("shelve") ?? "") as string,
       unit: (formData.get("unit") ?? "") as string,
-      fullUnit: (formData.get("fullUnit") ?? "") as string,
       price: priceAsNumber,
-      fullPrice: fullPriceAsNumber,
       discountPercent: discountPercentAsNumber,
       discountAmount: discountAmountAsNumber,
       description: (formData.get("description") ?? "") as string,
@@ -109,9 +106,6 @@ export default function ProductCreateForm({
     }
     if (unitSelectRef.current) {
       unitSelectRef.current.clearValue();
-    }
-    if (fullUnitSelectRef.current) {
-      fullUnitSelectRef.current.clearValue();
     }
     if (genericSelectRef.current) {
       genericSelectRef.current.clearValue();
@@ -223,26 +217,6 @@ export default function ProductCreateForm({
             name="discountAmount"
             label="Discount Amount*"
             defaultValue={0}
-          />
-        </div>
-        <div className="grid lg:grid-cols-2 2xl:gap-4 gap-3">
-          <label>
-            <span className="font-semibold block pb-0.5">
-              Sell Full Unit{" "}
-              <span className="font-normal opacity-80">(Optional)</span>
-            </span>
-            <CreatableSelect
-              ref={fullUnitSelectRef}
-              name="fullUnit"
-              options={productUnitOptions}
-              isClearable={true}
-              styles={reactSelectStyles}
-            />
-          </label>
-          <Input
-            type="number"
-            name="fullPrice"
-            label="Full Unit price (Optional)"
           />
         </div>
         <Textarea label="Description" name="description" />

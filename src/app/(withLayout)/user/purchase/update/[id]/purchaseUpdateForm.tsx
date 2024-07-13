@@ -24,7 +24,6 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
       invoiceNo: (formData.get("invoiceNo") ?? "") as string,
       lotNo: (formData.get("lotNo") ?? "") as string,
       expiryDate: (formData.get("expiryDate") ?? "") as string,
-      unit: (formData.get("unit") ?? "") as string,
     };
 
     const nonEmptyPayload = removeEmptyFields(payload);
@@ -125,6 +124,7 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
                           label: data?.unit,
                           value: data?.unit,
                         }}
+                        isDisabled={true}
                       />
                     </div>
                   </label>

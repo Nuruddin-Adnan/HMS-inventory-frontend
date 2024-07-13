@@ -13,12 +13,17 @@ export default async function CreatePurchase() {
     redirect("/");
   }
 
-  const productPromise = getAllProducts("status=active&fields=name brand genericName code");
-  const supplierPromise = getAllSuppliers("status=active&fields=name brand contactNo");
+  const productPromise = getAllProducts(
+    "status=active&fields=name unit brand genericName code"
+  );
+  const supplierPromise = getAllSuppliers(
+    "status=active&fields=name brand contactNo"
+  );
 
-  const [products, suppliers] = await Promise.all([productPromise, supplierPromise])
-
-
+  const [products, suppliers] = await Promise.all([
+    productPromise,
+    supplierPromise,
+  ]);
 
   return (
     <div>
@@ -29,7 +34,10 @@ export default async function CreatePurchase() {
           </h2>
         </div>
         <div className="2xl:px-4 px-3 2xl:py-5 py-4">
-          <PurchaseCreateForm products={products?.data} suppliers={suppliers?.data} />
+          <PurchaseCreateForm
+            products={products?.data}
+            suppliers={suppliers?.data}
+          />
         </div>
       </div>
     </div>

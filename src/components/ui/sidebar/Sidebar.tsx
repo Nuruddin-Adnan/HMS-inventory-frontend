@@ -30,13 +30,18 @@ const navigations = [
     navItems: [
       { name: "Dashboard", href: "/user/dashboard", icon: SquaresPlusIcon },
       { name: "Product", href: "/user/product", icon: ShoppingBagIcon },
-      { name: "Stock", href: "/user/stock", icon: ChartBarIcon },
+      {
+        group: "Stock",
+        items: [
+          { name: "All Stocks", href: "/user/stock" },
+          { name: "Low Stocks", href: "/user/stock/low-stock" },
+        ],
+        icon: TagIcon,
+      },
       { name: "Customer", href: "/user/customer", icon: UserIcon },
       {
         group: "Sales",
-        items: [
-          { name: "Sales History", href: "/user/order" },
-        ],
+        items: [{ name: "Sales History", href: "/user/order" }],
         icon: ShoppingCartIcon,
       },
       {
@@ -87,8 +92,10 @@ function classNames(...classes: any) {
 }
 export default function Sidebar({
   handleSidebarCollapsed,
+  handleForceSidebarCollapsed,
 }: {
   handleSidebarCollapsed?: any;
+  handleForceSidebarCollapsed?: any;
 }) {
   const pathname = usePathname();
 
@@ -96,12 +103,17 @@ export default function Sidebar({
     <aside>
       <nav className="h-screen bg-gray-800 text-gray-100  overflow-auto flex flex-col justify-between  scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
         <div>
-          <div className="p-3 top-0 sticky  z-[999] border-b border-gray-600 bg-gray-800">
+          <div className="p-3 top-0 sticky z-[999] border-b border-gray-600 bg-gray-800">
             <Link
               href="/"
-              className="text-2xl font-semibold pt-0.5 flex items-center gap-2"
+              className="text-xl font-semibold pt-0.5 flex items-center gap-2"
             >
-              <Image src={logo} alt="Logo" height={50} className="flex-shrink-0" />
+              <Image
+                src={logo}
+                alt="Logo"
+                height={45}
+                className="flex-shrink-0"
+              />
               <h2 className="truncate">
                 {process.env.NEXT_PUBLIC_APP_NAME || "Your app name"}
               </h2>
@@ -135,10 +147,11 @@ export default function Sidebar({
             {navigations.map((nav: any, index: number) => (
               <div key={index}>
                 <p
-                  className={`${nav?.headingClassName
-                    ? nav?.headingClassName
-                    : "pl-4 pt-6 pb-2"
-                    } text-gray-400`}
+                  className={`${
+                    nav?.headingClassName
+                      ? nav?.headingClassName
+                      : "pl-4 pt-6 pb-2"
+                  } text-gray-400`}
                 >
                   {nav?.heading}
                 </p>
@@ -153,6 +166,7 @@ export default function Sidebar({
                             ? "flex items-center py-2 px-4  bg-gray-700 text-white"
                             : "flex items-center py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
                         }
+                        onClick={handleForceSidebarCollapsed}
                       >
                         <item.icon className="h-6 w-6 mr-2" />
                         {item.name}
@@ -198,6 +212,7 @@ export default function Sidebar({
                                       ? "block pl-4 py-0.5 text-sm leading-7  bg-gray-700 text-white border-l border-l-gray-600"
                                       : "block pl-4 py-0.5 text-sm leading-7 transition duration-200 hover:bg-gray-700 text-gray-400 hover:text-white border-l border-l-gray-600"
                                   }
+                                  onClick={handleForceSidebarCollapsed}
                                 >
                                   {item.name}
                                 </Link>

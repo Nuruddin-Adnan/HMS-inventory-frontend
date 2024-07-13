@@ -1,9 +1,9 @@
 import PaginationControls from "@/components/ui/PaginationControls";
 import SearchControl from "@/components/ui/SearchControl";
-import StockTable from "./stockTable";
+import StockTable from "./lowStockTable";
 import { getAllStocks } from "@/api-services/stock/getAllStocks";
 
-export default async function Stock({
+export default async function LowStock({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };

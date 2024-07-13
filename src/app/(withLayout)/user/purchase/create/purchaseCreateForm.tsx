@@ -30,11 +30,11 @@ export default function PurchaseCreateForm({
     label: "",
     value: "",
   });
+  const [unit, setUnit] = useState<string>();
   const [searchProduct, setSearchProduct] = useState<any>([]);
   const formRef = useRef<HTMLFormElement>(null);
   const productSelectRef = useRef<SelectInstance | null>(null);
   const supplierSelectRef = useRef<SelectInstance | null>(null);
-  const unitSelectRef = useRef<SelectInstance | null>(null);
 
   const [quantity, setQuantity] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
@@ -77,6 +77,7 @@ export default function PurchaseCreateForm({
           label: `${result?.data[0]?.name}, ${result?.data[0]?.genericName} ⟶${result?.data[0]?.brand}`,
           value: result?.data[0]?._id,
         });
+        setProductUnit(result?.data[0]?._id);
       } else if (result?.data.length > 1) {
         setSearchProduct(result?.data); // Set the product search by code result
         openModal(); // open modal to select one of the product
@@ -84,6 +85,14 @@ export default function PurchaseCreateForm({
         toastError("No product found!");
       }
     }
+  };
+
+  const setProductUnit = (productId: any) => {
+    const filteredProduct = products.filter(
+      (product: any) => product?._id === productId
+    );
+    setUnit(filteredProduct[0]?.unit);
+    return filteredProduct[0]?.unit;
   };
 
   const handleSubmit = async (formData: FormData) => {
@@ -104,7 +113,7 @@ export default function PurchaseCreateForm({
       invoiceNo: (formData.get("invoiceNo") ?? "") as string,
       lotNo: (formData.get("lotNo") ?? "") as string,
       expiryDate: (formData.get("expiryDate") ?? "") as string,
-      unit: (formData.get("unit") ?? "") as string,
+      unit: unit,
       paymentMethod: (formData.get("paymentMethod") ?? "") as string,
       quantity: quantityAsNumber,
       price: priceAsNumber,
@@ -140,9 +149,6 @@ export default function PurchaseCreateForm({
     }
     if (supplierSelectRef.current) {
       supplierSelectRef.current.clearValue();
-    }
-    if (unitSelectRef.current) {
-      unitSelectRef.current.clearValue();
     }
   };
 
@@ -203,7 +209,10 @@ export default function PurchaseCreateForm({
                   options={productOptions}
                   styles={reactSelectStyles}
                   value={product}
-                  onChange={(value: any) => setProduct(value)}
+                  onChange={(value: any) => {
+                    setProduct(value);
+                    setProductUnit(value?.value);
+                  }}
                 />
               </label>
               <div className="grid grid-cols-2 2xl:gap-4 gap-3">
@@ -226,20 +235,9 @@ export default function PurchaseCreateForm({
             <div className="lg:w-2/5 2xl:gap-4 gap-3 lg:border-s lg:ps-4">
               <div className="grid lg:gap-52 gap-16">
                 <div className="grid  gap-3">
-                  <label className="lg:flex items-center gap-4">
-                    <span className="font-semibold block lg:w-1/3">
-                      Purchase Unit:
-                    </span>
-                    <div className="lg:w-2/3">
-                      <CreatableSelect
-                        ref={unitSelectRef}
-                        name="unit"
-                        options={productUnitOptions}
-                        isClearable={true}
-                        styles={reactSelectStyles}
-                      />
-                    </div>
-                  </label>
+                  <p className="flex gap-5 font-bold border py-1 px-2 bg-blue-500 bg-opacity-20 text-blue-700 rounded">
+                    Unit: <span>{unit}</span>
+                  </p>
                   <Input
                     type="number"
                     name="quantity"
@@ -249,6 +247,7 @@ export default function PurchaseCreateForm({
                     labelClassName="lg:w-1/3"
                     value={quantity}
                     onChange={(e: any) => setQuantity(e?.target?.value)}
+                    onFocus={(e: any) => e.target.select()}
                   />
                   <Input
                     type="number"
@@ -259,6 +258,7 @@ export default function PurchaseCreateForm({
                     labelClassName="lg:w-1/3"
                     value={price}
                     onChange={(e: any) => setPrice(e?.target?.value)}
+                    onFocus={(e: any) => e.target.select()}
                   />
                 </div>
                 <div className="lg:sticky bottom-5">
@@ -291,6 +291,7 @@ export default function PurchaseCreateForm({
                             type="number"
                             step="0.001"
                             onChange={(e: any) => setAdvance(e.target.value)}
+                            onFocus={(e: any) => e.target.select()}
                             className="pr-6 border-blue-300"
                             required
                           />
@@ -356,6 +357,7 @@ export default function PurchaseCreateForm({
                       label: `${product?.name} ⟶${product?.brand}`,
                       value: product?._id,
                     });
+                    setProductUnit(product?._id);
                     closeModal();
                   }}
                 >

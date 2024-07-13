@@ -28,7 +28,7 @@ export default function UserLayout({
         className={`sidebar ${sidebarCollapsed && "collapsed"}`}
         id="sidebar"
       >
-        <Sidebar handleSidebarCollapsed={handleSidebarCollapsed} />
+        <Sidebar handleSidebarCollapsed={handleSidebarCollapsed} handleForceSidebarCollapsed={handleForceSidebarCollapsed} />
       </div>
       <div className={`content-wrapper ${contentCollapsed && "collapsed"}`}>
         <Header handleSidebarCollapsed={handleSidebarCollapsed} handleForceSidebarCollapsed={handleForceSidebarCollapsed} />

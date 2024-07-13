@@ -1,12 +1,12 @@
 pending task list
 
 ### *** BACK button add to add create and update page               ---> //Partial
-### Invoice payment stataus add                                     ---> //Done
 ### Invoice payment and refunds table add. Amount in word           ---> //Refund details remain
-### Small invoice design
-### POS page show last id
-### invoice print option by input invoice id
-### show order item
-### custom action for order item -> due collection, refund, 
-### backend refund functionality create for refund multiple product at a time
+
+### stock low quantity show in frontned. currently it it the same copy of stock.
+### Need to create new functionality and route in backend for low stock
+
+*** discout change for each product function create . 
+
+
 

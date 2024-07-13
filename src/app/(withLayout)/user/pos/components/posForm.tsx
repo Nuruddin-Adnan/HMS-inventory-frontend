@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import ReactSelect from "react-select";
 import { DuplicateProductModal } from "./duplicateProductModal";
 import toastError from "@/helpers/toastError";
-import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { MinusIcon, PlusIcon, PrinterIcon } from "@heroicons/react/24/outline";
 import Input from "@/components/ui/form/Input";
 import Button from "@/components/ui/button/Button";
 import { getAllCustomersClient } from "@/api-services/customer/getAllCustomersClient";
@@ -16,7 +16,9 @@ import tagRevalidate from "@/lib/tagRevalidate";
 import { createOrder } from "@/api-services/order/createOrder";
 import calculatePercentageToAmount from "@/helpers/calculatePercentageToAmount";
 import { useReactToPrint } from "react-to-print";
-import InvoiceLg from "@/components/InvoiceLg";
+import { getSingleOrderClient } from "@/api-services/order/getSingleOrderClient";
+import Invoice from "@/components/Invoice";
+import { toFixedIfNecessary } from "@/helpers/toFixedIfNecessary";
 
 type Product = {
   _id: string;
@@ -26,11 +28,9 @@ type Product = {
   genericName: string;
   brand: string;
   price: number;
-  fullPrice: number;
   unit: string;
-  fullUnit?: string;
   quantity?: number;
-  selectedUnit?: string;
+  discountPercent?: number;
 };
 
 const pageStyle = `
@@ -51,14 +51,10 @@ export default function POSPForm({
   const formRef = useRef<HTMLFormElement>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [selectedUnit, setSelectedUnit] = useState<string>("unit");
+  const [invoiceNo, setInvoiceNo] = useState<any>(null);
   const [received, setReceived] = useState<number>(0);
   const [discountTotal, setDiscountTotal] = useState<number>(0);
   const [vatAmount, setVatAmount] = useState<number>(tax?.tax || 0);
-  const [availableUnits, setAvailableUnits] = useState<{
-    unit: string;
-    fullUnit?: string;
-  } | null>(null);
   const [productCode, setProductCode] = useState<string>("");
   const [duplicateProducts, setDuplicateProducts] = useState<Product[]>([]);
   const [showDuplicateModal, setShowDuplicateModal] = useState<boolean>(false);
@@ -68,7 +64,7 @@ export default function POSPForm({
   const [isPrinting, setIsPrinting] = useState(false);
   const printRef = useRef(null);
   const promiseResolveRef = useRef<((value: any) => void) | null>(null);
-  const [invoiceData, setInvoiceData] = useState();
+  const [invoiceData, setInvoiceData] = useState<any>();
 
   const productOptions = productsList.map((product: any) => ({
     value: product?._id,
@@ -77,33 +73,43 @@ export default function POSPForm({
   }));
 
   // sum product to get subtotal
-  const subtotal = products.reduce(
-    (acc, product) =>
-      acc +
-      (product.selectedUnit === "unit" ? product.price : product.fullPrice) *
-      product.quantity!,
-    0
-  );
+  const subtotal = products.reduce((acc, product) => {
+    // Set discountPercent to 0 if null
+    const discountPercent = product.discountPercent ?? 0;
+
+    // Calculate subtotal
+    const subtotal = product.price * product.quantity!;
+
+    // Calculate total after discount
+    const discount = subtotal * (discountPercent / 100);
+    const total = subtotal - discount;
+
+    return acc + total * product.quantity!;
+  }, 0);
 
   // cancule total
   const total =
     subtotal + calculatePercentageToAmount(vatAmount, subtotal) - discountTotal;
 
   const addProduct = useCallback(
-    (product: Product, unit: string) => {
+    (product: Product) => {
       const existingProductIndex = products.findIndex(
-        (p) => p?._id === product?._id && p?.selectedUnit === unit
+        (p) => p?._id === product?._id
       );
       if (existingProductIndex > -1) {
         const updatedProducts = [...products];
+
         updatedProducts[existingProductIndex].quantity! += 1;
         setProducts(updatedProducts);
         setProductCode("");
       } else {
-        const price = unit === "unit" ? product.price : product.fullPrice;
+        const price = product.price;
+        const unit = product.unit;
+        const discountPercent = product?.discountPercent ?? 0;
+
         setProducts([
           ...products,
-          { ...product, quantity: 1, selectedUnit: unit, price },
+          { ...product, quantity: 1, unit, price, discountPercent },
         ]);
         setProductCode("");
       }
@@ -142,15 +148,11 @@ export default function POSPForm({
       const product = productsList.find(
         (p: any) => p?._id === selectedProduct?.value
       );
-      if (product && product?.fullUnit) {
-        setAvailableUnits({ unit: product?.unit, fullUnit: product?.fullUnit });
-        setSelectedUnit("unit");
-      } else if (product) {
-        addProduct(product, "unit");
+
+      if (product) {
+        addProduct(product);
         setSelectedProduct(null);
       }
-    } else {
-      setAvailableUnits(null);
     }
   }, [selectedProduct, addProduct, productsList]);
 
@@ -160,10 +162,8 @@ export default function POSPForm({
       (p: any) => p?._id === selectedProduct?.value
     );
     if (product) {
-      addProduct(product, selectedUnit);
+      addProduct(product);
       setSelectedProduct(null);
-      setSelectedUnit("unit");
-      setAvailableUnits(null);
     }
   };
 
@@ -179,12 +179,9 @@ export default function POSPForm({
         setShowDuplicateModal(true);
       } else if (foundProducts.length === 1) {
         const product = foundProducts[0];
-        if (product && product.fullUnit) {
-          setAvailableUnits({ unit: product.unit, fullUnit: product.fullUnit });
-          setSelectedProduct({ value: product._id, label: product.name });
-          setProductCode("");
-        } else if (product) {
-          addProduct(product, "unit");
+
+        if (product) {
+          addProduct(product);
           setProductCode("");
         }
       } else {
@@ -241,16 +238,24 @@ export default function POSPForm({
     setDiscountTotal(amount);
   };
 
+  const handleChangeDiscountPercentItem = (index: number, discountPercent: number) => {
+    const updatedProducts = [...products];
+    if (discountPercent >= 0 && discountPercent < 101) {
+      updatedProducts[index].discountPercent = Number(discountPercent);
+      setProducts(updatedProducts);
+    }
+  }
+
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
 
     const orderItems = products.map((item) => {
-      const isFullUnit = item.selectedUnit === "fullUnit";
       return {
         product: item._id,
-        unit: isFullUnit ? item.fullUnit : item.unit,
-        price: isFullUnit ? item.fullPrice : item.price,
+        unit: item.unit,
+        price: item.price,
         quantity: item.quantity,
+        discountPercent: item.discountPercent,
       };
     });
 
@@ -297,15 +302,29 @@ export default function POSPForm({
     setLoading(false);
   };
 
+  const handlePrintInvoice = async (invoiceNo: any) => {
+    if (invoiceNo.length >= 8) {
+      const result = await getSingleOrderClient(invoiceNo);
+      if (result && result.success === true) {
+        if (!result?.data) {
+          toastError("No order found!");
+        } else {
+          setInvoiceData(result?.data);
+          handlePrint();
+        }
+      }
+    }
+  };
+
   // reset form need to modified and use it final in from submit
   const handleReset = () => {
     setProductCode("");
     setProducts([]);
     setCustomer(null);
     setSelectedProduct(null);
-    setSelectedUnit("");
     setReceived(0);
     setDiscountTotal(0);
+    setInvoiceNo("");
 
     if (productCodeInputRef.current) {
       productCodeInputRef.current.select();
@@ -317,11 +336,8 @@ export default function POSPForm({
 
   // handle duplicate product selection
   const handleDuplicateProductSelect = (product: Product) => {
-    if (product.fullUnit) {
-      setAvailableUnits({ unit: product.unit, fullUnit: product.fullUnit });
-      setSelectedProduct({ value: product._id, label: product.name });
-    } else {
-      addProduct(product, "unit");
+    if (product) {
+      addProduct(product);
     }
     setProductCode("");
     setShowDuplicateModal(false);
@@ -331,22 +347,42 @@ export default function POSPForm({
     <div className="flex flex-col gap-3 xl:flex-row h-[calc(100vh-86px)]">
       <div className="w-full xl:w-[70%]">
         <div className="bg-gray-200 rounded p-4">
-          <div className="flex items-center gap-5 max-w-xl">
-            <h2 className="text-base font-bold whitespace-nowrap w-28 flex-shrink-0">
-              Product Code
-            </h2>
-            <span className="font-bold">:</span>
-            <input
-              ref={productCodeInputRef}
-              type="text"
-              value={productCode}
-              onChange={(e) => setProductCode(e.target.value)}
-              onKeyDown={handleProductCodeKeyDown}
-              onFocus={(e: any) => e.target.select()}
-              className="border border-gray-300 p-2 w-full rounded"
-              placeholder="Enter product code"
-              autoFocus
-            />
+          <div className="grid grid-cols-3 gap-4">
+            <div className="flex items-center gap-5 col-span-2">
+              <h2 className="text-base font-bold whitespace-nowrap w-28 flex-shrink-0">
+                Product Code
+              </h2>
+              <span className="font-bold">:</span>
+              <input
+                ref={productCodeInputRef}
+                type="text"
+                value={productCode}
+                onChange={(e) => setProductCode(e.target.value)}
+                onKeyDown={handleProductCodeKeyDown}
+                onFocus={(e: any) => e.target.select()}
+                className="border border-gray-300 p-2 w-full rounded"
+                placeholder="Enter product code"
+                autoFocus
+              />
+            </div>
+            <div className="flex h-full w-full relative rounded overflow-hidden">
+              <Input
+                value={invoiceNo}
+                onChange={(e: any) => {
+                  setInvoiceNo(e.target.value);
+                  handlePrintInvoice(e.target.value);
+                }}
+                inlineClassName="w-full"
+                labelClassName="text-base"
+                placeholder="Enter invoice no..."
+                className="h-full border border-gray-300 pr-16"
+                required
+                onFocus={(e: any) => e.target.select()}
+              />
+              <div className="absolute right-0 bg-primary rounded-r  text-white px-3 border grid place-items-center h-full top-1/2 -translate-y-1/2 z-10">
+                <PrinterIcon className="w-5 h-5" />
+              </div>
+            </div>
           </div>
           <div className="flex items-center gap-5 mt-3">
             <h2 className="text-base font-bold whitespace-nowrap w-28 flex-shrink-0">
@@ -362,24 +398,6 @@ export default function POSPForm({
                   className="w-full"
                   placeholder="Select a product"
                 />
-                {availableUnits && availableUnits.fullUnit && (
-                  <select
-                    value={selectedUnit}
-                    onChange={(e) => setSelectedUnit(e.target.value)}
-                    className="border p-2 rounded w-full max-w-28 flex-shrink-0"
-                  >
-                    <option value="unit">{availableUnits.unit}</option>
-                    <option value="fullUnit">{availableUnits.fullUnit}</option>
-                  </select>
-                )}
-                {availableUnits && (
-                  <button
-                    type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 rounded text-nowrap"
-                  >
-                    Add Product
-                  </button>
-                )}
               </div>
             </form>
           </div>
@@ -441,12 +459,30 @@ export default function POSPForm({
             <table className="min-w-full bg-white">
               <thead className="">
                 <tr>
-                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Product</th>
-                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Quantity</th>
-                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Unit</th>
-                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Price</th>
-                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Total</th>
-                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">Actions</th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                    Product
+                  </th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                    Quantity
+                  </th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                    Unit
+                  </th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                    Price
+                  </th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                    Subtotal
+                  </th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300 text-nowrap">
+                    Discount %
+                  </th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                    Total
+                  </th>
+                  <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -483,21 +519,29 @@ export default function POSPForm({
                       </div>
                     </td>
                     <td className="py-1 px-4 border text-center">
-                      {product.selectedUnit === "unit"
-                        ? product.unit
-                        : product.fullUnit}
+                      {product?.unit}
                     </td>
                     <td className="py-1 px-4 border text-center">
-
-                      {product.selectedUnit === "unit"
-                        ? product.price
-                        : product.fullPrice}
+                      {product?.price}
                     </td>
                     <td className="py-1 px-4 border text-center">
-
-                      {(product.selectedUnit === "unit"
-                        ? product.price
-                        : product.fullPrice) * product.quantity!}
+                      {product?.price * product?.quantity!}
+                    </td>
+                    <td className="py-1 px-4 border text-center">
+                      <Input
+                        type="number"
+                        value={product?.discountPercent}
+                        className="w-16 border-gray-300"
+                        inlineClassName="flex justify-center"
+                        onChange={(e: any) => handleChangeDiscountPercentItem(index, e.target.value)}
+                        onFocus={(e: any) => e.target.select()}
+                      />
+                    </td>
+                    <td className="py-1 px-4 border text-center">
+                      {product.price * product.quantity! -
+                        product?.price *
+                        product?.quantity! *
+                        (product?.discountPercent! / 100)}
                     </td>
                     <td className="py-1 px-4 border text-center">
                       <button
@@ -518,11 +562,15 @@ export default function POSPForm({
       <div className="w-full xl:w-[30%] p-4 rounded flex flex-col justify-between bg-gray-200">
         <div className="mb-4">
           <h2 className="text-lg font-bold bg-green-500 bg-opacity-20 text-green-700 py-1 px-4 rounded  text-center">
-            <span className="me-5">Total: </span> {total} TK
+            <span className="me-5">Total: </span> {toFixedIfNecessary(total, 2)}{" "}
+            TK
           </h2>
           <h2 className="text-lg font-bold bg-red-500 bg-opacity-20 text-red-700 py-1 px-4 rounded mt-2 mb-5 text-center">
             <span className="me-5">Change: </span>{" "}
-            {total - received < 0 ? Math.abs(total - received) : 0} TK
+            {total - received < 0
+              ? toFixedIfNecessary(Math.abs(total - received), 2)
+              : 0}{" "}
+            TK
           </h2>
         </div>
 
@@ -535,7 +583,9 @@ export default function POSPForm({
             <div className="grid 2xl:gap-4 gap-3 w-full">
               <div className="grid  space-y-1 text-right items-center">
                 <p className="text-textPrimary font-bold ">Subtotal : </p>
-                <p className="text-textPrimary font-bold">{subtotal} TK</p>
+                <p className="text-textPrimary font-bold">
+                  {toFixedIfNecessary(subtotal, 2)} TK
+                </p>
 
                 <p className="text-textPrimary">Discount % :</p>
                 <div className="relative ml-auto w-2/3">
@@ -619,7 +669,10 @@ export default function POSPForm({
 
                 <p className="text-textPrimary font-bold">Due Amount :</p>
                 <p className="text-textPrimary font-bold">
-                  {total - received > 0 ? total - received : 0} TK
+                  {total - received > 0
+                    ? toFixedIfNecessary(total - received, 2)
+                    : 0}{" "}
+                  TK
                 </p>
               </div>
             </div>
@@ -650,7 +703,7 @@ export default function POSPForm({
       {isPrinting && (
         <div style={{ display: "none" }}>
           <div ref={printRef}>
-            <InvoiceLg order={invoiceData} />
+            <Invoice order={invoiceData} />
           </div>
         </div>
       )}

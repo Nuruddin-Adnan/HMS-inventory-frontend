@@ -9,12 +9,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { reactSelectStyles } from "@/styles/reactSelectStyles";
 import Checkbox from "./ui/form/Checkbox";
 
-export default function FilterPurchase({ suppliers }: { suppliers: any }) {
-  const supplierSelectRef = useRef<SelectInstance | null>(null);
+export default function FilterOrder() {
   const paymentStatusSelectRef = useRef<SelectInstance | null>(null);
-  const isDueSelectRef = useRef<SelectInstance | null>(null);
-
-  const [supplier, setSupplier] = useState<any>(null);
   const [paymentStatus, setPaymentStatus] = useState<any>(null);
   const [isDue, setIsDue] = useState<any>(false);
 
@@ -38,36 +34,28 @@ export default function FilterPurchase({ suppliers }: { suppliers: any }) {
   };
 
   useEffect(() => {
-    if (supplier !== null || paymentStatus !== null || isDue !== false) {
+    if (paymentStatus !== null || isDue !== false) {
       setAppliFilter(true);
     } else {
       setAppliFilter(false);
     }
-  }, [isDue, paymentStatus, supplier]);
+  }, [isDue, paymentStatus]);
 
   const handleClearFilter = () => {
     const params = new URLSearchParams(searchParams);
-    params.delete("supplier");
     params.delete("paymentStatus");
     params.delete("isDue");
     replace(`${pathname}?${params.toString()}`);
 
-    setSupplier(null);
     setPaymentStatus(null);
     setIsDue(false);
     setAppliFilter(false);
   };
 
-  const supplierOptions = suppliers.map((item: any) => {
-    return {
-      label: `${item?.name} ⟶${item?.contactNo} ⟶${item?.brand[0]?.name}`,
-      value: item?._id,
-    };
-  });
-
   // statu options for react select
   const paymentStatusOptions = [
     { label: "Paid", value: "paid" },
+    { label: "Discount Paid", value: "discount-paid" },
     { label: "Unpaid", value: "unpaid" },
     { label: "Partial paid", value: "partial-paid" },
     { label: "Partial refund", value: "partial-refund" },
@@ -100,21 +88,6 @@ export default function FilterPurchase({ suppliers }: { suppliers: any }) {
           className="absolute right-0 bg-white z-[9999] mt-2 sm:w-96 w-80 origin-top-right rounded-md py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         >
           <div className="grid gap-4 p-4">
-            <label>
-              <span className="font-semibold block pb-0.5">Supplier</span>
-              <ReactSelect
-                ref={supplierSelectRef}
-                name="supplier"
-                options={supplierOptions}
-                isClearable={true}
-                styles={reactSelectStyles}
-                value={supplier}
-                onChange={(value: any) => {
-                  setSupplier(value);
-                  handleFilter("supplier", value?.value);
-                }}
-              />
-            </label>
             <label>
               <span className="font-semibold block pb-0.5">Payment Status</span>
               <ReactSelect

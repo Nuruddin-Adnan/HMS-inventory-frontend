@@ -28,7 +28,6 @@ export default function InvoiceLg({ order }: { order: any }) {
       <div className="flex flex-col px-10 sm:px-20 pt-16 pb-10 bg-white  dark:bg-neutral-800">
         <div className="flex justify-between">
           <div>
-
             <Image src={logo} alt="logo" className="max-w-[70px]" />
             <h1 className="mt-2 text-lg md:text-xl font-semibold text-blue-600 dark:text-white">
               {process.env.NEXT_PUBLIC_APP_NAME}
@@ -79,16 +78,16 @@ export default function InvoiceLg({ order }: { order: any }) {
 
           <div className="sm:text-end space-y-2">
             <div className="grid grid-cols-2 sm:grid-cols-1">
-              <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 font-semibold text-gray-800 dark:text-neutral-200">
+              <dl className="grid sm:grid-cols-4 gap-x-3">
+                <dt className="col-span-2 font-semibold text-gray-800 dark:text-neutral-200">
                   Invoice date:
                 </dt>
-                <dd className="col-span-2 text-gray-500 dark:text-neutral-500">
+                <dd className="col-span-2 text-gray-500 dark:text-neutral-500 whitespace-nowrap">
                   {format(new Date(createdAt), "dd/MMM/yyyy p")}
                 </dd>
               </dl>
-              <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 font-semibold text-gray-800 dark:text-neutral-200">
+              <dl className="grid sm:grid-cols-4 gap-x-3">
+                <dt className="col-span-2 font-semibold text-gray-800 dark:text-neutral-200">
                   Created By:
                 </dt>
                 <dd className="col-span-2 text-gray-500 dark:text-neutral-500">
@@ -163,7 +162,9 @@ export default function InvoiceLg({ order }: { order: any }) {
 
         <div className="mt-4 flex sm:justify-between items-center">
           <div className="text-center w-full">
-            <h2 className="font-bold text-3xl border-8 border-double capitalize inline-block py-2 px-4 text-gray-500">{paymentStatus.replace('-', ' ')}</h2>
+            <h2 className="font-bold text-3xl border-8 border-double capitalize inline-block py-2 px-4 text-gray-500">
+              {paymentStatus.replace("-", " ")}
+            </h2>
           </div>
           <div className="w-full max-w-2xl sm:text-end space-y-2">
             <div className="grid grid-cols-2 sm:grid-cols-1 gap-1 font-medium">
@@ -172,15 +173,15 @@ export default function InvoiceLg({ order }: { order: any }) {
                   Subtotal:
                 </dt>
                 <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {subtotal.toFixed(2)}
+                  ৳ {subtotal?.toFixed(2)}
                 </dd>
               </dl>
               <dl className="grid sm:grid-cols-5 gap-x-3">
                 <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
-                  Tax:
+                  Vat:
                 </dt>
                 <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {vatAmount.toFixed(2)}
+                  ৳ {vatAmount?.toFixed(2)}
                 </dd>
               </dl>
               <dl className="grid sm:grid-cols-5 gap-x-3">
@@ -188,7 +189,7 @@ export default function InvoiceLg({ order }: { order: any }) {
                   Discount:
                 </dt>
                 <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {discountAmount.toFixed(2)}
+                  ৳ {discountAmount?.toFixed(2)}
                 </dd>
               </dl>
 
@@ -197,7 +198,7 @@ export default function InvoiceLg({ order }: { order: any }) {
                   Total:
                 </dt>
                 <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {total.toFixed(2)}
+                  ৳ {total?.toFixed(2)}
                 </dd>
               </dl>
 
@@ -206,7 +207,7 @@ export default function InvoiceLg({ order }: { order: any }) {
                   Amount paid:
                 </dt>
                 <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {received.toFixed(2)}
+                  ৳ {received?.toFixed(2)}
                 </dd>
               </dl>
 
@@ -215,7 +216,7 @@ export default function InvoiceLg({ order }: { order: any }) {
                   Due balance:
                 </dt>
                 <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {due.toFixed(2)}
+                  ৳ {due?.toFixed(2)}
                 </dd>
               </dl>
             </div>
@@ -223,8 +224,11 @@ export default function InvoiceLg({ order }: { order: any }) {
         </div>
 
         <div className="mt-4">
-          <h3 className="capitalize font-bold">Total Received <span className="ps-5">:</span> <u>Taka {numWords(parseInt(received))} Only</u></h3>
-          <table className="table-auto text-sm whitespace-nowrap">
+          <h3 className="capitalize font-bold">
+            Total Received <span className="ps-5">:</span>{" "}
+            <u>Taka {numWords(parseInt(received))} Only</u>
+          </h3>
+          <table className="table-auto text-sm print:text-xs whitespace-nowrap">
             <tbody>
               {payments &&
                 payments.map((payment: any, index: number) => (
@@ -242,11 +246,9 @@ export default function InvoiceLg({ order }: { order: any }) {
                       Discount: {payment?.discountAmount}
                     </td>
                     <td className="px-2">
-                      Amount: {payment?.amount.toFixed(2)}
+                      Amount: {payment?.amount?.toFixed(2)}
                     </td>
-                    <td>
-                      {payment?.paymentMethod}
-                    </td>
+                    <td>{payment?.paymentMethod}</td>
                   </tr>
                 ))}
             </tbody>

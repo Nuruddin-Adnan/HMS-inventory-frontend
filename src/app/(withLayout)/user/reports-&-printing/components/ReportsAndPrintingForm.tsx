@@ -44,7 +44,7 @@ const listStyle: any = {
 };
 
 const listItems = [
-    { title: 'Sales report', value: '/user/reports-&-printing/sales-report' },
+    { title: 'Sales report', value: '/user/reports-&-printing/sale' },
     { title: 'Purchase report', value: '/user/reports-&-printing/purchase-report' },
     { title: 'Payment wise sales', value: '/user/reports-&-printing/payment-wise-sales' },
     { title: 'Refund wise sales', value: '/user/reports-&-printing/refund-wise-sales' },
@@ -53,9 +53,6 @@ const listItems = [
     { title: 'Income Statement', value: '/user/reports-&-printing/income-statement' },
     { title: 'Expense', value: '/user/reports-&-printing/expense' },
 ];
-
-
-
 
 export default function ReportsAndPrintingForm() {
     const [selectedValue, setSelectedValue] = useState(null);

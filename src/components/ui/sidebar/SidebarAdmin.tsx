@@ -55,9 +55,9 @@ export default function SidebarAdmin({
           <div className="p-3 top-0 sticky  z-[999] border-b border-gray-600 bg-gray-800">
             <Link
               href="/"
-              className="text-2xl font-semibold pt-0.5 flex items-center gap-2"
+              className="text-xl font-semibold pt-0.5 flex items-center gap-2"
             >
-              <Image src={logo} alt="Logo" width={50} className="flex-shrink-0" />
+              <Image src={logo} alt="Logo" width={45} className="flex-shrink-0" />
               <h2 className="truncate">
                 {process.env.NEXT_PUBLIC_APP_NAME || "Your app name"}
               </h2>
