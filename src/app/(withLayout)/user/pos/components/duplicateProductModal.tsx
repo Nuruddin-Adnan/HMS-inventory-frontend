@@ -10,6 +10,9 @@ type Product = {
   price: number;
   unit: string;
   quantity?: number;
+  subtotal: number;
+  discountPercent?: number;
+  total?: number;
 };
 
 export const DuplicateProductModal = ({

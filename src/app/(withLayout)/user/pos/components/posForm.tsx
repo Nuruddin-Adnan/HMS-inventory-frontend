@@ -30,7 +30,9 @@ type Product = {
   price: number;
   unit: string;
   quantity?: number;
+  subtotal: number;
   discountPercent?: number;
+  total?: number;
 };
 
 const pageStyle = `
@@ -53,8 +55,9 @@ export default function POSPForm({
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [invoiceNo, setInvoiceNo] = useState<any>(null);
   const [received, setReceived] = useState<number>(0);
+  const [discountPercent, setDiscountPercent] = useState<number>(0);
   const [discountTotal, setDiscountTotal] = useState<number>(0);
-  const [vatAmount, setVatAmount] = useState<number>(tax?.tax || 0);
+  const [vatPercent, setVatPercent] = useState<number>(tax?.tax || 0);
   const [productCode, setProductCode] = useState<string>("");
   const [duplicateProducts, setDuplicateProducts] = useState<Product[]>([]);
   const [showDuplicateModal, setShowDuplicateModal] = useState<boolean>(false);
@@ -68,28 +71,25 @@ export default function POSPForm({
 
   const productOptions = productsList.map((product: any) => ({
     value: product?._id,
-    label: `${product?.name} ${product?.genericName ? `⟶${product?.genericName}` : ""
-      } ⟶${product?.brand}`,
+    label: `${product?.name} ${
+      product?.genericName ? `⟶${product?.genericName}` : ""
+    } ⟶${product?.brand}`,
   }));
 
-  // sum product to get subtotal
-  const subtotal = products.reduce((acc, product) => {
-    // Set discountPercent to 0 if null
-    const discountPercent = product.discountPercent ?? 0;
+  const subtotal: number = products.reduce(
+    (sum: number, item: any) => sum + item.total * item.quantity,
+    0
+  );
 
-    // Calculate subtotal
-    const subtotal = product.price * product.quantity!;
-
-    // Calculate total after discount
-    const discount = subtotal * (discountPercent / 100);
-    const total = subtotal - discount;
-
-    return acc + total * product.quantity!;
-  }, 0);
+  const vatAmount = calculatePercentageToAmount(vatPercent, subtotal) || 0;
 
   // cancule total
   const total =
-    subtotal + calculatePercentageToAmount(vatAmount, subtotal) - discountTotal;
+    discountTotal > 0
+      ? subtotal + vatAmount - discountTotal
+      : subtotal +
+        vatAmount -
+        calculatePercentageToAmount(subtotal + vatAmount, discountPercent);
 
   const addProduct = useCallback(
     (product: Product) => {
@@ -106,13 +106,27 @@ export default function POSPForm({
         const price = product.price;
         const unit = product.unit;
         const discountPercent = product?.discountPercent ?? 0;
+        const discount = price * (discountPercent / 100);
+        const total = price - discount;
 
         setProducts([
           ...products,
-          { ...product, quantity: 1, unit, price, discountPercent },
+          {
+            ...product,
+            quantity: 1,
+            unit,
+            price,
+            discountPercent,
+            subtotal: price,
+            total,
+          },
         ]);
         setProductCode("");
       }
+
+      // reset the total discount
+      setDiscountPercent(0);
+      setDiscountTotal(0);
     },
     [products]
   );
@@ -220,31 +234,36 @@ export default function POSPForm({
   };
 
   const handleChangeDiscountAmount = (e: any) => {
-    const discountPercentInput = document.getElementById(
-      "discountPercent"
-    ) as HTMLInputElement;
-    discountPercentInput.value = "0";
+    // reset the total discount percent
+    setDiscountPercent(0);
     setDiscountTotal(e.target.value);
   };
 
   const handleChangeDiscountPercent = (e: any) => {
-    const discountAmountInput = document.getElementById(
-      "discountAmount"
-    ) as HTMLInputElement;
-    discountAmountInput.value = "0";
+    // reset the total discount amount
+    setDiscountTotal(0);
 
     const percent = Number(e.target.value);
-    const amount = calculatePercentageToAmount(percent, subtotal);
-    setDiscountTotal(amount);
+    if (percent >= 0 && percent < 101) {
+      // const amount = calculatePercentageToAmount(percent, subtotal);
+      setDiscountPercent(percent);
+    }
   };
 
-  const handleChangeDiscountPercentItem = (index: number, discountPercent: number) => {
+  const handleChangeDiscountPercentItem = (
+    index: number,
+    discountPercent: number
+  ) => {
     const updatedProducts = [...products];
     if (discountPercent >= 0 && discountPercent < 101) {
+      const itemPrice = updatedProducts[index].price;
+
       updatedProducts[index].discountPercent = Number(discountPercent);
+      updatedProducts[index].total =
+        Number(itemPrice) - Number(itemPrice) * (discountPercent / 100);
       setProducts(updatedProducts);
     }
-  }
+  };
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
@@ -256,6 +275,7 @@ export default function POSPForm({
         price: item.price,
         quantity: item.quantity,
         discountPercent: item.discountPercent,
+        total: item?.total,
       };
     });
 
@@ -324,6 +344,8 @@ export default function POSPForm({
     setSelectedProduct(null);
     setReceived(0);
     setDiscountTotal(0);
+    setDiscountPercent(0);
+    setVatPercent(tax?.tax || 0);
     setInvoiceNo("");
 
     if (productCodeInputRef.current) {
@@ -457,7 +479,7 @@ export default function POSPForm({
         <div className="mt-3">
           <div className="overflow-x-auto h-[calc(100vh-316px)] overflow-auto">
             <table className="min-w-full bg-white">
-              <thead className="">
+              <thead>
                 <tr>
                   <th className="py-2 px-4 border sticky top-0 bg-gray-300">
                     Product
@@ -533,15 +555,17 @@ export default function POSPForm({
                         value={product?.discountPercent}
                         className="w-16 border-gray-300"
                         inlineClassName="flex justify-center"
-                        onChange={(e: any) => handleChangeDiscountPercentItem(index, e.target.value)}
+                        onChange={(e: any) =>
+                          handleChangeDiscountPercentItem(index, e.target.value)
+                        }
                         onFocus={(e: any) => e.target.select()}
                       />
                     </td>
                     <td className="py-1 px-4 border text-center">
                       {product.price * product.quantity! -
                         product?.price *
-                        product?.quantity! *
-                        (product?.discountPercent! / 100)}
+                          product?.quantity! *
+                          (product?.discountPercent! / 100)}
                     </td>
                     <td className="py-1 px-4 border text-center">
                       <button
@@ -587,13 +611,29 @@ export default function POSPForm({
                   {toFixedIfNecessary(subtotal, 2)} TK
                 </p>
 
+                <p className="text-textPrimary">Vat % :</p>
+                <div className="relative ml-auto w-2/3">
+                  <Input
+                    name="vatPercent"
+                    type="number"
+                    className="pr-6 border-blue-300 py-0.5"
+                    defaultValue={tax?.tax}
+                    onChange={(e: any) => setVatPercent(e.target.value)}
+                    onFocus={(e: any) => e.target.select()}
+                    required
+                  />
+                  <span className="absolute top-1/2 right-2 -translate-y-1/2">
+                    %
+                  </span>
+                </div>
+
                 <p className="text-textPrimary">Discount % :</p>
                 <div className="relative ml-auto w-2/3">
                   <Input
                     id="discountPercent"
                     name="discountPercent"
                     type="number"
-                    defaultValue={0}
+                    value={discountPercent}
                     onChange={(e: any) => handleChangeDiscountPercent(e)}
                     onFocus={(e: any) => e.target.select()}
                     className="pr-6 border-blue-300 py-0.5"
@@ -610,30 +650,15 @@ export default function POSPForm({
                     id="discountAmount"
                     name="discountAmount"
                     type="number"
-                    defaultValue={0}
-                    onChange={handleChangeDiscountAmount}
+                    step="0.001"
+                    value={discountTotal}
+                    onChange={(e: any) => handleChangeDiscountAmount(e)}
                     onFocus={(e: any) => e.target.select()}
                     className="pr-6 border-blue-300 py-0.5"
                     required
                   />
                   <span className="absolute top-1/2 right-2 -translate-y-1/2">
                     TK
-                  </span>
-                </div>
-
-                <p className="text-textPrimary">Vat % :</p>
-                <div className="relative ml-auto w-2/3">
-                  <Input
-                    name="vatPercent"
-                    type="number"
-                    className="pr-6 border-blue-300 py-0.5"
-                    defaultValue={tax?.tax}
-                    onChange={(e: any) => setVatAmount(e.target.value)}
-                    onFocus={(e: any) => e.target.select()}
-                    required
-                  />
-                  <span className="absolute top-1/2 right-2 -translate-y-1/2">
-                    %
                   </span>
                 </div>
 

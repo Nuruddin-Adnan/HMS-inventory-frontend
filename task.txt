@@ -6,7 +6,10 @@ pending task list
 ### stock low quantity show in frontned. currently it it the same copy of stock.
 ### Need to create new functionality and route in backend for low stock
 
-*** discout change for each product function create . 
+*** Refund correct for both frontend and backend
+
+
+
 
 
 

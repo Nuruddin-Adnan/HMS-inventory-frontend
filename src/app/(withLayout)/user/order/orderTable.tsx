@@ -75,6 +75,22 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       ),
     },
     {
+      key: "refundTotal",
+      label: "Refund Value",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">{row?.refundTotal?.toFixed(2)}</div>
+      ),
+    },
+    {
+      key: "refundAmount",
+      label: "Refund",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">{row?.refundAmount?.toFixed(2)}</div>
+      ),
+    },
+    {
       key: "received",
       label: "Received",
       customClass: "text-right w-24 pr-5",

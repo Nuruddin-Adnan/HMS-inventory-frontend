@@ -27,6 +27,8 @@ export default function OrderDueForm({ data }: { data: any }) {
     received,
     items,
     customer,
+    refundTotal,
+    refundAmount,
   } = data;
 
   const router = useRouter();
@@ -116,9 +118,6 @@ export default function OrderDueForm({ data }: { data: any }) {
                 <thead className="">
                   <tr>
                     <th className="py-2 px-4 border sticky top-0 bg-gray-300">
-                      Sl.
-                    </th>
-                    <th className="py-2 px-4 border sticky top-0 bg-gray-300">
                       Product
                     </th>
                     <th className="py-2 px-4 border sticky top-0 bg-gray-300">
@@ -131,6 +130,12 @@ export default function OrderDueForm({ data }: { data: any }) {
                       Price
                     </th>
                     <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                      Subtotal
+                    </th>
+                    <th className="py-2 px-4 border sticky top-0 bg-gray-300 text-nowrap">
+                      Discount %
+                    </th>
+                    <th className="py-2 px-4 border sticky top-0 bg-gray-300">
                       Total
                     </th>
                   </tr>
@@ -138,9 +143,6 @@ export default function OrderDueForm({ data }: { data: any }) {
                 <tbody>
                   {items.map((product: any, index: number) => (
                     <tr key={index}>
-                      <td className="py-1 px-4 border text-center">
-                        {index + 1}
-                      </td>
                       <td className="py-1 px-4 border">
                         {product?.productName[0]?.name}
                       </td>
@@ -154,7 +156,13 @@ export default function OrderDueForm({ data }: { data: any }) {
                         {product?.price}
                       </td>
                       <td className="py-1 px-4 border text-center">
-                        {product?.price * product?.quantity}
+                        {product?.subtotal}
+                      </td>
+                      <td className="py-1 px-4 border text-center">
+                        {product?.discountPercent}
+                      </td>
+                      <td className="py-1 px-4 border text-center">
+                        {product?.total}
                       </td>
                     </tr>
                   ))}
@@ -165,27 +173,37 @@ export default function OrderDueForm({ data }: { data: any }) {
         </div>
 
         <div className="w-full xl:w-[30%] p-4 rounded flex flex-col justify-between bg-gray-200">
-          <div className="mb-4">
+          <div className="mb-4 grid gap-2">
             <h2 className="text-lg font-bold bg-blue-500 bg-opacity-20 text-blue-700 py-1 px-4 rounded  grid grid-cols-5">
               <span className="col-span-2">Total </span> <span>:</span>{" "}
               <span className="col-span-2">
                 {toFixedIfNecessary(total, 2)} TK
               </span>
             </h2>
-            <h2 className="text-lg font-bold bg-green-500 bg-opacity-20 text-green-700 py-1 px-4 rounded mt-2 grid grid-cols-5">
+            {
+              refundTotal > 0 &&
+              <h2 className="text-lg font-bold bg-red-500 bg-opacity-30 text-red-700 py-1 px-4 rounded  grid grid-cols-5">
+                <span className="col-span-2">Refund </span> <span>:</span>{" "}
+                <span className="col-span-2">
+                  {toFixedIfNecessary(refundTotal, 2)} TK
+                </span>
+              </h2>
+            }
+            <h2 className="text-lg font-bold bg-green-500 bg-opacity-20 text-green-700 py-1 px-4 rounded grid grid-cols-5">
               <span className="col-span-2">Previous Paid </span> <span>:</span>
               <span className="col-span-2">
                 {" "}
                 {toFixedIfNecessary(received, 2)} TK
               </span>
             </h2>
-            <h2 className="text-lg font-bold bg-yellow-500 bg-opacity-20 text-yellow-700 py-1 px-4 rounded mt-2  grid grid-cols-5">
+
+            <h2 className="text-lg font-bold bg-yellow-500 bg-opacity-20 text-yellow-700 py-1 px-4 rounded  grid grid-cols-5">
               <span className="col-span-2">Due </span> <span>:</span>{" "}
               <span className="col-span-2">
                 {due - amount > 0 ? toFixedIfNecessary(due - amount, 2) : 0} TK
               </span>
             </h2>
-            <h2 className="text-lg font-bold bg-red-500 bg-opacity-20 text-red-700 py-1 px-4 rounded mt-2 mb-5 grid grid-cols-5">
+            <h2 className="text-lg font-bold bg-red-500 bg-opacity-20 text-red-700 py-1 px-4 rounded mb-5 grid grid-cols-5">
               <span className="col-span-2">Change </span> <span>:</span>{" "}
               <span className="col-span-2">
                 {due - amount > 0
@@ -206,6 +224,21 @@ export default function OrderDueForm({ data }: { data: any }) {
                 <div className="grid  space-y-1 text-right items-center">
                   <p className="text-textPrimary font-bold ">Subtotal : </p>
                   <p className="text-textPrimary font-bold">{subtotal} TK</p>
+
+                  <p className="text-textPrimary">Vat % :</p>
+                  <div className="relative ml-auto w-2/3">
+                    <Input
+                      name="vatPercent"
+                      type="number"
+                      className="pr-6 border-blue-300 py-0.5"
+                      value={vatPercent}
+                      onFocus={(e: any) => e.target.select()}
+                      readOnly
+                    />
+                    <span className="absolute top-1/2 right-2 -translate-y-1/2">
+                      %
+                    </span>
+                  </div>
 
                   <p className="text-textPrimary">Discount % :</p>
                   <div className="relative ml-auto w-2/3">
@@ -234,21 +267,6 @@ export default function OrderDueForm({ data }: { data: any }) {
                     />
                     <span className="absolute top-1/2 right-2 -translate-y-1/2">
                       TK
-                    </span>
-                  </div>
-
-                  <p className="text-textPrimary">Vat % :</p>
-                  <div className="relative ml-auto w-2/3">
-                    <Input
-                      name="vatPercent"
-                      type="number"
-                      className="pr-6 border-blue-300 py-0.5"
-                      value={vatPercent}
-                      onFocus={(e: any) => e.target.select()}
-                      readOnly
-                    />
-                    <span className="absolute top-1/2 right-2 -translate-y-1/2">
-                      %
                     </span>
                   </div>
 

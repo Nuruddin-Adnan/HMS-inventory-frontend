@@ -38,12 +38,13 @@ export default function OrderRefundForm({ data }: { data: any }) {
 
   const sumCurrentRefundAmount = sumArrayField(selectedProducts, "amount");
 
-  // calculate single product refund amout. Add vat amount and subtract discount amount
+  // calculate single product refund amount. Add vat amount and subtract discount amount
   const amountAfterDiscoutAndVat = (amount: number) => {
     const vatAmount = calculatePercentageToAmount(vatPercent, amount);
-    const discountAmount = calculatePercentageToAmount(discountPercent, amount);
+    const total = amount + vatAmount;
+    const discountAmount = calculatePercentageToAmount(discountPercent, total);
 
-    return amount + vatAmount - discountAmount;
+    return total - discountAmount;
   };
 
   const handleQuantityChange = (index: number, amount: number) => {
@@ -54,11 +55,16 @@ export default function OrderRefundForm({ data }: { data: any }) {
       (p) => p.product === product?.product
     );
 
+    const productPriceAfterItemDiscount = (product: any) => {
+      const discountAmount = (product.price / 100) * product.discountPercent;
+      return product.price - discountAmount
+    }
+
     if (existingProductIndex === -1) {
       updatedProducts.push({
         product: product?.product,
         quantity: Math.max(amount, 0),
-        amount: amountAfterDiscoutAndVat(Math.max(amount, 0) * product.price),
+        amount: amountAfterDiscoutAndVat(Math.max(amount, 0) * productPriceAfterItemDiscount(product)),
       });
     } else {
       updatedProducts[existingProductIndex].quantity = Math.max(
@@ -66,7 +72,7 @@ export default function OrderRefundForm({ data }: { data: any }) {
         0
       );
       updatedProducts[existingProductIndex].amount = amountAfterDiscoutAndVat(
-        updatedProducts[existingProductIndex].quantity * product.price
+        updatedProducts[existingProductIndex].quantity * productPriceAfterItemDiscount(product)
       );
 
       if (updatedProducts[existingProductIndex].quantity === 0) {
@@ -190,7 +196,7 @@ export default function OrderRefundForm({ data }: { data: any }) {
           </div>
 
           <div className="mt-3">
-            <div className="overflow-x-auto h-[calc(100vh-264px)] overflow-auto">
+            <div className="overflow-x-auto xl:h-[calc(100vh-264px)] overflow-auto">
               <table className="min-w-full bg-white">
                 <thead className="text-nowrap">
                   <tr>
@@ -199,6 +205,12 @@ export default function OrderRefundForm({ data }: { data: any }) {
                     </th>
                     <th className="py-2 px-4 border sticky top-0 bg-gray-300">
                       Product
+                    </th>
+                    <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                      Refund Quantity
+                    </th>
+                    <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                      Refund Amount
                     </th>
                     <th className="py-2 px-4 border sticky top-0 bg-gray-300">
                       Qty
@@ -213,19 +225,19 @@ export default function OrderRefundForm({ data }: { data: any }) {
                       Price
                     </th>
                     <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                      Item disc%
+                    </th>
+                    <th className="py-2 px-4 border sticky top-0 bg-gray-300">
+                      Total
+                    </th>
+                    <th className="py-2 px-4 border sticky top-0 bg-gray-300">
                       Vat%
                     </th>
                     <th className="py-2 px-4 border sticky top-0 bg-gray-300">
                       Disc%
                     </th>
                     <th className="py-2 px-4 border sticky top-0 bg-gray-300">
-                      Total
-                    </th>
-                    <th className="py-2 px-4 border sticky top-0 bg-gray-300">
-                      Refund Quantity
-                    </th>
-                    <th className="py-2 px-4 border sticky top-0 bg-gray-300">
-                      Refund Amount
+                      Net
                     </th>
                   </tr>
                 </thead>
@@ -233,13 +245,12 @@ export default function OrderRefundForm({ data }: { data: any }) {
                   {items.map((product: any, index: number) => (
                     <tr
                       key={index}
-                      className={`${
-                        product?.quantity === product?.refundQuantity
-                          ? "bg-red-500 bg-opacity-20 text-red-700"
-                          : product?.refundQuantity > 0
+                      className={`${product?.quantity === product?.refundQuantity
+                        ? "bg-red-500 bg-opacity-20 text-red-700"
+                        : product?.refundQuantity > 0
                           ? "bg-yellow-500 bg-opacity-20 text-yellow-700"
                           : ""
-                      }`}
+                        }`}
                     >
                       <td className="py-1 px-4 border text-center">
                         <input
@@ -255,32 +266,6 @@ export default function OrderRefundForm({ data }: { data: any }) {
                       </td>
                       <td className="py-1 px-4 border">
                         {product?.productName[0]?.name}
-                      </td>
-                      <td className="py-1 px-4 border text-center">
-                        {product?.quantity}
-                      </td>
-                      <td className="py-1 px-4 border text-center">
-                        {product?.refundQuantity}
-                      </td>
-                      <td className="py-1 px-4 border text-center">
-                        {product?.unit}
-                      </td>
-                      <td className="py-1 px-4 border text-center">
-                        {product?.price}
-                      </td>
-                      <td className="py-1 px-4 border text-center">
-                        {vatPercent}
-                      </td>
-                      <td className="py-1 px-4 border text-center">
-                        {discountPercent}
-                      </td>
-                      <td className="py-1 px-4 border text-center">
-                        {toFixedIfNecessary(
-                          amountAfterDiscoutAndVat(
-                            product?.price * product?.quantity
-                          ),
-                          2
-                        )}
                       </td>
                       <td className="py-1 px-4 border text-center">
                         {checkedItems[product?.product] && (
@@ -302,9 +287,9 @@ export default function OrderRefundForm({ data }: { data: any }) {
                                 handleQuantityChange(
                                   index,
                                   Number(e.target.value) -
-                                    (selectedProducts.find(
-                                      (p: any) => p.product === product.product
-                                    )?.quantity || 0)
+                                  (selectedProducts.find(
+                                    (p: any) => p.product === product.product
+                                  )?.quantity || 0)
                                 )
                               }
                               onFocus={(e: any) => e.target.select()}
@@ -340,6 +325,36 @@ export default function OrderRefundForm({ data }: { data: any }) {
                           />
                         )}
                       </td>
+                      <td className="py-1 px-4 border text-center">
+                        {product?.quantity}
+                      </td>
+                      <td className="py-1 px-4 border text-center">
+                        {product?.refundQuantity}
+                      </td>
+                      <td className="py-1 px-4 border text-center">
+                        {product?.unit}
+                      </td>
+                      <td className="py-1 px-4 border text-center">
+                        {product?.price}
+                      </td>
+                      <td className="py-1 px-4 border text-center">
+                        {product?.discountPercent}
+                      </td>
+                      <td className="py-1 px-4 border text-center">
+                        {product?.total}
+                      </td>
+                      <td className="py-1 px-4 border text-center">
+                        {vatPercent}
+                      </td>
+                      <td className="py-1 px-4 border text-center">
+                        {discountPercent}
+                      </td>
+                      <td className="py-1 px-4 border text-center text-nowrap">
+                        {toFixedIfNecessary(
+                          amountAfterDiscoutAndVat(product?.total),
+                          2
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -369,14 +384,14 @@ export default function OrderRefundForm({ data }: { data: any }) {
               </span>
             </h2>
             <h2 className="text-lg font-bold bg-rose-500 bg-opacity-20 text-rose-700 py-1 px-4 rounded mt-2 grid grid-cols-5">
-              <span className="col-span-2">Previous Refund </span>{" "}
+              <span className="col-span-2 whitespace-nowrap">Prev Refund </span>{" "}
               <span>:</span>{" "}
               <span className="col-span-2">
                 {toFixedIfNecessary(totalRefundAmount, 2)} TK
               </span>
             </h2>
             <h2 className="text-lg font-bold bg-red-500 bg-opacity-30  text-red-700 py-1 px-4 rounded mt-2 mb-5 grid grid-cols-5">
-              <span className="col-span-2">Current Refund </span> <span>:</span>{" "}
+              <span className="col-span-2 whitespace-nowrap">New Refund </span> <span>:</span>{" "}
               <span className="col-span-2">
                 {toFixedIfNecessary(sumCurrentRefundAmount, 2)} TK
               </span>
@@ -393,6 +408,21 @@ export default function OrderRefundForm({ data }: { data: any }) {
                 <div className="grid  space-y-1 text-right items-center">
                   <p className="text-textPrimary font-bold ">Subtotal : </p>
                   <p className="text-textPrimary font-bold">{subtotal} TK</p>
+
+                  <p className="text-textPrimary">Vat % :</p>
+                  <div className="relative ml-auto w-2/3">
+                    <Input
+                      name="vatPercent"
+                      type="number"
+                      className="pr-6 border-blue-300 py-0.5"
+                      value={vatPercent}
+                      onFocus={(e: any) => e.target.select()}
+                      readOnly
+                    />
+                    <span className="absolute top-1/2 right-2 -translate-y-1/2">
+                      %
+                    </span>
+                  </div>
 
                   <p className="text-textPrimary">Discount % :</p>
                   <div className="relative ml-auto w-2/3">
@@ -421,21 +451,6 @@ export default function OrderRefundForm({ data }: { data: any }) {
                     />
                     <span className="absolute top-1/2 right-2 -translate-y-1/2">
                       TK
-                    </span>
-                  </div>
-
-                  <p className="text-textPrimary">Vat % :</p>
-                  <div className="relative ml-auto w-2/3">
-                    <Input
-                      name="vatPercent"
-                      type="number"
-                      className="pr-6 border-blue-300 py-0.5"
-                      value={vatPercent}
-                      onFocus={(e: any) => e.target.select()}
-                      readOnly
-                    />
-                    <span className="absolute top-1/2 right-2 -translate-y-1/2">
-                      %
                     </span>
                   </div>
 
