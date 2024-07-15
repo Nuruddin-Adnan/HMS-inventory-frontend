@@ -1,4 +1,3 @@
-import { paymentMethodOptions } from "@/lib/selectOptions";
 import { format } from "date-fns";
 import React from "react";
 
@@ -11,18 +10,19 @@ export default function Invoice({ order }: { order: any }) {
     total,
     received,
     due,
-    paymentStatus,
+    refundTotal,
+    refundAmount,
     items,
     customer,
     payments,
     refunds,
-    totalRefundAmount,
     createdBy,
     createdAt,
   } = order;
 
+
   return (
-    <div className="max-w-[88mm] mx-auto p-5 pt-10 bg-white invoice-sm">
+    <div className="max-w-[88mm] mx-auto p-5 pt-10 bg-white invoice-sm font-medium">
       <header>
         <div className="text-center text-sm">
           <h1 className="font-bold text-xl">
@@ -37,7 +37,7 @@ export default function Invoice({ order }: { order: any }) {
         </div>
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div>
-            <p> Data: {format(new Date(createdAt), "dd/MMM/yyyy")}</p>
+            <p> Date: {format(new Date(createdAt), "dd/MMM/yyyy")}</p>
             <p>Customer ID: {customer[0]?.CUSID}</p>
           </div>
           <div>
@@ -47,58 +47,71 @@ export default function Invoice({ order }: { order: any }) {
         </div>
         <p className="text-xs">Customer: {customer[0]?.name}</p>
       </header>
-      <section className="mt-4">
-        <table className="w-full text-left mb-8 text-[13px] align-top text-gray-800">
+      <section className="mt-4 mb-4">
+        <table className="w-full text-left text-[13px] align-top text-gray-800">
           <thead className="border border-gray-600">
             <tr>
-              <th className="py-0.5 px-1">Items</th>
-              <th className="py-0.5 px-1 text-right ">
-                <div className="w-8">Qty</div>
+              <th className="py-0.5 ps-2">
+                <div className="w-[25mm]">Items</div>
               </th>
-              <th className="py-0.5 px-1 text-right ">
-                <div className="w-10">Price</div>
+              <th className="py-0.5 px-2 text-right">
+                <div>Qty</div>
               </th>
-              <th className="py-0.5 px-1 text-right ">
-                <div className="w-12">Total</div>
+              <th className="py-0.5 px-2 text-right">
+                <div>Price</div>
+              </th>
+              <th className="py-0.5 px-2 text-right">
+                <div className="w-8">Disc%</div>
+              </th>
+              <th className="py-0.5 px-2 text-right">
+                <div>Total</div>
               </th>
             </tr>
           </thead>
           <tbody>
             {items.map((product: any, index: number) => (
-              <tr key={product?._id}>
-                <td className="py-1">
-                  <strong className="pe-1">{index + 1}.</strong>
-                  {product?.productName[0]?.name}
-                </td>
-                <td className="text-right py-1 px-2">{product?.quantity}</td>
-                <td className="text-right py-1 px-2">{product?.price}</td>
-                <td className="text-right py-1 ps-2">
-                  {(product?.price * product?.quantity).toFixed(2)}
-                </td>
-              </tr>
+              <>
+                <tr key={product?._id}>
+                  <td colSpan={5}>
+                    <div className="leading-none">
+                      <strong className="pe-1">{index + 1}.</strong>
+                      {product?.productDetails[0]?.name}
+                    </div>
+                  </td>
+                </tr>
+                <tr className="border-b border-b-gray-500 border-dashed">
+                  <td className="leading-none">{product?.productDetails[0]?.code}</td>
+                  <td className="text-right px-2">{product?.quantity}</td>
+                  <td className="text-right  px-2">{product?.price}</td>
+                  <td className="text-right  px-2">{product?.discountPercent?.toFixed(2)}</td>
+                  <td className="text-right  ps-2">
+                    {product?.total?.toFixed(2)}
+                  </td>
+                </tr>
+              </>
             ))}
           </tbody>
           <tfoot className="border-t border-t-gray-500">
             <tr>
-              <th colSpan={2}>Total:</th>
+              <th colSpan={3}>Total Tk:</th>
               <th colSpan={2} className="text-end">
                 {subtotal.toFixed(2)}
               </th>
             </tr>
             <tr>
-              <td colSpan={2}>VAT:</td>
+              <td colSpan={3}>VAT:</td>
               <td colSpan={2} className="text-end">
                 {vatAmount.toFixed(2)}
               </td>
             </tr>
             <tr>
-              <td colSpan={2}>Discount:</td>
+              <td colSpan={3}>Less:</td>
               <td colSpan={2} className="text-end">
                 {discountAmount.toFixed(2)}
               </td>
             </tr>
             <tr>
-              <th colSpan={2}>Net Amount:</th>
+              <th colSpan={3}>Net Amount:</th>
               <th
                 colSpan={2}
                 className="text-end border border-gray-500 pe-0.5"
@@ -106,23 +119,46 @@ export default function Invoice({ order }: { order: any }) {
                 {total.toFixed(2)}
               </th>
             </tr>
+            {
+              refundTotal > 0 &&
+              <tr>
+                <th colSpan={3}>Net Refund:</th>
+                <th
+                  colSpan={2}
+                  className="text-end border border-gray-500 pe-0.5"
+                >
+                  {refundTotal.toFixed(2)}
+                </th>
+              </tr>
+            }
             <tr>
-              <td colSpan={2}>Pay type:</td>
+              <td colSpan={3}>Pay type:</td>
               <td colSpan={2} className="text-end">
-                {payments.length > 0 && payments[0].paymentMethod}
+                {payments.length > 0 && payments[0]?.paymentMethod}
               </td>
             </tr>
             <tr>
-              <th colSpan={2} className="border-t border-t-gray-500">
+              <th colSpan={3} className="border-t border-t-gray-500">
                 Paid Amount:
               </th>
               <th colSpan={2} className="text-end border-t border-t-gray-500">
-                {received.toFixed(2)}
+                {received?.toFixed(2)}
               </th>
             </tr>
+            {
+              refundTotal > 0 &&
+              <tr>
+                <th colSpan={3}>
+                  Refund Amount:
+                </th>
+                <th colSpan={2} className="text-end">
+                  {refundAmount?.toFixed(2)}
+                </th>
+              </tr>
+            }
             {due > 0 && (
               <tr>
-                <th colSpan={2} className="border-t border-t-gray-500">
+                <th colSpan={3} className="border-t border-t-gray-500">
                   Due:
                 </th>
                 <th colSpan={2} className="text-end border-t border-t-gray-500">
@@ -134,7 +170,40 @@ export default function Invoice({ order }: { order: any }) {
         </table>
       </section>
 
-      <footer className="px-3">
+      {
+        refunds && refunds.length > 0 &&
+        <section className="pb-2">
+          <h3 className="font-bold">Refund Items:</h3>
+          <table className="table-auto w-full">
+            <thead>
+              <tr className="border border-gray-500">
+                <th className="text-start px-1">Item</th>
+                <th className="px-1">Qty</th>
+                <th className="text-end px-1">Date</th>
+              </tr>
+            </thead>
+            <tbody className="text-[13px]">
+              {
+                refunds.map((item: any, index: number) => <tr key={item?._id}>
+                  <td>
+                    <div className="leading-none">
+                      <strong className="pe-1">{index + 1}.</strong>
+                      {item?.productDetails[0]?.name}
+                    </div>
+                  </td>
+                  <td className="text-center align-top">{item?.quantity}</td>
+                  <td className="text-end text-nowrap align-top">
+                    {format(new Date(item?.createdAt), "dd/MM/yyyy p")}
+                  </td>
+                </tr>)
+              }
+
+            </tbody>
+          </table>
+        </section>
+      }
+
+      <footer className="mt-2">
         <ul className="font-normal text-[13px]">
           <li className="flex gap-1">
             <span>১.</span>{" "}
@@ -148,8 +217,9 @@ export default function Invoice({ order }: { order: any }) {
             <span>৩.</span> <span>ফ্রিজে সংরক্ষিত ঔষুধ পরিবর্তন যোগ্য নয়</span>
           </li>
         </ul>
-        <strong className=" mt-4 block">
-          System by: Medisoft IT ltd.{" "}
+        <h4 className="text-center leading-tight mt-4 text-xs font-bold p-1 border border-gray-500">Thank you for shoping at {process.env.NEXT_PUBLIC_APP_NAME}</h4>
+        <strong className="mt-1 block text-center">
+          System by: medisoftit.com{" "}
           {process.env.NEXT_PUBLIC_POWERED_BY_CONTACT_NO}
         </strong>
       </footer>

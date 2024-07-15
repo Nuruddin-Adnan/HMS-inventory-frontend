@@ -6,6 +6,7 @@ import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid'
 import { useRouter } from "next/navigation";
 import { useReactToPrint } from 'react-to-print';
 import generatePDF from 'react-to-pdf';
+import Invoice from '@/components/Invoice';
 
 export default function ViewOrder({ data }: { data: any }) {
     const componentRef = useRef<any>(null);

@@ -43,11 +43,18 @@ export default function OrderTable({ orders }: { orders: any[] }) {
     },
     { key: "BILLID", label: "Invoice No" },
     {
+      key: "customer",
+      label: "Customer",
+      render: (row: any) => <div>{row?.customer[0]?.contactNo}</div>,
+    },
+    {
       key: "subtotal",
       label: "Subtotal",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.subtotal.toFixed(2)}</div>
+        <div className="text-right font-medium pr-4">
+          {row?.subtotal.toFixed(2)}
+        </div>
       ),
     },
     {
@@ -55,7 +62,9 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       label: "Vat",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.vatAmount?.toFixed(2)}</div>
+        <div className="text-right font-medium pr-4">
+          {row?.vatAmount?.toFixed(2)}
+        </div>
       ),
     },
     {
@@ -63,7 +72,9 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       label: "Disount",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.discountAmount?.toFixed(2)}</div>
+        <div className="text-right font-medium pr-4">
+          {row?.discountAmount?.toFixed(2)}
+        </div>
       ),
     },
     {
@@ -71,15 +82,19 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       label: "Total",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.total?.toFixed(2)}</div>
+        <div className="text-right font-medium pr-4">
+          {row?.total?.toFixed(2)}
+        </div>
       ),
     },
     {
       key: "refundTotal",
-      label: "Refund Value",
+      label: "Refund total",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.refundTotal?.toFixed(2)}</div>
+        <div className="text-right font-medium pr-4">
+          {row?.refundTotal?.toFixed(2)}
+        </div>
       ),
     },
     {
@@ -87,7 +102,9 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       label: "Refund",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.refundAmount?.toFixed(2)}</div>
+        <div className="text-right font-medium pr-4">
+          {row?.refundAmount?.toFixed(2)}
+        </div>
       ),
     },
     {
@@ -95,7 +112,9 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       label: "Received",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.received?.toFixed(2)}</div>
+        <div className="text-right font-medium pr-4">
+          {row?.received?.toFixed(2)}
+        </div>
       ),
     },
     {
@@ -103,7 +122,9 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       label: "Due",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.due?.toFixed(2)}</div>
+        <div className="text-right font-medium pr-4">
+          {row?.due?.toFixed(2)}
+        </div>
       ),
     },
     {
@@ -113,11 +134,12 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       render: (row: any) => (
         <div
           className={
-            row?.paymentStatus === "paid" || row?.paymentStatus === "discount-paid"
+            row?.paymentStatus === "paid" ||
+            row?.paymentStatus === "discount-paid"
               ? "bg-[#28A745] bg-opacity-[.12] text-[#28A745] font-medium rounded-full text-center m-auto w-28 py-0.5"
               : row?.paymentStatus.includes("refund")
-                ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0.5"
-                : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0.5"
+              ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0.5"
+              : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0.5"
           }
         >
           <span className="capitalize">

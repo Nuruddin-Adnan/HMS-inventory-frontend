@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import "core-js";
 import Table from "@/components/ui/table/Table";
 import { GroupByHelper } from "@/helpers/groupByHelper";
+import { toFixedIfNecessary } from "@/helpers/toFixedIfNecessary";
 
 const pageStyle = `
 @page{
@@ -22,7 +23,11 @@ export default function SaleTable({
   endDate: any;
 }) {
   const [data, setData] = useState<any[]>(sales);
+  const [heading, setHeading] = useState<any>("All");
+  const [discountHeading, setDiscountHeading] = useState<any>("All");
   const [createdBy, setCreatedBy] = useState<any>("All");
+  const [paymentType, setPaymentType] = useState<any>("All");
+  const [discountType, setDiscountType] = useState<any>("All");
 
   // filter start
   const dataGroupByEntryBy = GroupByHelper.groupBy(
@@ -32,7 +37,18 @@ export default function SaleTable({
 
   const filteredData = data.filter(
     (item: any) => createdBy === "All" || item?.createdBy[0]?.name === createdBy
-  );
+  ).filter(
+    (item: any) =>
+      paymentType === "All" ||
+      (paymentType === "due" && item?.due > 0) ||
+      (paymentType === "paid" && item?.due === 0)
+  )
+    .filter(
+      (item: any) =>
+        discountType === "All" ||
+        (discountType === "no-discount" && item?.discountAmount === 0) ||
+        (discountType === "discount" && item?.discountAmount > 0)
+    );
   // filter end
 
   const columns = [
@@ -64,7 +80,7 @@ export default function SaleTable({
       label: "Subtotal",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{row?.subtotal}</div>
+        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.subtotal, 2)}</div>
       ),
     },
     {
@@ -92,7 +108,7 @@ export default function SaleTable({
       label: "Total",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{row?.total}</div>
+        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.total, 2)}</div>
       ),
     },
     {
@@ -100,7 +116,7 @@ export default function SaleTable({
       label: "Received",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{row?.received}</div>
+        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.received, 2)}</div>
       ),
     },
     {
@@ -108,7 +124,7 @@ export default function SaleTable({
       label: "Due",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{row?.due}</div>
+        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.due, 2)}</div>
       ),
     },
   ];
@@ -125,28 +141,108 @@ export default function SaleTable({
               <h3 className="font-bold text-textPrimary">Sales By:</h3>
             </div>
             <button
-              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${
-                createdBy === "All"
-                  ? "bg-primary bg-opacity-10 text-primary"
-                  : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-              }`}
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${createdBy === "All"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
               onClick={() => setCreatedBy("All")}
             >
               All
             </button>
             {Object.entries(dataGroupByEntryBy).map(([key, value]) => (
               <button
-                className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap capitalize ${
-                  createdBy === key
-                    ? "bg-primary bg-opacity-10 text-primary"
-                    : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-                }`}
+                className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap capitalize ${createdBy === key
+                  ? "bg-primary bg-opacity-10 text-primary"
+                  : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                  }`}
                 key={key}
                 onClick={() => setCreatedBy(key)}
               >
                 {key}
               </button>
             ))}
+
+            {/* Filter by payment type */}
+            <h3 className="font-bold text-textPrimary pt-3 mb-2 border-b border-gray-500">
+              Payment Type
+            </h3>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${paymentType === "All"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setPaymentType("All"),
+                  setHeading("All");
+              }}
+            >
+              All
+            </button>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${paymentType === "paid"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setPaymentType("paid"),
+                  setHeading("Paid");
+              }}
+            >
+              Paid
+            </button>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${paymentType === "due"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setPaymentType("due"),
+                  setHeading("Due");
+              }}
+            >
+              Due
+            </button>
+
+            {/* Filter by Discount type */}
+            <h3 className="font-bold text-textPrimary pt-3 mb-2 border-b border-gray-500">
+              Discount Type
+            </h3>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${discountType === "All"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setDiscountType("All"),
+                  setDiscountHeading("All");
+              }}
+            >
+              All
+            </button>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${discountType === "no-discount"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setDiscountType("no-discount"),
+                  setDiscountHeading("No Discount");
+              }}
+            >
+              No Discount
+            </button>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${discountType === "discount"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setDiscountType("discount"),
+                  setDiscountHeading("Discount");
+              }}
+            >
+              Discount
+            </button>
           </div>
         </div>
         <div className="px-4 pb-6 w-full card">
@@ -163,6 +259,8 @@ export default function SaleTable({
                 </p>
                 <h3 className="test-base font-bold text-black mb-2 print:mb-0 pt-2 px-2 print:border-gray-600 border-b-4 border-double capitalize flex justify-between">
                   <span>{`Sale By: ${createdBy}`}</span>
+                  <span>{`Payment Type: ${heading}`}</span>
+                  <span>{`Discount Type: ${discountHeading}`}</span>
                 </h3>
               </div>
             }

@@ -144,7 +144,7 @@ export default function OrderDueForm({ data }: { data: any }) {
                   {items.map((product: any, index: number) => (
                     <tr key={index}>
                       <td className="py-1 px-4 border">
-                        {product?.productName[0]?.name}
+                        {product?.productDetails[0]?.name}
                       </td>
                       <td className="py-1 px-4 border text-center">
                         {product?.quantity}

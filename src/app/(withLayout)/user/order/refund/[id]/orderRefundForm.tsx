@@ -31,7 +31,7 @@ export default function OrderRefundForm({ data }: { data: any }) {
     received,
     items,
     customer,
-    totalRefundAmount,
+    refundTotal,
   } = data;
 
   const router = useRouter();
@@ -57,14 +57,16 @@ export default function OrderRefundForm({ data }: { data: any }) {
 
     const productPriceAfterItemDiscount = (product: any) => {
       const discountAmount = (product.price / 100) * product.discountPercent;
-      return product.price - discountAmount
-    }
+      return product.price - discountAmount;
+    };
 
     if (existingProductIndex === -1) {
       updatedProducts.push({
         product: product?.product,
         quantity: Math.max(amount, 0),
-        amount: amountAfterDiscoutAndVat(Math.max(amount, 0) * productPriceAfterItemDiscount(product)),
+        amount: amountAfterDiscoutAndVat(
+          Math.max(amount, 0) * productPriceAfterItemDiscount(product)
+        ),
       });
     } else {
       updatedProducts[existingProductIndex].quantity = Math.max(
@@ -72,7 +74,8 @@ export default function OrderRefundForm({ data }: { data: any }) {
         0
       );
       updatedProducts[existingProductIndex].amount = amountAfterDiscoutAndVat(
-        updatedProducts[existingProductIndex].quantity * productPriceAfterItemDiscount(product)
+        updatedProducts[existingProductIndex].quantity *
+        productPriceAfterItemDiscount(product)
       );
 
       if (updatedProducts[existingProductIndex].quantity === 0) {
@@ -246,10 +249,10 @@ export default function OrderRefundForm({ data }: { data: any }) {
                     <tr
                       key={index}
                       className={`${product?.quantity === product?.refundQuantity
-                        ? "bg-red-500 bg-opacity-20 text-red-700"
-                        : product?.refundQuantity > 0
-                          ? "bg-yellow-500 bg-opacity-20 text-yellow-700"
-                          : ""
+                          ? "bg-red-500 bg-opacity-20 text-red-700"
+                          : product?.refundQuantity > 0
+                            ? "bg-yellow-500 bg-opacity-20 text-yellow-700"
+                            : ""
                         }`}
                     >
                       <td className="py-1 px-4 border text-center">
@@ -265,7 +268,7 @@ export default function OrderRefundForm({ data }: { data: any }) {
                         />
                       </td>
                       <td className="py-1 px-4 border">
-                        {product?.productName[0]?.name}
+                        {product?.productDetails[0]?.name}
                       </td>
                       <td className="py-1 px-4 border text-center">
                         {checkedItems[product?.product] && (
@@ -387,11 +390,12 @@ export default function OrderRefundForm({ data }: { data: any }) {
               <span className="col-span-2 whitespace-nowrap">Prev Refund </span>{" "}
               <span>:</span>{" "}
               <span className="col-span-2">
-                {toFixedIfNecessary(totalRefundAmount, 2)} TK
+                {toFixedIfNecessary(refundTotal, 2)} TK
               </span>
             </h2>
             <h2 className="text-lg font-bold bg-red-500 bg-opacity-30  text-red-700 py-1 px-4 rounded mt-2 mb-5 grid grid-cols-5">
-              <span className="col-span-2 whitespace-nowrap">New Refund </span> <span>:</span>{" "}
+              <span className="col-span-2 whitespace-nowrap">New Refund </span>{" "}
+              <span>:</span>{" "}
               <span className="col-span-2">
                 {toFixedIfNecessary(sumCurrentRefundAmount, 2)} TK
               </span>
