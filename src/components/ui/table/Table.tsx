@@ -7,12 +7,15 @@ import {
   PlusIcon,
   PrinterIcon,
   MagnifyingGlassIcon,
+  ArrowUturnLeftIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { format } from "date-fns";
 import { getUser } from "@/lib/getUser";
 import cn from "@/lib/cn";
 import "core-js";
+import { useRouter } from "next/navigation";
 
 export default function Table({
   title,
@@ -24,12 +27,14 @@ export default function Table({
   customThClass,
   customTdClass,
   customTfClass,
+  tableHeightClass,
   tableStriped = false,
   tableHover = false,
   create = undefined,
   onView = undefined,
   onEdit = undefined,
   onDelete = undefined,
+  backBtn = undefined,
   action = false,
   responsive = false,
   search = false,
@@ -38,7 +43,7 @@ export default function Table({
   serialized = false,
   sumFields = [],
   sumFieldsFixed = 0,
-  pageStyle = "",
+  pageStyle = ""
 }: {
   title?: React.ReactNode;
   caption?: React.ReactNode;
@@ -49,12 +54,14 @@ export default function Table({
   customThClass?: string;
   customTdClass?: string;
   customTfClass?: string;
+  tableHeightClass?: string;
   tableStriped?: boolean;
   tableHover?: boolean;
   create?: string;
   onView?: any;
   onEdit?: any;
   onDelete?: any;
+  backBtn?: any;
   action?: boolean;
   responsive?: boolean;
   search?: boolean;
@@ -69,6 +76,8 @@ export default function Table({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState("ascending");
+
+  const router = useRouter()
 
   const user = getUser();
 
@@ -101,9 +110,9 @@ export default function Table({
     return typeof a === "number" && typeof b === "number"
       ? a - b
       : String(a).localeCompare(String(b), undefined, {
-          numeric: true,
-          sensitivity: "base",
-        });
+        numeric: true,
+        sensitivity: "base",
+      });
   };
 
   const handleSort = (key: any) => {
@@ -231,6 +240,15 @@ export default function Table({
                 <PlusIcon className="h-5 w-5 mr-2" /> Create
               </Link>
             )}
+            {backBtn && (
+              <Button
+                variant="danger"
+                className="py-1.5 px-2 border-transparent"
+                onClick={() => router.back()}
+              >
+                <XMarkIcon className="h-5 w-5" />
+              </Button>
+            )}
           </div>
         </div>
       )}
@@ -241,20 +259,19 @@ export default function Table({
             className={
               responsive
                 ? cn(
-                    "w-full relative overflow-x-auto print:overflow-visible print:px-4 print:pb-4"
-                  )
-                : ""
+                  "w-full relative overflow-x-auto print:overflow-visible print:px-4 print:pb-4", tableHeightClass
+                )
+                : tableHeightClass
             }
           >
             <table className={cn("w-full", customTableClass)}>
               <caption>{caption}</caption>
-              <thead>
+              <thead className="sticky top-0 bg-white">
                 <tr>
                   {serialized && (
                     <th
                       className={cn(
-                        `max-w-max text-center py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 ${
-                          sort && "cursor-pointer"
+                        `max-w-max text-center py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 ${sort && "cursor-pointer"
                         }`,
                         customThClass
                       )}
@@ -266,8 +283,7 @@ export default function Table({
                     <th
                       key={column.key}
                       className={cn(
-                        `max-w-max text-left py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 ${
-                          sort && "cursor-pointer"
+                        `max-w-max text-left py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 ${sort && "cursor-pointer"
                         } ${column.customClass || ""} `,
                         customThClass
                       )}
@@ -284,8 +300,7 @@ export default function Table({
                   {action && (
                     <th
                       className={cn(
-                        `max-w-max text-left py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 print:hidden sticky right-0 whitespace-nowrap bg-white ${
-                          sort && "cursor-pointer"
+                        `max-w-max text-left py-1 px-2 text-textPrimary border-b border-gray-200 print:border-gray-700 font-bold print:text-sm print:pt-4 print:pb-2 print:hidden sticky right-0 whitespace-nowrap bg-white ${sort && "cursor-pointer"
                         }`,
                         customThClass
                       )}
@@ -299,9 +314,8 @@ export default function Table({
                 {data.map((row, index: number) => (
                   <tr
                     key={uniqueKey ? row[uniqueKey] : index}
-                    className={`${
-                      index % 2 === 0 && tableStriped ? "bg-gray-100" : ""
-                    } ${tableHover && "hover:bg-gray-200"}`}
+                    className={`${index % 2 === 0 && tableStriped ? "bg-gray-100" : ""
+                      } ${tableHover && "hover:bg-gray-200"}`}
                   >
                     {serialized && (
                       <td
@@ -319,17 +333,16 @@ export default function Table({
                         className={`${cn(
                           "py-1 px-2 border-b border-gray-200 print:border-gray-600 print:py-0.5 print:text-[13px]",
                           customTdClass
-                        )} ${
-                          column.customDataClass
-                            ? column.customDataClass(row)
-                            : ""
-                        }`}
+                        )} ${column.customDataClass
+                          ? column.customDataClass(row)
+                          : ""
+                          }`}
                       >
                         {column.render
                           ? column.render(row) // Call the custom rendering function if provided
                           : column.key.includes(".")
-                          ? renderNestedCell(row, column.key)
-                          : row[column.key]}
+                            ? renderNestedCell(row, column.key)
+                            : row[column.key]}
                       </td>
                     ))}
 
@@ -436,8 +449,8 @@ export default function Table({
                       >
                         {sumFields.includes(column.key)
                           ? `${getSumResults()[column.key].toFixed(
-                              sumFieldsFixed
-                            )}`
+                            sumFieldsFixed
+                          )}`
                           : ""}
                       </td>
                     ))}

@@ -103,7 +103,7 @@ export default function InvoiceLg({ order }: { order: any }) {
         </div>
 
         <div className="mt-6">
-          <div className="border border-gray-200 p-4 rounded-lg  dark:border-neutral-700">
+          <div className="border border-gray-200 p-3 rounded-lg  dark:border-neutral-700">
             <div className="hidden sm:grid sm:grid-cols-7 p-2 bg-gray-200">
               <div className="sm:col-span-3 text-xs font-medium text-gray-700 uppercase dark:text-neutral-500">
                 Item
@@ -125,7 +125,7 @@ export default function InvoiceLg({ order }: { order: any }) {
             {items.map((product: any, index: number) => (
               <div
                 key={product?._id}
-                className="grid grid-cols-4 sm:grid-cols-7 border-b py-1 px-2 border-dashed text-[13px] font-medium"
+                className="grid grid-cols-4 sm:grid-cols-7 border-b py-0.5 px-1 border-dashed text-[13px] font-medium"
               >
                 <div className="col-span-full sm:col-span-3">
                   <h5 className="sm:hidden font-medium text-gray-500 uppercase dark:text-neutral-500">
@@ -173,7 +173,7 @@ export default function InvoiceLg({ order }: { order: any }) {
           </div>
 
           {refunds && refunds.length > 0 && (
-            <fieldset className="mt-5 p-4 pt-2 border border-gray-200 rounded-lg">
+            <fieldset className="mt-5 p-3 pt-2 border border-gray-200 rounded-lg">
               <legend className="font-bold text-sm">Refund:</legend>
               <table className="w-full">
                 <thead className="bg-gray-200">
@@ -201,13 +201,13 @@ export default function InvoiceLg({ order }: { order: any }) {
                       key={item._id}
                       className="border-b border-dashed font-medium text-[13px]"
                     >
-                      <td className="py-1 px-2">{format(new Date(item?.createdAt), "dd/MMM/yyyy p")}</td>
-                      <td className="py-1 px-2">
+                      <td className="py-0.5 px-1">{format(new Date(item?.createdAt), "dd/MMM/yyyy p")}</td>
+                      <td className="py-0.5 px-1">
                         {item?.productDetails[0]?.name}
                       </td>
-                      <td className="py-1 px-2 text-end">{item?.quantity}</td>
-                      <td className="py-1 px-2 text-end">{toFixedIfNecessary(item?.total, 2)}</td>
-                      <td className="py-1 px-2 text-end">{toFixedIfNecessary(item?.amount, 2)}</td>
+                      <td className="py-0.5 px-1 text-end">{item?.quantity}</td>
+                      <td className="py-0.5 px-1 text-end">{toFixedIfNecessary(item?.total, 2)}</td>
+                      <td className="py-0.5 px-1 text-end">{toFixedIfNecessary(item?.amount, 2)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -223,7 +223,7 @@ export default function InvoiceLg({ order }: { order: any }) {
             </h2>
           </div>
           <div className="w-full max-w-2xl sm:text-end space-y-2">
-            <div className="grid grid-cols-2 sm:grid-cols-1 gap-1 font-medium">
+            <div className="grid grid-cols-2 sm:grid-cols-1 font-medium">
               <dl className="grid sm:grid-cols-5 gap-x-3">
                 <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
                   Subtotal:

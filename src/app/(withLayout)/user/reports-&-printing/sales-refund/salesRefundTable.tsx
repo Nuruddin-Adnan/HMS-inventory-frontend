@@ -17,7 +17,7 @@ const pageStyle = `
 }
 `;
 
-export default function SaleTable({
+export default function SalesRefundTable({
   sales,
   startDate,
   endDate,
@@ -29,9 +29,10 @@ export default function SaleTable({
   const [data, setData] = useState<any[]>(sales);
   const [heading, setHeading] = useState<any>("All");
   const [discountHeading, setDiscountHeading] = useState<any>("All");
-  const [createdBy, setCreatedBy] = useState<any>("All");
+  const [refundHeading, setRefundHeading] = useState<any>("All");
   const [paymentType, setPaymentType] = useState<any>("All");
   const [discountType, setDiscountType] = useState<any>("All");
+  const [refundType, setRefundType] = useState<any>("All");
 
   // print setup
   const [isPrinting, setIsPrinting] = useState(false);
@@ -79,25 +80,23 @@ export default function SaleTable({
   };
 
   // filter start
-  const dataGroupByEntryBy = GroupByHelper.groupBy(
-    sales,
-    ({ createdBy }: { createdBy: any }) => createdBy[0]?.name
-  );
-
   const filteredData = data.filter(
-    (item: any) => createdBy === "All" || item?.createdBy[0]?.name === createdBy
-  ).filter(
     (item: any) =>
       paymentType === "All" ||
       (paymentType === "due" && item?.due > 0) ||
       (paymentType === "paid" && item?.due === 0)
-  )
-    .filter(
-      (item: any) =>
-        discountType === "All" ||
-        (discountType === "no-discount" && item?.discountAmount === 0) ||
-        (discountType === "discount" && item?.discountAmount > 0)
-    );
+  ).filter(
+    (item: any) =>
+      discountType === "All" ||
+      (discountType === "no-discount" && item?.discountAmount === 0) ||
+      (discountType === "discount" && item?.discountAmount > 0)
+  ).filter(
+    (item: any) =>
+      refundType === "All" ||
+      (refundType === "full-refund" && item?.refundTotal === item?.total) ||
+      (refundType === "full-amount-refund" && item?.refundAmount === item?.received && item?.received > 0) ||
+      (refundType === "partial-refund" && item?.refundTotal < item?.total)
+  );
   // filter end
 
   const columns = [
@@ -138,34 +137,6 @@ export default function SaleTable({
       },
     },
     {
-      key: "subtotal",
-      label: "Subtotal",
-      customClass: "text-right",
-      render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.subtotal, 2)}</div>
-      ),
-    },
-    {
-      key: "discountPercent",
-      label: "Discount%",
-      customClass: "text-right",
-      render: (row: any) => (
-        <div className="capitalize text-right font-medium">
-          {row?.discountPercent}
-        </div>
-      ),
-    },
-    {
-      key: "vatPercent",
-      label: "Vat%",
-      customClass: "text-right",
-      render: (row: any) => (
-        <div className="capitalize text-right font-medium">
-          {row?.vatPercent}
-        </div>
-      ),
-    },
-    {
       key: "total",
       label: "Total",
       customClass: "text-right",
@@ -174,11 +145,27 @@ export default function SaleTable({
       ),
     },
     {
+      key: "refundTotal",
+      label: "Net Refund",
+      customClass: "text-right text-nowrap",
+      render: (row: any) => (
+        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.refundTotal, 2)}</div>
+      ),
+    },
+    {
       key: "received",
       label: "Received",
       customClass: "text-right",
       render: (row: any) => (
         <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.received, 2)}</div>
+      ),
+    },
+    {
+      key: "refundAmount",
+      label: "Refund Amount",
+      customClass: "text-right text-nowrap",
+      render: (row: any) => (
+        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.refundAmount, 2)}</div>
       ),
     },
     {
@@ -199,30 +186,60 @@ export default function SaleTable({
       <div className="flex gap-5 lg:flex-row flex-col">
         <div className="lg:w-96 w-full">
           <div className="sticky 2xl:top-[70px] top-[60px] p-4 card max-h-[85vh] overflow-auto">
-            <div className="flex justify-between items-center border-b border-gray-500 mb-2 pb-1">
-              <h3 className="font-bold text-textPrimary">Sales By:</h3>
-            </div>
+
+            {/* Filter by Refund type */}
+            <h3 className="font-bold text-textPrimary pt-3 mb-2 border-b border-gray-500">
+              Refund Type
+            </h3>
             <button
-              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${createdBy === "All"
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${refundType === "All"
                 ? "bg-primary bg-opacity-10 text-primary"
                 : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
                 }`}
-              onClick={() => setCreatedBy("All")}
+              onClick={() => {
+                setRefundType("All"),
+                  setRefundHeading("All");
+              }}
             >
               All
             </button>
-            {Object.entries(dataGroupByEntryBy).map(([key, value]) => (
-              <button
-                className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap capitalize ${createdBy === key
-                  ? "bg-primary bg-opacity-10 text-primary"
-                  : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-                  }`}
-                key={key}
-                onClick={() => setCreatedBy(key)}
-              >
-                {key}
-              </button>
-            ))}
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${refundType === "partial-refund"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setRefundType("partial-refund"),
+                  setRefundHeading("Partial Refund");
+              }}
+            >
+              Partial Refund
+            </button>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${refundType === "full-refund"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setRefundType("full-refund"),
+                  setRefundHeading("Full Refund");
+              }}
+            >
+              Full Refund
+            </button>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${refundType === "full-amount-refund"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setRefundType("full-amount-refund"),
+                  setRefundHeading("Full Amount Refund");
+              }}
+            >
+              Full Amount Refund
+            </button>
+
 
             {/* Filter by payment type */}
             <h3 className="font-bold text-textPrimary pt-3 mb-2 border-b border-gray-500">
@@ -310,20 +327,20 @@ export default function SaleTable({
         <div className="px-4 pb-6 w-full card">
           {/* Table component */}
           <Table
-            title="Sales Report"
+            title="Sales Refund Report"
             caption={
               <div className="pt-3">
                 <h1 className="hidden print:block text-black text-2xl font-bold">
                   {process.env.NEXT_PUBLIC_APP_NAME}
                 </h1>
                 <h2 className="hidden print:block text-black text-xl font-bold underline">
-                  Sales Report
+                  Sales Refund Report
                 </h2>
                 <p className="text-black">
                   Date From {formatedStartDate} To {formatedEndDate}
                 </p>
                 <h3 className="test-base font-bold text-black mb-2 print:mb-0 pt-2 px-2 print:border-gray-600 border-b-4 border-double capitalize flex justify-between">
-                  <span>{`Sale By: ${createdBy}`}</span>
+                  <span>{`Refund Type: ${refundHeading}`}</span>
                   <span>{`Payment Type: ${heading}`}</span>
                   <span>{`Discount Type: ${discountHeading}`}</span>
                 </h3>
@@ -339,7 +356,7 @@ export default function SaleTable({
             sort
             print
             pageStyle={pageStyle}
-            sumFields={["total", "received", "due"]}
+            sumFields={["total", "received", "due", "refundAmount", "refundTotal"]}
             backBtn
             tableHeightClass="h-[calc(100vh-200px)]"
           />

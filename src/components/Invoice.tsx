@@ -22,10 +22,10 @@ export default function Invoice({ order }: { order: any }) {
 
 
   return (
-    <div className="max-w-[88mm] mx-auto p-5 pt-10 bg-white invoice-sm font-medium">
+    <div className="max-w-[80mm] mx-auto px-3 py-8 bg-white invoice-sm">
       <header>
-        <div className="text-center text-sm">
-          <h1 className="font-bold text-xl">
+        <div className="text-center text-[13px]">
+          <h1 className="font-bold text-lg">
             {process.env.NEXT_PUBLIC_APP_NAME}
           </h1>
           <address className="not-italic font-bold">
@@ -48,22 +48,22 @@ export default function Invoice({ order }: { order: any }) {
         <p className="text-xs">Customer: {customer[0]?.name}</p>
       </header>
       <section className="mt-4 mb-4">
-        <table className="w-full text-left text-[13px] align-top text-gray-800">
+        <table className="w-full text-left text-xs align-top text-gray-900">
           <thead className="border border-gray-600">
             <tr>
-              <th className="py-0.5 ps-2">
+              <th className="py-0.5 ps-1">
                 <div className="w-[25mm]">Items</div>
               </th>
-              <th className="py-0.5 px-2 text-right">
+              <th className="py-0.5 px-1 text-right">
                 <div>Qty</div>
               </th>
-              <th className="py-0.5 px-2 text-right">
+              <th className="py-0.5 px-1 text-right">
                 <div>Price</div>
               </th>
-              <th className="py-0.5 px-2 text-right">
+              <th className="py-0.5 px-1 text-right">
                 <div className="w-8">Disc%</div>
               </th>
-              <th className="py-0.5 px-2 text-right">
+              <th className="py-0.5 px-1 text-right">
                 <div>Total</div>
               </th>
             </tr>
@@ -91,7 +91,7 @@ export default function Invoice({ order }: { order: any }) {
               </>
             ))}
           </tbody>
-          <tfoot className="border-t border-t-gray-500">
+          <tfoot className="border-t border-t-gray-500 text-[13px]">
             <tr>
               <th colSpan={3}>Total Tk:</th>
               <th colSpan={2} className="text-end">
@@ -218,10 +218,10 @@ export default function Invoice({ order }: { order: any }) {
           </li>
         </ul>
         <h4 className="text-center leading-tight mt-4 text-xs font-bold p-1 border border-gray-500">Thank you for shoping at {process.env.NEXT_PUBLIC_APP_NAME}</h4>
-        <strong className="mt-1 block text-center">
+        <p className="mt-1 block text-center font-medium">
           System by: medisoftit.com{" "}
           {process.env.NEXT_PUBLIC_POWERED_BY_CONTACT_NO}
-        </strong>
+        </p>
       </footer>
     </div>
   );

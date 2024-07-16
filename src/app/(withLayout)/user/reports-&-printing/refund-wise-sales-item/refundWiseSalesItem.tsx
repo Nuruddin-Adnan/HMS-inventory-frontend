@@ -17,21 +17,17 @@ const pageStyle = `
 }
 `;
 
-export default function SaleTable({
-  sales,
+export default function RefundWiseSalesItem({
+  refunds,
   startDate,
   endDate,
 }: {
-  sales: any[];
+  refunds: any[];
   startDate: any;
   endDate: any;
 }) {
-  const [data, setData] = useState<any[]>(sales);
-  const [heading, setHeading] = useState<any>("All");
-  const [discountHeading, setDiscountHeading] = useState<any>("All");
+  const [data, setData] = useState<any[]>(refunds);
   const [createdBy, setCreatedBy] = useState<any>("All");
-  const [paymentType, setPaymentType] = useState<any>("All");
-  const [discountType, setDiscountType] = useState<any>("All");
 
   // print setup
   const [isPrinting, setIsPrinting] = useState(false);
@@ -80,24 +76,13 @@ export default function SaleTable({
 
   // filter start
   const dataGroupByEntryBy = GroupByHelper.groupBy(
-    sales,
+    refunds,
     ({ createdBy }: { createdBy: any }) => createdBy[0]?.name
   );
 
   const filteredData = data.filter(
     (item: any) => createdBy === "All" || item?.createdBy[0]?.name === createdBy
-  ).filter(
-    (item: any) =>
-      paymentType === "All" ||
-      (paymentType === "due" && item?.due > 0) ||
-      (paymentType === "paid" && item?.due === 0)
   )
-    .filter(
-      (item: any) =>
-        discountType === "All" ||
-        (discountType === "no-discount" && item?.discountAmount === 0) ||
-        (discountType === "discount" && item?.discountAmount > 0)
-    );
   // filter end
 
   const columns = [
@@ -119,74 +104,39 @@ export default function SaleTable({
         return (
           <button
             className="underline text-[#000186] print:no-underline"
-            onClick={() => handlePrintInvoice(row.BILLID)}
+            onClick={() => handlePrintInvoice(row.sell[0]?.BILLID)}
           >
-            {row.BILLID}
+            {row?.sell[0]?.BILLID}
           </button>
         );
       },
     },
     {
-      key: "customer",
-      label: "Customer",
+      key: "product",
+      label: "Product",
       render: (row: any) => {
         return (
-          <span className="whitespace-nowrap">
-            {row?.customer[0]?.contactNo}
+          <span>
+            {row?.product[0]?.name}
           </span>
         );
       },
     },
+    { key: "unit", label: "Unit" },
     {
-      key: "subtotal",
-      label: "Subtotal",
+      key: "quantity",
+      label: "Qty",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.subtotal, 2)}</div>
+        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.quantity, 2)}</div>
       ),
     },
     {
-      key: "discountPercent",
-      label: "Discount%",
+      key: "amount",
+      label: "Amount",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">
-          {row?.discountPercent}
-        </div>
-      ),
-    },
-    {
-      key: "vatPercent",
-      label: "Vat%",
-      customClass: "text-right",
-      render: (row: any) => (
-        <div className="capitalize text-right font-medium">
-          {row?.vatPercent}
-        </div>
-      ),
-    },
-    {
-      key: "total",
-      label: "Total",
-      customClass: "text-right",
-      render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.total, 2)}</div>
-      ),
-    },
-    {
-      key: "received",
-      label: "Received",
-      customClass: "text-right",
-      render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.received, 2)}</div>
-      ),
-    },
-    {
-      key: "due",
-      label: "Due",
-      customClass: "text-right",
-      render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.due, 2)}</div>
+        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.amount, 2)}</div>
       ),
     },
   ];
@@ -200,7 +150,7 @@ export default function SaleTable({
         <div className="lg:w-96 w-full">
           <div className="sticky 2xl:top-[70px] top-[60px] p-4 card max-h-[85vh] overflow-auto">
             <div className="flex justify-between items-center border-b border-gray-500 mb-2 pb-1">
-              <h3 className="font-bold text-textPrimary">Sales By:</h3>
+              <h3 className="font-bold text-textPrimary">Refund By:</h3>
             </div>
             <button
               className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${createdBy === "All"
@@ -223,109 +173,25 @@ export default function SaleTable({
                 {key}
               </button>
             ))}
-
-            {/* Filter by payment type */}
-            <h3 className="font-bold text-textPrimary pt-3 mb-2 border-b border-gray-500">
-              Payment Type
-            </h3>
-            <button
-              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${paymentType === "All"
-                ? "bg-primary bg-opacity-10 text-primary"
-                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-                }`}
-              onClick={() => {
-                setPaymentType("All"),
-                  setHeading("All");
-              }}
-            >
-              All
-            </button>
-            <button
-              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${paymentType === "paid"
-                ? "bg-primary bg-opacity-10 text-primary"
-                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-                }`}
-              onClick={() => {
-                setPaymentType("paid"),
-                  setHeading("Paid");
-              }}
-            >
-              Paid
-            </button>
-            <button
-              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${paymentType === "due"
-                ? "bg-primary bg-opacity-10 text-primary"
-                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-                }`}
-              onClick={() => {
-                setPaymentType("due"),
-                  setHeading("Due");
-              }}
-            >
-              Due
-            </button>
-
-            {/* Filter by Discount type */}
-            <h3 className="font-bold text-textPrimary pt-3 mb-2 border-b border-gray-500">
-              Discount Type
-            </h3>
-            <button
-              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${discountType === "All"
-                ? "bg-primary bg-opacity-10 text-primary"
-                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-                }`}
-              onClick={() => {
-                setDiscountType("All"),
-                  setDiscountHeading("All");
-              }}
-            >
-              All
-            </button>
-            <button
-              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${discountType === "no-discount"
-                ? "bg-primary bg-opacity-10 text-primary"
-                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-                }`}
-              onClick={() => {
-                setDiscountType("no-discount"),
-                  setDiscountHeading("No Discount");
-              }}
-            >
-              No Discount
-            </button>
-            <button
-              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${discountType === "discount"
-                ? "bg-primary bg-opacity-10 text-primary"
-                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-                }`}
-              onClick={() => {
-                setDiscountType("discount"),
-                  setDiscountHeading("Discount");
-              }}
-            >
-              Discount
-            </button>
           </div>
         </div>
         <div className="px-4 pb-6 w-full card">
           {/* Table component */}
           <Table
-            title="Sales Report"
+            title="Refund wise sales item"
             caption={
               <div className="pt-3">
                 <h1 className="hidden print:block text-black text-2xl font-bold">
                   {process.env.NEXT_PUBLIC_APP_NAME}
                 </h1>
                 <h2 className="hidden print:block text-black text-xl font-bold underline">
-                  Sales Report
+                  Refund wise sales item
                 </h2>
                 <p className="text-black">
                   Date From {formatedStartDate} To {formatedEndDate}
                 </p>
                 <h3 className="test-base font-bold text-black mb-2 print:mb-0 pt-2 px-2 print:border-gray-600 border-b-4 border-double capitalize flex justify-between">
-                  <span>{`Sale By: ${createdBy}`}</span>
-                  <span>{`Payment Type: ${heading}`}</span>
-                  <span>{`Discount Type: ${discountHeading}`}</span>
+                  <span>{`Refund By: ${createdBy}`}</span>
                 </h3>
               </div>
             }
@@ -339,7 +205,7 @@ export default function SaleTable({
             sort
             print
             pageStyle={pageStyle}
-            sumFields={["total", "received", "due"]}
+            sumFields={["amount"]}
             backBtn
             tableHeightClass="h-[calc(100vh-200px)]"
           />

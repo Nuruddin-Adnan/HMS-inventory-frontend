@@ -71,9 +71,8 @@ export default function POSPForm({
 
   const productOptions = productsList.map((product: any) => ({
     value: product?._id,
-    label: `${product?.name} ${
-      product?.genericName ? `⟶${product?.genericName}` : ""
-    } ⟶${product?.brand}`,
+    label: `${product?.name} ${product?.genericName ? `⟶${product?.genericName}` : ""
+      } ⟶${product?.brand}`,
   }));
 
   const subtotal: number = products.reduce(
@@ -88,8 +87,8 @@ export default function POSPForm({
     discountTotal > 0
       ? subtotal + vatAmount - discountTotal
       : subtotal +
-        vatAmount -
-        calculatePercentageToAmount(subtotal + vatAmount, discountPercent);
+      vatAmount -
+      calculatePercentageToAmount(subtotal + vatAmount, discountPercent);
 
   const addProduct = useCallback(
     (product: Product) => {
@@ -425,8 +424,8 @@ export default function POSPForm({
           </div>
 
           <div className="border-t border-gray-100 pt-4 mt-4">
-            <div className="grid grid-cols-6 gap-4">
-              <div className="col-span-2">
+            <div className="grid grid-cols-6 md:gap-4 gap-3">
+              <div className="md:col-span-2 col-span-full">
                 <form
                   ref={customerFormRef}
                   action={handleGetSingleCustomer}
@@ -454,7 +453,7 @@ export default function POSPForm({
                   </div>
                 </form>
               </div>
-              <div className="col-span-3">
+              <div className="md:col-span-3 col-span-4">
                 <Input
                   label="Customer Name"
                   className="py-1.5"
@@ -463,7 +462,7 @@ export default function POSPForm({
                   readOnly
                 />
               </div>
-              <div className="col-span-1">
+              <div className="md:col-span-1 col-span-2">
                 <Input
                   label="Points"
                   className="py-1.5"
@@ -477,7 +476,7 @@ export default function POSPForm({
         </div>
 
         <div className="mt-3">
-          <div className="overflow-x-auto h-[calc(100vh-316px)] overflow-auto">
+          <div className="xl:h-[calc(100vh-316px)] h-[250px] overflow-auto">
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
@@ -564,8 +563,8 @@ export default function POSPForm({
                     <td className="py-1 px-4 border text-center">
                       {product.price * product.quantity! -
                         product?.price *
-                          product?.quantity! *
-                          (product?.discountPercent! / 100)}
+                        product?.quantity! *
+                        (product?.discountPercent! / 100)}
                     </td>
                     <td className="py-1 px-4 border text-center">
                       <button
@@ -601,7 +600,7 @@ export default function POSPForm({
         <form
           ref={formRef}
           action={handleSubmit}
-          className="lg:sticky bottom-5"
+          className="md:sticky bottom-5"
         >
           <div className="flex justify-between text-base whitespace-nowrap">
             <div className="grid 2xl:gap-4 gap-3 w-full">
