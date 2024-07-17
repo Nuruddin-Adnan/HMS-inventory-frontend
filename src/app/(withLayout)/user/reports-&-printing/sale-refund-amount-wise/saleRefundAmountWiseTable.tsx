@@ -17,7 +17,7 @@ const pageStyle = `
 }
 `;
 
-export default function RefundWiseSalesItem({
+export default function SaleRefundAmountWiseTable({
   refunds,
   startDate,
   endDate,
@@ -77,11 +77,11 @@ export default function RefundWiseSalesItem({
   // filter start
   const dataGroupByEntryBy = GroupByHelper.groupBy(
     refunds,
-    ({ createdBy }: { createdBy: any }) => createdBy[0]?.name
+    ({ createdBy }: { createdBy: any }) => createdBy?.name
   );
 
   const filteredData = data.filter(
-    (item: any) => createdBy === "All" || item?.createdBy[0]?.name === createdBy
+    (item: any) => createdBy === "All" || item?.createdBy?.name === createdBy
   )
   // filter end
 
@@ -104,31 +104,21 @@ export default function RefundWiseSalesItem({
         return (
           <button
             className="underline text-[#000186] print:no-underline"
-            onClick={() => handlePrintInvoice(row.sell[0]?.BILLID)}
+            onClick={() => handlePrintInvoice(row.BILLID)}
           >
-            {row?.sell[0]?.BILLID}
+            {row.BILLID}
           </button>
         );
       },
     },
     {
-      key: "product",
-      label: "Product",
-      render: (row: any) => {
-        return (
-          <span>
-            {row?.product[0]?.name}
-          </span>
-        );
-      },
-    },
-    { key: "unit", label: "Unit" },
-    {
-      key: "quantity",
-      label: "Qty",
-      customClass: "text-right",
+      key: "refundMethod",
+      label: "Refund Method",
+      customClass: "text-right text-nowrap",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.quantity, 2)}</div>
+        <div className="capitalize text-right font-medium">
+          {row?.refundMethod}
+        </div>
       ),
     },
     {
@@ -139,6 +129,7 @@ export default function RefundWiseSalesItem({
         <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.amount, 2)}</div>
       ),
     },
+
   ];
 
   const formatedStartDate = format(new Date(startDate), "dd-MMM-yyyy p");
@@ -173,19 +164,20 @@ export default function RefundWiseSalesItem({
                 {key}
               </button>
             ))}
+
           </div>
         </div>
         <div className="px-4 pb-6 w-full card">
           {/* Table component */}
           <Table
-            title="Refund wise sales item"
+            title="Refund report (Amount wise)"
             caption={
               <div className="pt-3">
                 <h1 className="hidden print:block text-black text-2xl font-bold">
                   {process.env.NEXT_PUBLIC_APP_NAME}
                 </h1>
                 <h2 className="hidden print:block text-black text-xl font-bold underline">
-                  Refund wise sales item
+                  Refund Report(Amount wise)
                 </h2>
                 <p className="text-black">
                   Date From {formatedStartDate} To {formatedEndDate}

@@ -135,11 +135,11 @@ export default function OrderTable({ orders }: { orders: any[] }) {
         <div
           className={
             row?.paymentStatus === "paid" ||
-            row?.paymentStatus === "discount-paid"
+              row?.paymentStatus === "discount-paid"
               ? "bg-[#28A745] bg-opacity-[.12] text-[#28A745] font-medium rounded-full text-center m-auto w-28 py-0.5"
               : row?.paymentStatus.includes("refund")
-              ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0.5"
-              : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0.5"
+                ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0.5"
+                : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0.5"
           }
         >
           <span className="capitalize">
@@ -215,10 +215,11 @@ export default function OrderTable({ orders }: { orders: any[] }) {
         data={orders}
         uniqueKey="BILLID"
         customTfClass="text-right whitespace-nowrap"
-        customThClass="whitespace-nowrap"
+        customThClass="whitespace-nowrap bg-gray-200 py-1.5"
         customTdClass="py-0.5 text-sm"
         responsive
         sort
+        tableHeightClass="h-[calc(100vh-170px)]"
       />
     </div>
   );

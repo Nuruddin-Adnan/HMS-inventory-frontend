@@ -6,6 +6,11 @@ pending task list
 *** stock low quantity show in frontned. currently it is the same copy of stock.
 ### Need to create new functionality and route in backend for low stock
 
+18/07/2024
+*** Item wise (item group wise) sale report
+*** Purchase report
+*** Seller wise purchase report (select seller from report home page)
+
 
 
 

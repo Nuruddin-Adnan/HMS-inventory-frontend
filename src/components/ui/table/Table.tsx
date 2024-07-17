@@ -7,7 +7,6 @@ import {
   PlusIcon,
   PrinterIcon,
   MagnifyingGlassIcon,
-  ArrowUturnLeftIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -203,8 +202,8 @@ export default function Table({
 
   return (
     <>
-      {(title || search || print || create) && (
-        <div className="flex items-center justify-between mb-4 border-b border-gray-200 2xl:p-4 p-3">
+      {(title || search || print || create || backBtn) && (
+        <div className="flex items-center justify-between border-b border-gray-200 2xl:p-4 p-3">
           {title && (
             <h2 className="font-bold 2xl:text-2xl text-xl text-textPrimary">
               {title}
@@ -266,7 +265,7 @@ export default function Table({
           >
             <table className={cn("w-full", customTableClass)}>
               <caption>{caption}</caption>
-              <thead className="sticky top-0 bg-white">
+              <thead className="sticky top-0 bg-white z-[990]">
                 <tr>
                   {serialized && (
                     <th

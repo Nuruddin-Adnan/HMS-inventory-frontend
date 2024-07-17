@@ -17,17 +17,19 @@ const pageStyle = `
 }
 `;
 
-export default function RefundWiseSalesItem({
-  refunds,
+export default function SellWithItemTable({
+  sales,
   startDate,
   endDate,
 }: {
-  refunds: any[];
+  sales: any[];
   startDate: any;
   endDate: any;
 }) {
-  const [data, setData] = useState<any[]>(refunds);
+  const [data, setData] = useState<any[]>(sales);
   const [createdBy, setCreatedBy] = useState<any>("All");
+  const [paymentType, setPaymentType] = useState<any>("All");
+  const [heading, setHeading] = useState<any>("All");
 
   // print setup
   const [isPrinting, setIsPrinting] = useState(false);
@@ -76,13 +78,18 @@ export default function RefundWiseSalesItem({
 
   // filter start
   const dataGroupByEntryBy = GroupByHelper.groupBy(
-    refunds,
+    sales,
     ({ createdBy }: { createdBy: any }) => createdBy[0]?.name
   );
 
   const filteredData = data.filter(
     (item: any) => createdBy === "All" || item?.createdBy[0]?.name === createdBy
-  )
+  ).filter(
+    (item: any) =>
+      paymentType === "All" ||
+      (paymentType === "due" && item?.due > 0) ||
+      (paymentType === "paid" && item?.due === 0)
+  );
   // filter end
 
   const columns = [
@@ -104,39 +111,52 @@ export default function RefundWiseSalesItem({
         return (
           <button
             className="underline text-[#000186] print:no-underline"
-            onClick={() => handlePrintInvoice(row.sell[0]?.BILLID)}
+            onClick={() => handlePrintInvoice(row.BILLID)}
           >
-            {row?.sell[0]?.BILLID}
+            {row.BILLID}
           </button>
         );
       },
     },
     {
-      key: "product",
-      label: "Product",
+      key: "Bill",
+      label: "Bill",
+      customClass: "text-center",
       render: (row: any) => {
         return (
-          <span>
-            {row?.product[0]?.name}
-          </span>
+          <div className="capitalize text-right font-medium whitespace-nowrap">
+            <p>Customer: {row?.customer[0]?.contactNo ?? 'Walk-in'}</p>
+            <p>Total: {toFixedIfNecessary(row?.total, 2)}</p>
+            <p>Received: {toFixedIfNecessary(row?.received, 2)}</p>
+            <p>Due: {toFixedIfNecessary(row?.due, 2)}</p>
+          </div>
         );
       },
     },
-    { key: "unit", label: "Unit" },
     {
-      key: "quantity",
-      label: "Qty",
-      customClass: "text-right",
+      key: "productDetails",
+      label: "Products",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.quantity, 2)}</div>
-      ),
-    },
-    {
-      key: "amount",
-      label: "Amount",
-      customClass: "text-right",
-      render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.amount, 2)}</div>
+        <table className="w-full">
+          <thead className="">
+            <tr>
+              <th className="text-start border border-gray-400 px-1">Item</th>
+              <th className="border border-gray-400 px-1 w-20">Unit</th>
+              <th className="border border-gray-400 px-1 w-14">Qty</th>
+            </tr>
+          </thead>
+          <tbody>
+            {row?.items?.map((item: any, index: number) => <tr key={item?._id}>
+              <td className="border border-gray-400 px-1"><span className="font-medium pr-0.5">{index + 1}.</span>{item?.productDetails[0]?.name}</td>
+              <td className="border border-gray-400 px-1">
+                {item?.unit}
+              </td>
+              <td className="border border-gray-400 px-1 text-center">
+                {item?.quantity}
+              </td>
+            </tr>)}
+          </tbody>
+        </table>
       ),
     },
   ];
@@ -150,7 +170,7 @@ export default function RefundWiseSalesItem({
         <div className="lg:w-96 w-full">
           <div className="sticky 2xl:top-[70px] top-[60px] p-4 card max-h-[85vh] overflow-auto">
             <div className="flex justify-between items-center border-b border-gray-500 mb-2 pb-1">
-              <h3 className="font-bold text-textPrimary">Refund By:</h3>
+              <h3 className="font-bold text-textPrimary">Sales By:</h3>
             </div>
             <button
               className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${createdBy === "All"
@@ -173,25 +193,68 @@ export default function RefundWiseSalesItem({
                 {key}
               </button>
             ))}
+
+            {/* Filter by payment type */}
+            <h3 className="font-bold text-textPrimary pt-3 mb-2 border-b border-gray-500">
+              Payment Type
+            </h3>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${paymentType === "All"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setPaymentType("All"),
+                  setHeading("All");
+              }}
+            >
+              All
+            </button>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${paymentType === "paid"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setPaymentType("paid"),
+                  setHeading("Paid");
+              }}
+            >
+              Paid
+            </button>
+            <button
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${paymentType === "due"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
+              onClick={() => {
+                setPaymentType("due"),
+                  setHeading("Due");
+              }}
+            >
+              Due
+            </button>
+
           </div>
         </div>
         <div className="px-4 pb-6 w-full card">
           {/* Table component */}
           <Table
-            title="Refund wise sales item"
+            title="Sales Report(With items)"
             caption={
               <div className="pt-3">
                 <h1 className="hidden print:block text-black text-2xl font-bold">
                   {process.env.NEXT_PUBLIC_APP_NAME}
                 </h1>
                 <h2 className="hidden print:block text-black text-xl font-bold underline">
-                  Refund wise sales item
+                  Sales Report(With items)
                 </h2>
                 <p className="text-black">
                   Date From {formatedStartDate} To {formatedEndDate}
                 </p>
                 <h3 className="test-base font-bold text-black mb-2 print:mb-0 pt-2 px-2 print:border-gray-600 border-b-4 border-double capitalize flex justify-between">
-                  <span>{`Refund By: ${createdBy}`}</span>
+                  <span>{`Sale By: ${createdBy}`}</span>
+                  <span>{`Payment Type: ${heading}`}</span>
                 </h3>
               </div>
             }
@@ -205,7 +268,6 @@ export default function RefundWiseSalesItem({
             sort
             print
             pageStyle={pageStyle}
-            sumFields={["amount"]}
             backBtn
             tableHeightClass="h-[calc(100vh-180px)]"
           />

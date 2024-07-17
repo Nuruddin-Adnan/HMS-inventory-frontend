@@ -1,6 +1,6 @@
 import React from 'react'
 import { getAllOrders } from '@/api-services/order/getAllOrders';
-import SaleTable from './saleTable';
+import SellWithItemTable from './sellWithItemTable';
 
 export default async function SalesRefund({
     searchParams,
@@ -10,9 +10,9 @@ export default async function SalesRefund({
     const startDate = searchParams['startDate'] ?? ''
     const endDate = searchParams['endDate'] ?? ''
 
-    const { data } = await getAllOrders(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&fields=createdAt createdBy.name BILLID customer.contactNo subtotal discountPercent vatPercent total received due`);
+    const { data } = await getAllOrders(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&fields=createdAt createdBy.name BILLID customer.contactNo total received due items.unit items.quantity items.productDetails`);
 
     return (
-        <SaleTable sales={data} startDate={startDate} endDate={endDate} />
+        <SellWithItemTable sales={data} startDate={startDate} endDate={endDate} />
     )
 }

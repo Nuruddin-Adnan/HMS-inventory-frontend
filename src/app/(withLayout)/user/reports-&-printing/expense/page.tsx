@@ -10,7 +10,7 @@ export default async function Expense({
     const startDate = searchParams['startDate'] ?? ''
     const endDate = searchParams['endDate'] ?? ''
 
-    const { data } = await getAllExpenses(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}`);
+    const { data } = await getAllExpenses(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&fields=expenseDate purpose description createdAt createdBy updatedAt updatedBy amount`);
 
     return (
         <ExpenseTable expenses={data} startDate={startDate} endDate={endDate} />

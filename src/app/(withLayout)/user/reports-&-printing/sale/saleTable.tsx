@@ -341,7 +341,7 @@ export default function SaleTable({
             pageStyle={pageStyle}
             sumFields={["total", "received", "due"]}
             backBtn
-            tableHeightClass="h-[calc(100vh-200px)]"
+            tableHeightClass="h-[calc(100vh-180px)]"
           />
         </div>
       </div>

@@ -111,22 +111,20 @@ export default function ExpenseTable({
               <h3 className="font-bold text-textPrimary">Expense By:</h3>
             </div>
             <button
-              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${
-                createdBy === "All"
-                  ? "bg-primary bg-opacity-10 text-primary"
-                  : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-              }`}
+              className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap ${createdBy === "All"
+                ? "bg-primary bg-opacity-10 text-primary"
+                : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                }`}
               onClick={() => setCreatedBy("All")}
             >
               All
             </button>
             {Object.entries(dataGroupByEntryBy).map(([key, value]) => (
               <button
-                className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap capitalize ${
-                  createdBy === key
-                    ? "bg-primary bg-opacity-10 text-primary"
-                    : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
-                }`}
+                className={`py-0.5 px-2 text-sm border block w-full text-left whitespace-nowrap capitalize ${createdBy === key
+                  ? "bg-primary bg-opacity-10 text-primary"
+                  : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
+                  }`}
                 key={key}
                 onClick={() => setCreatedBy(key)}
               >
@@ -141,8 +139,11 @@ export default function ExpenseTable({
             title="Expense"
             caption={
               <div className="pt-3">
+                <h1 className="hidden print:block text-black text-2xl font-bold">
+                  {process.env.NEXT_PUBLIC_APP_NAME}
+                </h1>
                 <h2 className="hidden print:block text-black text-xl font-bold underline">
-                  Expense
+                  Expense Report
                 </h2>
                 <p className="text-black">
                   Date From {formatedStartDate} To {formatedEndDate}
@@ -163,6 +164,8 @@ export default function ExpenseTable({
             print
             pageStyle={pageStyle}
             sumFields={["amount"]}
+            backBtn
+            tableHeightClass="h-[calc(100vh-180px)]"
           />
         </div>
       </div>

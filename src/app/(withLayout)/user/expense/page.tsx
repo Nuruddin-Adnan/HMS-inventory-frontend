@@ -21,7 +21,7 @@ export default async function Expense({
   const limit = searchParams["limit"] ?? "10";
 
   const { data: expenses, meta } = await getAllExpenses(
-    `sort=-createdAt&page=${page}&limit=${limit}`
+    `sort=-createdAt&page=${page}&limit=${limit}&fields=expenseDate purpose description amount createdBy updatedBy createdAt updatedAt`
   );
 
   return (

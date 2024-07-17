@@ -10,14 +10,14 @@ export default async function Order({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const page = searchParams["page"] ?? "1";
-  const limit = searchParams["limit"] ?? "5";
+  const limit = searchParams["limit"] ?? "100";
   const query = searchParams["query"] ?? "";
   const paymentStatus = searchParams["paymentStatus"] ?? "";
   const isDue = searchParams["isDue"] ?? "";
 
   const { data: orders, meta } = await getAllOrders(
     `sort=-createdAt&page=${page}&limit=${limit}${query && `&search=${query}`}${paymentStatus && `&paymentStatus=${paymentStatus}`}${isDue && `&due[gte]=1`
-    }&fields=-createdBy -updatedBy`
+    }&fields=-createdBy -updatedBy -items`
   );
 
   return (
@@ -29,7 +29,7 @@ export default async function Order({
         <div className="lg:block hidden">
           <SearchControl placeholder="By invoice no..." />
         </div>
-        <PaginationControls totalPages={meta.total ?? 0} limit={5} />
+        <PaginationControls totalPages={meta.total ?? 0} limit={100} />
         <FilterOrder />
       </div>
       <div className="px-4">

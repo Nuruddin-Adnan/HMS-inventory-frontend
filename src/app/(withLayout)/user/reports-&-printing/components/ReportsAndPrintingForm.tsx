@@ -45,13 +45,15 @@ const listStyle: any = {
 
 const listItems = [
     { title: 'Sales report', value: '/user/reports-&-printing/sale' },
-    { title: 'Purchase report', value: '/user/reports-&-printing/purchase-report' },
-    { title: 'Payment wise sales', value: '/user/reports-&-printing/payment-wise-sales' },
+    // { title: 'Purchase report', value: '/user/reports-&-printing/purchase-report' },
+    // { title: 'Payment wise sales', value: '/user/reports-&-printing/payment-wise-sales' },
+    // { title: 'Payment wise purchase', value: '/user/reports-&-printing/payment-wise-purchase' },
+    // { title: 'Income Statement', value: '/user/reports-&-printing/income-statement' },
     { title: 'Sales refund', value: '/user/reports-&-printing/sales-refund' },
-    { title: 'Payment wise purchase', value: '/user/reports-&-printing/payment-wise-purchase' },
     { title: 'Refund wise sales item', value: '/user/reports-&-printing/refund-wise-sales-item' },
-    { title: 'Income Statement', value: '/user/reports-&-printing/income-statement' },
     { title: 'Expense', value: '/user/reports-&-printing/expense' },
+    { title: 'Sales Refund (Amount wise)', value: '/user/reports-&-printing/sale-refund-amount-wise' },
+    { title: 'Sales Report (With Items)', value: '/user/reports-&-printing/sale-with-item' },
 ];
 
 export default function ReportsAndPrintingForm() {

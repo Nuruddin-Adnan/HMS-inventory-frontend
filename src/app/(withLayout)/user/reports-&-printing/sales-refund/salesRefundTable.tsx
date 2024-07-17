@@ -358,7 +358,7 @@ export default function SalesRefundTable({
             pageStyle={pageStyle}
             sumFields={["total", "received", "due", "refundAmount", "refundTotal"]}
             backBtn
-            tableHeightClass="h-[calc(100vh-200px)]"
+            tableHeightClass="h-[calc(100vh-180px)]"
           />
         </div>
       </div>

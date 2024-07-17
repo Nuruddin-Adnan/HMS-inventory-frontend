@@ -39,14 +39,6 @@ export default function ExpenseTable({
         </span>
       }
     },
-    { key: "purpose", label: "Purpose", render: (row: any) => <div className="whitespace-nowrap">{row?.purpose}</div>, },
-    { key: "description", label: "Description" },
-    {
-      key: "amount",
-      label: "Amount",
-      customClass: "text-right w-24 pr-5",
-      render: (row: any) => <div className="capitalize text-right font-medium pr-4">{row?.amount}</div>,
-    },
     {
       key: "createdAt",
       label: "Entry",
@@ -68,6 +60,14 @@ export default function ExpenseTable({
           {row.updatedBy && <span> By: {row.updatedBy?.name}</span>}
         </span>
       }
+    },
+    { key: "purpose", label: "Purpose", render: (row: any) => <div className="whitespace-nowrap">{row?.purpose}</div>, },
+    { key: "description", label: "Description" },
+    {
+      key: "amount",
+      label: "Amount",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => <div className="capitalize text-right font-medium pr-4">{row?.amount}</div>,
     },
   ];
 
@@ -99,6 +99,16 @@ export default function ExpenseTable({
       {/* Table component */}
       <Table
         title="Expenses"
+        caption={
+          <div className="pt-3">
+            <h1 className="hidden print:block text-black text-2xl font-bold">
+              {process.env.NEXT_PUBLIC_APP_NAME}
+            </h1>
+            <h2 className="hidden print:block text-black text-xl font-bold underline">
+              Expense Report
+            </h2>
+          </div>
+        }
         columns={columns}
         data={expenses}
         uniqueKey="_id"
