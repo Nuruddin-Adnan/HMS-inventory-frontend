@@ -17,16 +17,19 @@ const pageStyle = `
 }
 `;
 
-export default function SellWithItemTable({
+export default function SaleWithItemTable({
   sales,
   startDate,
   endDate,
+  totalPages,
+  limit,
 }: {
   sales: any[];
   startDate: any;
   endDate: any;
+  totalPages: number;
+  limit: number;
 }) {
-  const [data, setData] = useState<any[]>(sales);
   const [createdBy, setCreatedBy] = useState<any>("All");
   const [paymentType, setPaymentType] = useState<any>("All");
   const [heading, setHeading] = useState<any>("All");
@@ -82,7 +85,7 @@ export default function SellWithItemTable({
     ({ createdBy }: { createdBy: any }) => createdBy[0]?.name
   );
 
-  const filteredData = data.filter(
+  const filteredData = sales.filter(
     (item: any) => createdBy === "All" || item?.createdBy[0]?.name === createdBy
   ).filter(
     (item: any) =>
@@ -270,6 +273,9 @@ export default function SellWithItemTable({
             pageStyle={pageStyle}
             backBtn
             tableHeightClass="h-[calc(100vh-180px)]"
+            pagination
+            totalPages={totalPages}
+            limit={limit}
           />
         </div>
       </div>

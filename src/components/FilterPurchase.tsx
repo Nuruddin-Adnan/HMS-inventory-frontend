@@ -12,17 +12,36 @@ import Checkbox from "./ui/form/Checkbox";
 export default function FilterPurchase({ suppliers }: { suppliers: any }) {
   const supplierSelectRef = useRef<SelectInstance | null>(null);
   const paymentStatusSelectRef = useRef<SelectInstance | null>(null);
-  const isDueSelectRef = useRef<SelectInstance | null>(null);
-
-  const [supplier, setSupplier] = useState<any>(null);
-  const [paymentStatus, setPaymentStatus] = useState<any>(null);
-  const [isDue, setIsDue] = useState<any>(false);
-
-  const [appliFilter, setAppliFilter] = useState<any>(false);
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
+
+  //############# filter initial state set start #############
+  const supplierOptions = suppliers.map((item: any) => {
+    return {
+      label: `${item?.name} ⟶${item?.contactNo} ⟶${item?.brand[0]?.name}`,
+      value: item?._id,
+    };
+  });
+
+  // status options for react select
+  const paymentStatusOptions = [
+    { label: "Paid", value: "paid" },
+    { label: "Unpaid", value: "unpaid" },
+    { label: "Partial paid", value: "partial-paid" },
+    { label: "Partial refund", value: "partial-refund" },
+    { label: "Full refund", value: "full-refund" },
+  ];
+  const initialSupplierOptions = supplierOptions.filter((supplier: any) => supplier?.value === searchParams.get("supplier"))
+  const initialPaymentStatusOptions = paymentStatusOptions.filter((option: any) => option?.value === searchParams.get("paymentStatus"))
+  // ############# end of filter initial state set  #############
+
+  const [supplier, setSupplier] = useState<any>(initialSupplierOptions.length > 0 ? initialSupplierOptions : null);
+  const [paymentStatus, setPaymentStatus] = useState<any>(initialPaymentStatusOptions.length > 0 ? initialPaymentStatusOptions : null);
+  const [isDue, setIsDue] = useState<any>(searchParams.get("isDue") === null ? false : searchParams.get("isDue"));
+
+  const [appliFilter, setAppliFilter] = useState<any>(false);
 
   const handleFilter = (source: any, term: any) => {
     const params = new URLSearchParams(searchParams);
@@ -58,21 +77,7 @@ export default function FilterPurchase({ suppliers }: { suppliers: any }) {
     setAppliFilter(false);
   };
 
-  const supplierOptions = suppliers.map((item: any) => {
-    return {
-      label: `${item?.name} ⟶${item?.contactNo} ⟶${item?.brand[0]?.name}`,
-      value: item?._id,
-    };
-  });
 
-  // statu options for react select
-  const paymentStatusOptions = [
-    { label: "Paid", value: "paid" },
-    { label: "Unpaid", value: "unpaid" },
-    { label: "Partial paid", value: "partial-paid" },
-    { label: "Partial refund", value: "partial-refund" },
-    { label: "Full refund", value: "full-refund" },
-  ];
 
   return (
     <Menu as="div" className="relative">

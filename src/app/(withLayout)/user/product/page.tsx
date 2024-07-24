@@ -13,7 +13,7 @@ export default async function Product({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const page = searchParams["page"] ?? "1";
-  const limit = searchParams["limit"] ?? "2";
+  const limit = searchParams["limit"] ?? "100";
   const query = searchParams["query"] ?? "";
   const category = searchParams["category"] ?? "";
   const brand = searchParams["brand"] ?? "";
@@ -45,7 +45,7 @@ export default async function Product({
         <div className="lg:block hidden">
           <SearchControl placeholder="By name, code & tag..." />
         </div>
-        <PaginationControls totalPages={meta.total ?? 0} limit={2} />
+        <PaginationControls totalPages={meta.total ?? 0} limit={100} />
         <FilterProduct
           categories={categories?.data}
           brands={brands?.data}

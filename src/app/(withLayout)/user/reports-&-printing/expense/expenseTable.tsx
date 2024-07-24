@@ -16,12 +16,15 @@ export default function ExpenseTable({
   expenses,
   startDate,
   endDate,
+  totalPages,
+  limit,
 }: {
   expenses: any[];
   startDate: any;
   endDate: any;
+  totalPages: number;
+  limit: number;
 }) {
-  const [data, setData] = useState<any[]>(expenses);
   const [createdBy, setCreatedBy] = useState<any>("All");
 
   // filter start
@@ -30,7 +33,7 @@ export default function ExpenseTable({
     ({ createdBy }: { createdBy: any }) => createdBy?.name
   );
 
-  const filteredData = data.filter(
+  const filteredData = expenses.filter(
     (item: any) => createdBy === "All" || item?.createdBy?.name === createdBy
   );
   // filter end
@@ -43,7 +46,7 @@ export default function ExpenseTable({
       render: (row: any) => {
         return (
           <span className="whitespace-nowrap">
-            {format(new Date(row?.expenseDate), "dd/MMM/yyyy p")}
+            {format(new Date(row?.expenseDate), "dd/MMM/yyyy")}
           </span>
         );
       },
@@ -166,6 +169,9 @@ export default function ExpenseTable({
             sumFields={["amount"]}
             backBtn
             tableHeightClass="h-[calc(100vh-180px)]"
+            pagination
+            totalPages={totalPages}
+            limit={limit}
           />
         </div>
       </div>

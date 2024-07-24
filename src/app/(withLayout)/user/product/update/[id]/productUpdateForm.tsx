@@ -32,6 +32,8 @@ export default function ProductUpdateForm({
   const brandSelectRef = useRef<SelectInstance | null>(null);
   const genericSelectRef = useRef<SelectInstance | null>(null);
   const shelveSelectRef = useRef<SelectInstance | null>(null);
+  const [discountAmount, setDiscountAmount] = useState<any>(data?.discountAmount)
+  const [discountPercent, setDiscountPercent] = useState<any>(data?.discountPercent)
 
   const router = useRouter();
 
@@ -122,7 +124,7 @@ export default function ProductUpdateForm({
         className="grid 2xl:gap-4 gap-3"
       >
         <div className="grid lg:grid-cols-4 2xl:gap-4 gap-3">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 col-span-4">
             <Input
               type="text"
               name="name"
@@ -131,7 +133,7 @@ export default function ProductUpdateForm({
               autoFocus
             />
           </div>
-          <div className="grid col-span-2 grid-cols-3 2xl:gap-4 gap-3">
+          <div className="grid lg:col-span-2 col-span-4 lg:grid-cols-3 grid-cols-2 2xl:gap-4 gap-3">
             <Input
               type="text"
               name="code"
@@ -216,13 +218,21 @@ export default function ProductUpdateForm({
             type="number"
             name="discountPercent"
             label="Discount %*"
-            defaultValue={data?.discountPercent}
+            value={discountPercent}
+            onChange={(e: any) => {
+              setDiscountPercent(e.target.value);
+              setDiscountAmount((e.target.value / 100) * data?.price)
+            }}
           />
           <Input
             type="number"
             name="discountAmount"
             label="Discount Amount"
-            defaultValue={data?.discountAmount}
+            value={discountAmount}
+            onChange={(e: any) => {
+              setDiscountAmount(e.target.value);
+              setDiscountPercent((e.target.value / data?.price) * 100)
+            }}
           />
         </div>
         <Textarea

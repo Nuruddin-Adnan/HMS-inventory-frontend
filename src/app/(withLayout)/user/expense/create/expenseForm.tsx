@@ -7,6 +7,7 @@ import Textarea from "@/components/ui/form/Textarea";
 import convertStringToNumber from "@/helpers/convertStringToNumber";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import tagRevalidate from "@/lib/tagRevalidate";
+import { format } from "date-fns";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useState, useRef } from "react";
@@ -53,15 +54,15 @@ export default function ExpenseForm() {
         action={handleSubmit}
         className="grid 2xl:space-y-4 space-y-3"
       >
-        <Input type="text" name="purpose" label="Purpose of expense*" />
+        <Input type="text" name="purpose" label="Purpose of expense*" autoFocus required />
         <div className="grid grid-cols-2 2xl:space-x-4 space-x-3">
-          <Input type="date" name="expenseDate" label="Expense Date" />
-          <Input type="number" name="amount" label="Amount" />
+          <Input type="date" name="expenseDate" label="Expense Date" defaultValue={format(new Date(), 'yyyy-MM-dd')} required />
+          <Input type="number" name="amount" label="Amount" required />
         </div>
-        <Textarea name="description" label="Description" />
+        <Textarea name="description" label="Description" rows={6} />
         <div className="text-right">
           <Link href={`/user/expense`} >
-            <Button type="submit" variant="primary-light" className="mr-2" loading={loading}>
+            <Button type="button" variant="primary-light" className="mr-2" loading={loading}>
               Back
             </Button>
           </Link>

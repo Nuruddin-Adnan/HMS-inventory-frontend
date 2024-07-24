@@ -18,7 +18,7 @@ export default async function Category({
   );
 
   return (
-    <div className="card py-4">
+    <div className="card py-4 max-w-5xl mx-auto">
       <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
         <SearchControl placeholder="Search by name..." />
         <PaginationControls totalPages={meta.total ?? 0} limit={100} />

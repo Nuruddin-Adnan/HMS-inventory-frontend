@@ -21,12 +21,15 @@ export default function SalesRefundTable({
   sales,
   startDate,
   endDate,
+  totalPages,
+  limit,
 }: {
   sales: any[];
   startDate: any;
   endDate: any;
+  totalPages: number;
+  limit: number;
 }) {
-  const [data, setData] = useState<any[]>(sales);
   const [heading, setHeading] = useState<any>("All");
   const [discountHeading, setDiscountHeading] = useState<any>("All");
   const [refundHeading, setRefundHeading] = useState<any>("All");
@@ -80,7 +83,7 @@ export default function SalesRefundTable({
   };
 
   // filter start
-  const filteredData = data.filter(
+  const filteredData = sales.filter(
     (item: any) =>
       paymentType === "All" ||
       (paymentType === "due" && item?.due > 0) ||
@@ -146,7 +149,7 @@ export default function SalesRefundTable({
     },
     {
       key: "refundTotal",
-      label: "Net Refund",
+      label: "Refund Total",
       customClass: "text-right text-nowrap",
       render: (row: any) => (
         <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.refundTotal, 2)}</div>
@@ -359,6 +362,9 @@ export default function SalesRefundTable({
             sumFields={["total", "received", "due", "refundAmount", "refundTotal"]}
             backBtn
             tableHeightClass="h-[calc(100vh-180px)]"
+            pagination
+            totalPages={totalPages}
+            limit={limit}
           />
         </div>
       </div>

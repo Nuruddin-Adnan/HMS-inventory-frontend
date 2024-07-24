@@ -21,12 +21,15 @@ export default function SaleRefundAmountWiseTable({
   refunds,
   startDate,
   endDate,
+  totalPages,
+  limit,
 }: {
   refunds: any[];
   startDate: any;
   endDate: any;
+  totalPages: number;
+  limit: number;
 }) {
-  const [data, setData] = useState<any[]>(refunds);
   const [createdBy, setCreatedBy] = useState<any>("All");
 
   // print setup
@@ -80,7 +83,7 @@ export default function SaleRefundAmountWiseTable({
     ({ createdBy }: { createdBy: any }) => createdBy?.name
   );
 
-  const filteredData = data.filter(
+  const filteredData = refunds.filter(
     (item: any) => createdBy === "All" || item?.createdBy?.name === createdBy
   )
   // filter end
@@ -200,6 +203,9 @@ export default function SaleRefundAmountWiseTable({
             sumFields={["amount"]}
             backBtn
             tableHeightClass="h-[calc(100vh-180px)]"
+            pagination
+            totalPages={totalPages}
+            limit={limit}
           />
         </div>
       </div>

@@ -37,7 +37,32 @@ export default function ProductTable({ products }: { products: any[] }) {
       key: "name",
       label: "Product Name",
       render: (row: any) => (
-        <div className="whitespace-nowrap">{row?.name}</div>
+        <div className="whitespace-nowrap print:whitespace-normal">{row?.name}</div>
+      ),
+    },
+    { key: "unit", label: "Unit" },
+    {
+      key: "price",
+      label: "Price",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">{Math.floor(row?.price)}</div>
+      ),
+    },
+    {
+      key: "discountPercent",
+      label: "Disc%",
+      customClass: "text-right",
+      render: (row: any) => (
+        <div className="text-right font-medium">{Math.floor(row?.discountPercent)}</div>
+      ),
+    },
+    {
+      key: "discountAmount",
+      label: "Discount",
+      customClass: "text-right w-24",
+      render: (row: any) => (
+        <div className="text-right font-medium">{Math.floor(row?.discountAmount)}</div>
       ),
     },
     {
@@ -60,25 +85,6 @@ export default function ProductTable({ products }: { products: any[] }) {
       render: (row: any) => (
         <div className="whitespace-nowrap">{row?.shelve}</div>
       ),
-    },
-    { key: "unit", label: "Unit" },
-    {
-      key: "price",
-      label: "Price",
-      customClass: "text-right w-24 pr-5",
-      render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.price}</div>
-      ),
-    },
-    {
-      key: "discountPercent",
-      label: "Discount %",
-      render: (row: any) => <div>{parseInt(row?.discountPercent)}</div>,
-    },
-    {
-      key: "discountAmount",
-      label: "Discount",
-      render: (row: any) => <div>{parseInt(row?.discountAmount)}</div>,
     },
     {
       key: "createdAt",
@@ -138,15 +144,21 @@ export default function ProductTable({ products }: { products: any[] }) {
       {/* Table component */}
       <Table
         caption={
-          <h2 className="hidden pt-3 print:block text-black text-xl font-bold underline">
-            Products
-          </h2>
+          <div>
+            <h1 className="hidden print:block pt-3 text-black text-2xl font-bold">
+              {process.env.NEXT_PUBLIC_APP_NAME}
+            </h1>
+            <h2 className="hidden mb-2 print:block text-black text-xl font-bold underline">
+              Products
+            </h2>
+          </div>
         }
         columns={columns}
         data={products}
         uniqueKey="_id"
         customTfClass="text-right whitespace-nowrap"
-        customThClass="whitespace-nowrap"
+        customThClass="whitespace-nowrap bg-gray-200"
+        customTdClass="py-0.5"
         create={
           new Set(["super_admin", "admin", "store_incharge"]).has(role)
             ? "/user/product/create"
@@ -160,8 +172,10 @@ export default function ProductTable({ products }: { products: any[] }) {
             : false
         }
         responsive
+        tableStriped
         sort
         print
+        tableHeightClass="h-[calc(100vh-170px)]"
       />
     </div>
   );

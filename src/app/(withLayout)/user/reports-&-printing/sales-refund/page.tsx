@@ -9,10 +9,12 @@ export default async function Sale({
 }) {
     const startDate = searchParams['startDate'] ?? ''
     const endDate = searchParams['endDate'] ?? ''
+    const page = searchParams["page"] ?? "1";
+    const limit = searchParams["limit"] ?? "1000";
 
-    const { data } = await getAllOrders(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&refundTotal[gt]=0&fields=BILLID createdAt customer.contactNo total refundTotal received refundAmount due`);
+    const { data, meta } = await getAllOrders(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&page=${page}&limit=${limit}&refundTotal[gt]=0&fields=BILLID createdAt customer.contactNo total refundTotal received refundAmount discountAmount due`);
 
     return (
-        <SalesRefundTable sales={data} startDate={startDate} endDate={endDate} />
+        <SalesRefundTable sales={data} startDate={startDate} endDate={endDate} totalPages={meta.total ?? 0} limit={Number(limit)} />
     )
 }

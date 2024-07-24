@@ -47,7 +47,7 @@ export default function Invoice({ order }: { order: any }) {
         </div>
         <p className="text-xs">Customer: {customer[0]?.name}</p>
       </header>
-      <section className="mt-4 mb-4">
+      <section className="mt-2 mb-3">
         <table className="w-full text-left text-xs align-top text-gray-900">
           <thead className="border border-gray-600">
             <tr>
@@ -174,7 +174,7 @@ export default function Invoice({ order }: { order: any }) {
         refunds && refunds.length > 0 &&
         <section className="pb-2">
           <h3 className="font-bold">Refund Items:</h3>
-          <table className="table-auto w-full">
+          <table className="table-auto w-full text-xs">
             <thead>
               <tr className="border border-gray-500">
                 <th className="text-start px-1">Item</th>
@@ -182,7 +182,7 @@ export default function Invoice({ order }: { order: any }) {
                 <th className="text-end px-1">Date</th>
               </tr>
             </thead>
-            <tbody className="text-[13px]">
+            <tbody>
               {
                 refunds.map((item: any, index: number) => <tr key={item?._id}>
                   <td>
@@ -204,7 +204,7 @@ export default function Invoice({ order }: { order: any }) {
       }
 
       <footer className="mt-2">
-        <ul className="font-normal text-[13px]">
+        <ul className="font-normal text-xs pl-2">
           <li className="flex gap-1">
             <span>১.</span>{" "}
             <span>ক্রয় কৃত পণ্য ৭ দিন পর পরিবর্তন যোগ্য নয় ।</span>{" "}

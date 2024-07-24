@@ -12,11 +12,13 @@ import {
 } from "@headlessui/react";
 import { BellIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { getUser } from "@/lib/getUser";
 import { logoutUser } from "@/api-services/auth/logoutUser";
 import Avatar from "../Avatar";
 import { RiFullscreenExitLine, RiFullscreenLine } from "react-icons/ri";
+import Image from "next/image";
+import logo from '../../../../public/logo.svg'
 
 export default function Header({
   handleSidebarCollapsed,
@@ -28,6 +30,7 @@ export default function Header({
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [userNameFirstLetter, setUserNameFirstLetter] = useState("H");
   const router = useRouter();
+  const pathname = usePathname()
   const user = getUser();
 
   useEffect(() => {
@@ -89,22 +92,27 @@ export default function Header({
           <div className="px-4 py-2">
             <div className="relative flex items-center justify-between">
               <div className="flex flex-1 items-center justify-start lg:items-stretch lg:justify-start">
-                <button onClick={() => handleSidebarCollapsed()}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
-                    />
-                  </svg>
-                </button>
+                {
+                  pathname === '/' ? <Image src={logo} alt="logo" width={35} /> :
+
+                    <button onClick={() => handleSidebarCollapsed()}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
+                        />
+                      </svg>
+                    </button>
+                }
+
               </div>
               <button onClick={handlePOS} className="border border-red-500 rounded py-1.5 px-4 font-bold inline-block text-red-600 mr-8 hover:bg-red-200 transition">
                 POS

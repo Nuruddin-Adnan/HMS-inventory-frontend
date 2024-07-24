@@ -9,10 +9,12 @@ export default async function Expense({
 }) {
     const startDate = searchParams['startDate'] ?? ''
     const endDate = searchParams['endDate'] ?? ''
+    const page = searchParams["page"] ?? "1";
+    const limit = searchParams["limit"] ?? "1000";
 
-    const { data } = await getAllExpenses(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&fields=expenseDate purpose description createdAt createdBy updatedAt updatedBy amount`);
+    const { data, meta } = await getAllExpenses(`expenseDate[gte]=${startDate}&expenseDate[lte]=${endDate}&page=${page}&limit=${limit}&fields=expenseDate purpose description createdAt createdBy updatedAt updatedBy amount`);
 
     return (
-        <ExpenseTable expenses={data} startDate={startDate} endDate={endDate} />
+        <ExpenseTable expenses={data} startDate={startDate} endDate={endDate} totalPages={meta.total ?? 0} limit={Number(limit)} />
     )
 }

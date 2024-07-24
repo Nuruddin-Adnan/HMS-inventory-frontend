@@ -14,7 +14,6 @@ export interface IGenericErrorResponse {
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
 
-
 export const fetchData = async (
   endpoint: string,
   options: any,

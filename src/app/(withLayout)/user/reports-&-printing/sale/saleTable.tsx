@@ -21,12 +21,15 @@ export default function SaleTable({
   sales,
   startDate,
   endDate,
+  totalPages,
+  limit,
 }: {
   sales: any[];
   startDate: any;
   endDate: any;
+  totalPages: number;
+  limit: number;
 }) {
-  const [data, setData] = useState<any[]>(sales);
   const [heading, setHeading] = useState<any>("All");
   const [discountHeading, setDiscountHeading] = useState<any>("All");
   const [createdBy, setCreatedBy] = useState<any>("All");
@@ -84,7 +87,7 @@ export default function SaleTable({
     ({ createdBy }: { createdBy: any }) => createdBy[0]?.name
   );
 
-  const filteredData = data.filter(
+  const filteredData = sales.filter(
     (item: any) => createdBy === "All" || item?.createdBy[0]?.name === createdBy
   ).filter(
     (item: any) =>
@@ -95,8 +98,8 @@ export default function SaleTable({
     .filter(
       (item: any) =>
         discountType === "All" ||
-        (discountType === "no-discount" && item?.discountAmount === 0) ||
-        (discountType === "discount" && item?.discountAmount > 0)
+        (discountType === "no-discount" && item?.discountPercent === 0) ||
+        (discountType === "discount" && item?.discountPercent > 0)
     );
   // filter end
 
@@ -342,6 +345,9 @@ export default function SaleTable({
             sumFields={["total", "received", "due"]}
             backBtn
             tableHeightClass="h-[calc(100vh-180px)]"
+            pagination
+            totalPages={totalPages}
+            limit={limit}
           />
         </div>
       </div>

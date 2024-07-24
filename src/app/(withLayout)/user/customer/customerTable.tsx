@@ -95,20 +95,27 @@ export default function CustomerTable({ customers }: { customers: any[] }) {
       <Table
         // title="Customer"
         caption={
-          <h2 className="hidden pt-3 print:block text-black text-xl font-bold underline">
-            Customer
-          </h2>
+          <div>
+            <h1 className="hidden print:block pt-3 text-black text-2xl font-bold">
+              {process.env.NEXT_PUBLIC_APP_NAME}
+            </h1>
+            <h2 className="hidden mb-2 print:block text-black text-xl font-bold underline">
+              Customer
+            </h2>
+          </div>
         }
         columns={columns}
         data={customers}
         uniqueKey="_id"
         customTfClass="text-right whitespace-nowrap"
+        customThClass="whitespace-nowrap bg-gray-200"
+        tableStriped
         create={"/user/customer/create"}
         onEdit={handleEdit}
         onDelete={new Set(["super_admin"]).has(role) ? handleDelete : undefined}
         action={true}
         responsive
-        // search
+        tableHeightClass="h-[calc(100vh-170px)]"
         sort
         print
       />

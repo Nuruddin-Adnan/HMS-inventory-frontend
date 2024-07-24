@@ -6,6 +6,7 @@ import { FunnelIcon } from "@heroicons/react/24/outline";
 import ReactSelect, { SelectInstance } from "react-select";
 import Button from "./ui/button/Button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { reactSelectStyles } from "@/styles/reactSelectStyles";
 
 export default function FilterProduct({
   categories,
@@ -20,16 +21,44 @@ export default function FilterProduct({
   const brandSelectRef = useRef<SelectInstance | null>(null);
   const genericSelectRef = useRef<SelectInstance | null>(null);
   const statusSelectRef = useRef<SelectInstance | null>(null);
-  const [category, setCategory] = useState<any>(null);
-  const [brand, setBrand] = useState<any>(null);
-  const [genericName, setGenericName] = useState<any>(null);
-  const [status, setStatus] = useState<any>(null);
-
-  const [appliFilter, setAppliFilter] = useState<any>(false);
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
+
+  //############# filter initial state set start #############
+  const categoryOptions = categories.map((item: any) => {
+    return { label: `${item?.name}`, value: item?._id };
+  });
+
+  const brandOptions = brands.map((item: any) => {
+    return { label: `${item?.name}`, value: item?.name };
+  });
+
+  const genericOptions = generics.map((item: any) => {
+    return { label: `${item?.name}`, value: item?.name };
+  });
+
+  // status options for react select
+  const statusOptions = [
+    { label: "Active", value: "active" },
+    { label: "Deactive", value: "deactive" },
+  ];
+  const initialcategoryOptions = categoryOptions.filter((category: any) => category?.value === searchParams.get("category"))
+  const initialBrandOptions = brandOptions.filter((brand: any) => brand?.value === searchParams.get("brand"))
+  const initialgenericNameOptions = genericOptions.filter((generic: any) => generic?.value === searchParams.get("genericName"))
+  const initialStatusOptions = statusOptions.filter((option: any) => option?.value === searchParams.get("status"))
+  // ############# end of filter initial state set  #############
+
+
+  const [category, setCategory] = useState<any>(initialcategoryOptions.length > 0 ? initialcategoryOptions : null);
+  const [brand, setBrand] = useState<any>(initialBrandOptions.length > 0 ? initialBrandOptions : null);
+  const [genericName, setGenericName] = useState<any>(initialgenericNameOptions.length > 0 ? initialgenericNameOptions : null);
+  const [status, setStatus] = useState<any>(initialStatusOptions.length > 0 ? initialStatusOptions : null);
+
+  const [appliFilter, setAppliFilter] = useState<any>(false);
+
+
 
   const handleFilter = (source: any, term: any) => {
     const params = new URLSearchParams(searchParams);
@@ -57,24 +86,6 @@ export default function FilterProduct({
     }
   }, [category, brand, genericName, status]);
 
-  const reactSelectStyles = {
-    control: (baseStyles: any) => ({
-      ...baseStyles,
-      minHeight: "auto",
-      color: "#18181B",
-      padding: "0px",
-      border: "1px solid #e5e7eb",
-    }),
-    indicatorsContainer: (provided: any) => ({
-      ...provided,
-      padding: "0px",
-      minHeight: "auto",
-    }),
-    dropdownIndicator: (provided: any) => ({
-      ...provided,
-      padding: "0px 4px",
-    }),
-  };
 
   const handleClearFilter = () => {
     const params = new URLSearchParams(searchParams);
@@ -90,24 +101,6 @@ export default function FilterProduct({
     setStatus(null);
     setAppliFilter(false);
   };
-
-  const categoryOptions = categories.map((item: any) => {
-    return { label: `${item?.name}`, value: item?._id };
-  });
-
-  const brandOptions = brands.map((item: any) => {
-    return { label: `${item?.name}`, value: item?.name };
-  });
-
-  const genericOptions = generics.map((item: any) => {
-    return { label: `${item?.name}`, value: item?.name };
-  });
-
-  // statu options for react select
-  const statusOptions = [
-    { label: "Active", value: "active" },
-    { label: "Deactive", value: "deactive" },
-  ];
 
   return (
     <Menu as="div" className="relative">
@@ -132,7 +125,7 @@ export default function FilterProduct({
       >
         <MenuItems
           as="div"
-          className="absolute right-0 bg-white z-10 mt-2 sm:w-96 w-80 origin-top-right rounded-md py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          className="absolute right-0 bg-white z-[991] mt-2 sm:w-96 w-80 origin-top-right rounded-md py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         >
           <div className="grid gap-4 p-4">
             <label>

@@ -44,16 +44,20 @@ const listStyle: any = {
 };
 
 const listItems = [
-    { title: 'Sales report', value: '/user/reports-&-printing/sale' },
-    // { title: 'Purchase report', value: '/user/reports-&-printing/purchase-report' },
-    // { title: 'Payment wise sales', value: '/user/reports-&-printing/payment-wise-sales' },
-    // { title: 'Payment wise purchase', value: '/user/reports-&-printing/payment-wise-purchase' },
-    // { title: 'Income Statement', value: '/user/reports-&-printing/income-statement' },
+    { title: 'Expense', value: '/user/reports-&-printing/expense' },
+    { title: 'Purchase report', value: '/user/reports-&-printing/purchase' },
+    { title: 'Purchase Report (Payment Wise)', value: '/user/reports-&-printing/purchase-payment-wise' },
+    { title: 'Purchase refund report', value: '/user/reports-&-printing/purchase-refund' },
     { title: 'Sales refund', value: '/user/reports-&-printing/sales-refund' },
     { title: 'Refund wise sales item', value: '/user/reports-&-printing/refund-wise-sales-item' },
-    { title: 'Expense', value: '/user/reports-&-printing/expense' },
+    { title: 'Sales Summary Report', value: '/user/reports-&-printing/sale-summary' },
+    { title: 'Sales Report', value: '/user/reports-&-printing/sale' },
     { title: 'Sales Refund (Amount wise)', value: '/user/reports-&-printing/sale-refund-amount-wise' },
     { title: 'Sales Report (With Items)', value: '/user/reports-&-printing/sale-with-item' },
+    { title: 'Sales Report (Payment Wise)', value: '/user/reports-&-printing/sales-report-payment-wise' },
+    { title: 'Sales Report (Item wise)', value: '/user/reports-&-printing/item-wise-sale' },
+
+    { title: 'Income statement', value: '/user/reports-&-printing/income-statement' },
 ];
 
 export default function ReportsAndPrintingForm() {
@@ -69,12 +73,10 @@ export default function ReportsAndPrintingForm() {
                 // Show all menu items for selected user
                 return true;
             } else if (
-                item.title === "Sales report" ||
-                item.title === "Purchase report" ||
-                item.title === "Payment wise sales" ||
-                item.title === "Refund wise sales" ||
-                item.title === "Payment wise purchase" ||
-                item.title === "Refund wise purchase"
+                item.title === "Special report"
+                // item.title === "Refund wise sales" ||
+                // item.title === "Payment wise purchase" ||
+                // item.title === "Refund wise purchase"
             ) {
                 return false;
             }

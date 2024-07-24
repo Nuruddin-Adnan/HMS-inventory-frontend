@@ -62,14 +62,6 @@ export default function StockTable({ stocks }: { stocks: any[] }) {
       ),
     },
     {
-      key: "totalSell",
-      label: "Total Sell",
-      customClass: "text-right w-24 pr-5",
-      render: (row: any) => (
-        <div className="text-right font-medium pr-4">{row?.totalSell}</div>
-      ),
-    },
-    {
       key: "createdAt",
       label: "Entry On",
       customClass: "pl-8",
@@ -127,15 +119,22 @@ export default function StockTable({ stocks }: { stocks: any[] }) {
       {/* Table component */}
       <Table
         caption={
-          <h2 className="hidden pt-3 print:block text-black text-xl font-bold underline">
-            Stocks
-          </h2>
+          <div>
+            <h1 className="hidden print:block pt-3 text-black text-2xl font-bold">
+              {process.env.NEXT_PUBLIC_APP_NAME}
+            </h1>
+            <h2 className="hidden mb-2 print:block text-black text-xl font-bold underline">
+              Stocks
+            </h2>
+          </div>
         }
         columns={columns}
         data={stocks}
         uniqueKey="_id"
+        customTrClass={(row: any) => row.quantity <= row.alertQuantity ? 'bg-red-200 text-red-700' : ''}
         customTfClass="text-right whitespace-nowrap"
-        customThClass="whitespace-nowrap"
+        customThClass="whitespace-nowrap bg-gray-200"
+        customTdClass="py-0.5"
         create={
           new Set(["super_admin", "admin"]).has(role)
             ? "/user/stock/create"
@@ -149,8 +148,10 @@ export default function StockTable({ stocks }: { stocks: any[] }) {
             : false
         }
         responsive
+        tableStriped
         sort
         print
+        tableHeightClass="h-[calc(100vh-170px)]"
       />
     </div>
   );

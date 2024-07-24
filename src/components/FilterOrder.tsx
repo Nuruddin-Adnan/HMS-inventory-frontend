@@ -11,14 +11,30 @@ import Checkbox from "./ui/form/Checkbox";
 
 export default function FilterOrder() {
   const paymentStatusSelectRef = useRef<SelectInstance | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<any>(null);
-  const [isDue, setIsDue] = useState<any>(false);
-
-  const [appliFilter, setAppliFilter] = useState<any>(false);
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
+
+  //############# filter initial state set start #############
+  // statu options for react select
+  const paymentStatusOptions = [
+    { label: "Paid", value: "paid" },
+    { label: "Discount Paid", value: "discount-paid" },
+    { label: "Unpaid", value: "unpaid" },
+    { label: "Partial paid", value: "partial-paid" },
+    { label: "Partial refund", value: "partial-refund" },
+    { label: "Full refund", value: "full-refund" },
+  ];
+  const initialPaymentStatusOptions = paymentStatusOptions.filter((option: any) => option?.value === searchParams.get("paymentStatus"))
+  // ############# end of filter initial state set  #############
+
+  const [paymentStatus, setPaymentStatus] = useState<any>(initialPaymentStatusOptions.length > 0 ? initialPaymentStatusOptions : null);
+  const [isDue, setIsDue] = useState<any>(searchParams.get("isDue") === null ? false : searchParams.get("isDue"));
+
+  const [appliFilter, setAppliFilter] = useState<any>(false);
+
+
 
   const handleFilter = (source: any, term: any) => {
     const params = new URLSearchParams(searchParams);
@@ -52,15 +68,7 @@ export default function FilterOrder() {
     setAppliFilter(false);
   };
 
-  // statu options for react select
-  const paymentStatusOptions = [
-    { label: "Paid", value: "paid" },
-    { label: "Discount Paid", value: "discount-paid" },
-    { label: "Unpaid", value: "unpaid" },
-    { label: "Partial paid", value: "partial-paid" },
-    { label: "Partial refund", value: "partial-refund" },
-    { label: "Full refund", value: "full-refund" },
-  ];
+
 
   return (
     <Menu as="div" className="relative">

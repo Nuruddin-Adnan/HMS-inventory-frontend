@@ -15,6 +15,7 @@ import { getUser } from "@/lib/getUser";
 import cn from "@/lib/cn";
 import "core-js";
 import { useRouter } from "next/navigation";
+import PaginationControls from "../PaginationControls";
 
 export default function Table({
   title,
@@ -23,6 +24,7 @@ export default function Table({
   data: initialData,
   uniqueKey,
   customTableClass,
+  customTrClass,
   customThClass,
   customTdClass,
   customTfClass,
@@ -37,12 +39,16 @@ export default function Table({
   action = false,
   responsive = false,
   search = false,
+  searchAutoFocus = false,
   print = false,
   sort = false,
   serialized = false,
   sumFields = [],
   sumFieldsFixed = 0,
-  pageStyle = ""
+  pageStyle = "",
+  pagination = false,
+  totalPages = 0,
+  limit = 100
 }: {
   title?: React.ReactNode;
   caption?: React.ReactNode;
@@ -50,6 +56,7 @@ export default function Table({
   data: any[];
   uniqueKey: any;
   customTableClass?: string;
+  customTrClass?: any;
   customThClass?: string;
   customTdClass?: string;
   customTfClass?: string;
@@ -64,12 +71,16 @@ export default function Table({
   action?: boolean;
   responsive?: boolean;
   search?: boolean;
+  searchAutoFocus?: boolean;
   print?: boolean;
   sort?: boolean;
   serialized?: boolean;
   sumFields?: any[];
   sumFieldsFixed?: number;
   pageStyle?: string;
+  pagination?: boolean;
+  totalPages?: number;
+  limit?: number;
 }) {
   const [data, setData] = useState(initialData);
   const [searchTerm, setSearchTerm] = useState("");
@@ -219,8 +230,12 @@ export default function Table({
                   value={searchTerm}
                   onChange={handleSearch}
                   className="text-base block w-full border border-gray-200 rounded text-textPrimary placeholder:text-textSecondary py-1.5 pl-8 pr-2"
+                  autoFocus={searchAutoFocus}
                 />
               </div>
+            )}
+            {pagination && (
+              <PaginationControls totalPages={totalPages} limit={limit} />
             )}
             {print && (
               <Button
@@ -265,7 +280,7 @@ export default function Table({
           >
             <table className={cn("w-full", customTableClass)}>
               <caption>{caption}</caption>
-              <thead className="sticky top-0 bg-white z-[990]">
+              <thead className="sticky print:static top-0 bg-white z-[990]">
                 <tr>
                   {serialized && (
                     <th
@@ -313,13 +328,13 @@ export default function Table({
                 {data.map((row, index: number) => (
                   <tr
                     key={uniqueKey ? row[uniqueKey] : index}
-                    className={`${index % 2 === 0 && tableStriped ? "bg-gray-100" : ""
-                      } ${tableHover && "hover:bg-gray-200"}`}
+                    className={cn(`${index % 2 === 0 && tableStriped ? "bg-gray-100" : ""
+                      } ${tableHover && "hover:bg-gray-200"}`, customTrClass && customTrClass(row))}
                   >
                     {serialized && (
                       <td
                         className={cn(
-                          "text-center py-1 px-2 border-b border-gray-200 print:border-gray-600 print:py-0.5 print:text-[13px]",
+                          "text-center py-1 px-2 border-b border-gray-200 print:border-gray-300 print:py-0.5 print:text-[13px]",
                           customTdClass
                         )}
                       >
@@ -330,7 +345,7 @@ export default function Table({
                       <td
                         key={column.key}
                         className={`${cn(
-                          "py-1 px-2 border-b border-gray-200 print:border-gray-600 print:py-0.5 print:text-[13px]",
+                          "py-1 px-2 border-b border-gray-200 print:border-gray-300 print:py-0.5 print:text-[13px]",
                           customTdClass
                         )} ${column.customDataClass
                           ? column.customDataClass(row)

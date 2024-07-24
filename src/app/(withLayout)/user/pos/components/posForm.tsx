@@ -37,7 +37,7 @@ type Product = {
 
 const pageStyle = `
 @page{
-    size: portrait
+    size: portrait;
 }`;
 
 export default function POSPForm({

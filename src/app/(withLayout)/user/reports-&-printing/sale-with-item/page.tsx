@@ -1,6 +1,6 @@
 import React from 'react'
 import { getAllOrders } from '@/api-services/order/getAllOrders';
-import SellWithItemTable from './sellWithItemTable';
+import SaleWithItemTable from './saleWithItemTable';
 
 export default async function SalesRefund({
     searchParams,
@@ -9,10 +9,12 @@ export default async function SalesRefund({
 }) {
     const startDate = searchParams['startDate'] ?? ''
     const endDate = searchParams['endDate'] ?? ''
+    const page = searchParams["page"] ?? "1";
+    const limit = searchParams["limit"] ?? "1000";
 
-    const { data } = await getAllOrders(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&fields=createdAt createdBy.name BILLID customer.contactNo total received due items.unit items.quantity items.productDetails`);
+    const { data, meta } = await getAllOrders(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&page=${page}&limit=${limit}&fields=createdAt createdBy.name BILLID customer.contactNo total received due items.unit items.quantity items.productDetails`);
 
     return (
-        <SellWithItemTable sales={data} startDate={startDate} endDate={endDate} />
+        <SaleWithItemTable sales={data} startDate={startDate} endDate={endDate} totalPages={meta.total ?? 0} limit={Number(limit)} />
     )
 }

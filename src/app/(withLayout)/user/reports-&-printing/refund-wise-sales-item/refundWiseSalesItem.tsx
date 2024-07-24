@@ -21,12 +21,15 @@ export default function RefundWiseSalesItem({
   refunds,
   startDate,
   endDate,
+  totalPages,
+  limit,
 }: {
   refunds: any[];
   startDate: any;
   endDate: any;
+  totalPages: number;
+  limit: number;
 }) {
-  const [data, setData] = useState<any[]>(refunds);
   const [createdBy, setCreatedBy] = useState<any>("All");
 
   // print setup
@@ -80,7 +83,7 @@ export default function RefundWiseSalesItem({
     ({ createdBy }: { createdBy: any }) => createdBy[0]?.name
   );
 
-  const filteredData = data.filter(
+  const filteredData = refunds.filter(
     (item: any) => createdBy === "All" || item?.createdBy[0]?.name === createdBy
   )
   // filter end
@@ -208,6 +211,9 @@ export default function RefundWiseSalesItem({
             sumFields={["amount"]}
             backBtn
             tableHeightClass="h-[calc(100vh-180px)]"
+            pagination
+            totalPages={totalPages}
+            limit={limit}
           />
         </div>
       </div>

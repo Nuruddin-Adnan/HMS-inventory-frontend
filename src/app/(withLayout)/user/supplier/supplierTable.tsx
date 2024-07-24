@@ -98,14 +98,20 @@ export default function SupplierTable({ suppliers }: { suppliers: any[] }) {
       {/* Table component */}
       <Table
         caption={
-          <h2 className="hidden pt-3 print:block text-black text-xl font-bold underline">
-            Supplier
-          </h2>
+          <div>
+            <h1 className="hidden print:block pt-3 text-black text-2xl font-bold">
+              {process.env.NEXT_PUBLIC_APP_NAME}
+            </h1>
+            <h2 className="hidden mb-2 print:block text-black text-xl font-bold underline">
+              Supplier
+            </h2>
+          </div>
         }
         columns={columns}
         data={suppliers}
         uniqueKey="_id"
         customTfClass="text-right whitespace-nowrap"
+        customThClass="whitespace-nowrap bg-gray-200"
         create={
           new Set(["super_admin", "admin", "store_incharge"]).has(role)
             ? "/user/supplier/create"
@@ -119,6 +125,8 @@ export default function SupplierTable({ suppliers }: { suppliers: any[] }) {
             : false
         }
         responsive
+        tableHeightClass="h-[calc(100vh-170px)]"
+        tableStriped
         sort
         print
       />

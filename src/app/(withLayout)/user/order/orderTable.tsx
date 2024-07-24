@@ -33,6 +33,7 @@ export default function OrderTable({ orders }: { orders: any[] }) {
     {
       key: "createdAt",
       label: "Entry On",
+      customClass: "w-32",
       render: (row: any) => {
         return (
           <span className="whitespace-nowrap">
@@ -41,10 +42,11 @@ export default function OrderTable({ orders }: { orders: any[] }) {
         );
       },
     },
-    { key: "BILLID", label: "Invoice No" },
+    { key: "BILLID", label: "Invoice No", customClass: "w-24", },
     {
       key: "customer",
       label: "Customer",
+      customClass: "w-36",
       render: (row: any) => <div>{row?.customer[0]?.contactNo}</div>,
     },
     {
@@ -130,7 +132,7 @@ export default function OrderTable({ orders }: { orders: any[] }) {
     {
       key: "paymentStatus",
       label: "Status",
-      customClass: "text-center",
+      customClass: "text-center w-20",
       render: (row: any) => (
         <div
           className={
@@ -152,13 +154,13 @@ export default function OrderTable({ orders }: { orders: any[] }) {
     {
       key: "Action",
       label: "Action",
-      customClass: "bg-white sticky right-0 print:hidden z-[941]",
+      customClass: "bg-white sticky right-0 print:hidden w-16 z-[941]",
       customDataClass: (row: any) =>
-        "sticky right-0 bg-white print:hidden z-[940]",
+        "sticky right-0  w-16 bg-white 2xl:bg-transparent print:hidden z-[940]",
       render: (row: any) => (
         <Menu>
           <MenuButton className="bg-white p-0.5 rounded-full border border-gray-100 text-gray-500">
-            <EllipsisVerticalIcon className="size-6 bg-white" />
+            <EllipsisVerticalIcon className="size-6 " />
           </MenuButton>
 
           <MenuItems
@@ -205,7 +207,7 @@ export default function OrderTable({ orders }: { orders: any[] }) {
     <div>
       {/* Table component */}
       <Table
-        title="Sells Report"
+        title="Sales Report"
         caption={
           <h2 className="hidden pt-3 print:block text-black text-xl font-bold underline">
             Orders
@@ -218,6 +220,7 @@ export default function OrderTable({ orders }: { orders: any[] }) {
         customThClass="whitespace-nowrap bg-gray-200 py-1.5"
         customTdClass="py-0.5 text-sm"
         responsive
+        tableStriped
         sort
         tableHeightClass="h-[calc(100vh-170px)]"
       />

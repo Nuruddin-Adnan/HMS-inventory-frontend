@@ -71,14 +71,20 @@ export default function ShelveTable({ shelves }: { shelves: any[] }) {
       <Table
         // title="Shelves"
         caption={
-          <h2 className="hidden pt-3 print:block text-black text-xl font-bold underline">
-            Shelves
-          </h2>
+          <div>
+            <h1 className="hidden print:block pt-3 text-black text-2xl font-bold">
+              {process.env.NEXT_PUBLIC_APP_NAME}
+            </h1>
+            <h2 className="hidden mb-2 print:block text-black text-xl font-bold underline">
+              Shelves
+            </h2>
+          </div>
         }
         columns={columns}
         data={shelves}
         uniqueKey="_id"
         customTfClass="text-right whitespace-nowrap"
+        customThClass="whitespace-nowrap bg-gray-200"
         create={
           new Set(["super_admin", "admin", "store_incharge"]).has(role) ? "/user/shelve/create" : undefined
         }
@@ -86,7 +92,7 @@ export default function ShelveTable({ shelves }: { shelves: any[] }) {
         onDelete={new Set(["super_admin"]).has(role) ? handleDelete : undefined}
         action={new Set(["super_admin", "admin", "store_incharge"]).has(role) ? true : false}
         responsive
-        // search
+        tableHeightClass="h-[calc(100vh-170px)]"
         sort
         print
       />

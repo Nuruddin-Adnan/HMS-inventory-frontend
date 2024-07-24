@@ -13,7 +13,7 @@ export default function Checkbox({
   defaultChecked,
   disabled,
   readOnly = false,
-  checked = false,
+  checked = undefined,
 }: {
   label?: React.ReactNode | string;
   htmlFor?: string;
@@ -25,9 +25,9 @@ export default function Checkbox({
   onChange?: any;
   value?: any;
   defaultChecked?: boolean;
-  checked?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
+  checked?: boolean | undefined;
 }) {
   return (
     <div className={cn("flex gap-1.5", inlineClassName)}>

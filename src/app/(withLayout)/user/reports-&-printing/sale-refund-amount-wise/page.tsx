@@ -9,10 +9,12 @@ export default async function SalesRefundAmountWise({
 }) {
     const startDate = searchParams['startDate'] ?? ''
     const endDate = searchParams['endDate'] ?? ''
+    const page = searchParams["page"] ?? "1";
+    const limit = searchParams["limit"] ?? "1000";
 
-    const { data } = await getAllOrderRefunds(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}`);
+    const { data, meta } = await getAllOrderRefunds(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&page=${page}&limit=${limit}`);
 
     return (
-        <SaleRefundAmountWiseTable refunds={data} startDate={startDate} endDate={endDate} />
+        <SaleRefundAmountWiseTable refunds={data} startDate={startDate} endDate={endDate} totalPages={meta.total ?? 0} limit={Number(limit)} />
     )
 }

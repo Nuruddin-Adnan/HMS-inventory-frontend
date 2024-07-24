@@ -138,6 +138,19 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
                     value={data?.quantity}
                     disabled
                   />
+                  {
+                    data?.refundQuantity > 0 &&
+                    <Input
+                      type="number"
+                      name="refundQuantity"
+                      label="Refund quantity"
+                      inline
+                      className="lg:w-2/3 border-red-500"
+                      labelClassName="lg:w-1/3"
+                      value={data?.refundQuantity}
+                      disabled
+                    />
+                  }
                   <Input
                     type="number"
                     name="price"

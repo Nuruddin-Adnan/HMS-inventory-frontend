@@ -32,10 +32,9 @@ export default function ExpenseTable({
     {
       key: "expenseDate",
       label: "Expense Date",
-      customClass: "pl-8",
       render: (row: any) => {
         return <span className="whitespace-nowrap">
-          {format(new Date(row?.expenseDate), 'dd/MMM/yyyy p')}
+          {format(new Date(row?.expenseDate), 'dd/MMM/yyyy')}
         </span>
       }
     },
@@ -100,8 +99,8 @@ export default function ExpenseTable({
       <Table
         title="Expenses"
         caption={
-          <div className="pt-3">
-            <h1 className="hidden print:block text-black text-2xl font-bold">
+          <div>
+            <h1 className="hidden print:block pt-3 text-black text-2xl font-bold">
               {process.env.NEXT_PUBLIC_APP_NAME}
             </h1>
             <h2 className="hidden print:block text-black text-xl font-bold underline">
@@ -114,6 +113,7 @@ export default function ExpenseTable({
         uniqueKey="_id"
         customTdClass="py-0.5 align-top"
         customTfClass="text-right whitespace-nowrap"
+        customThClass="whitespace-nowrap bg-gray-200"
         create="/user/expense/create"
         onEdit={handleEdit}
         onDelete={role === "super_admin" ? handleDelete : undefined}

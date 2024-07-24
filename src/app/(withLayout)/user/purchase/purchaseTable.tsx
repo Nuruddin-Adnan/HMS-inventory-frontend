@@ -87,7 +87,7 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
     },
     {
       key: "quantity",
-      label: "Quantity",
+      label: "Qty",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
         <div className="text-right font-medium pr-4">{row?.quantity}</div>
@@ -95,7 +95,7 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
     },
     {
       key: "refundQuantity",
-      label: "Refund",
+      label: "Rf/ Qty",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
         <div className="text-right font-medium pr-4">{row?.refundQuantity}</div>
@@ -135,8 +135,8 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
             row?.paymentStatus === "paid"
               ? "bg-[#28A745] bg-opacity-[.12] text-[#28A745] font-medium rounded-full text-center m-auto w-28"
               : row?.paymentStatus.includes("refund")
-              ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0"
-              : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0"
+                ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0"
+                : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0"
           }
         >
           <span className="capitalize">
@@ -151,11 +151,11 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
       label: "Action",
       customClass: "bg-white sticky right-0 print:hidden z-[941]",
       customDataClass: (row: any) =>
-        "sticky right-0 bg-white print:hidden z-[940]",
+        "sticky right-0 2xl:bg-transparent bg-white print:hidden z-[940]",
       render: (row: any) => (
         <Menu>
           <MenuButton className="bg-white p-1 rounded-full border border-gray-100 text-gray-500">
-            <EllipsisVerticalIcon className="size-6 bg-white" />
+            <EllipsisVerticalIcon className="size-6 " />
           </MenuButton>
 
           <MenuItems
@@ -205,29 +205,31 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
       {/* Table component */}
       <Table
         caption={
-          <h2 className="hidden pt-3 print:block text-black text-xl font-bold underline">
-            purchases
-          </h2>
+          <div>
+            <h1 className="hidden print:block pt-3 text-black text-2xl font-bold">
+              {process.env.NEXT_PUBLIC_APP_NAME}
+            </h1>
+            <h2 className="hidden mb-2 print:block text-black text-xl font-bold underline">
+              purchases
+            </h2>
+          </div>
         }
         columns={columns}
         data={purchases}
         uniqueKey="BILLID"
         customTfClass="text-right whitespace-nowrap"
-        customThClass="whitespace-nowrap"
+        customThClass="whitespace-nowrap bg-gray-200"
         customTdClass="py-0.5 text-sm"
         create={
           new Set(["super_admin", "admin", "store_incharge"]).has(role)
             ? "/user/purchase/create"
             : undefined
         }
-        // action={
-        //   new Set(["super_admin", "admin", "store_incharge"]).has(role)
-        //     ? true
-        //     : false
-        // }
+        tableStriped
         responsive
         sort
         print
+        tableHeightClass="h-[calc(100vh-170px)]"
       />
     </div>
   );
