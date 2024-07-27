@@ -5,12 +5,14 @@ import Button from "@/components/ui/button/Button";
 import Input from "@/components/ui/form/Input";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import tagRevalidate from "@/lib/tagRevalidate";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
 export default function CategoryCreateForm() {
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const router = useRouter()
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
@@ -41,7 +43,15 @@ export default function CategoryCreateForm() {
       >
         <Input type="text" name="name" label="Category Name*" autoFocus />
         <div className="text-right">
-          <Button type="submit" variant="primary" loading={loading}>
+          <Button
+            type="reset"
+            variant="danger"
+            className="mr-2"
+            onClick={() => router.back()}
+          >
+            Back
+          </Button>
+          <Button type="submit" variant="primary" className="px-10" loading={loading}>
             Create
           </Button>
         </div>

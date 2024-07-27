@@ -53,7 +53,7 @@ export default function TaxCreateForm() {
         <Select options={taxOptions} name="purpose" label="Purpose*" />
         <div className="text-right">
           <Button
-            variant="primary-light"
+            variant="danger"
             className="mr-2"
             onClick={() => router.back()}
           >

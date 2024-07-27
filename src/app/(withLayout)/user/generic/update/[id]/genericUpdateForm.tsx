@@ -6,12 +6,14 @@ import Input from "@/components/ui/form/Input";
 import Select from "@/components/ui/form/Select";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import tagRevalidate from "@/lib/tagRevalidate";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
 export default function GenericUpdateForm({ data }: { data: any }) {
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const router = useRouter()
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
@@ -59,7 +61,15 @@ export default function GenericUpdateForm({ data }: { data: any }) {
           defaultValue={data?.status}
         />
         <div className="text-right">
-          <Button type="submit" variant="primary" loading={loading}>
+          <Button
+            type="reset"
+            variant="danger"
+            className="mr-2"
+            onClick={() => router.back()}
+          >
+            Back
+          </Button>
+          <Button type="submit" variant="primary" className="px-10" loading={loading}>
             Update
           </Button>
         </div>

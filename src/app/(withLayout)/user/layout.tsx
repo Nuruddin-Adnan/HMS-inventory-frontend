@@ -20,18 +20,24 @@ export default function UserLayout({
   const handleForceSidebarCollapsed = () => {
     setSidebarCollapsed(true);
     setContentCollapsed(false);
-  }
+  };
 
   return (
-    <main className="bg-gray-100 min-h-screen">
+    <main className="bg-zinc-200 min-h-screen">
       <div
         className={`sidebar ${sidebarCollapsed && "collapsed"}`}
         id="sidebar"
       >
-        <Sidebar handleSidebarCollapsed={handleSidebarCollapsed} handleForceSidebarCollapsed={handleForceSidebarCollapsed} />
+        <Sidebar
+          handleSidebarCollapsed={handleSidebarCollapsed}
+          handleForceSidebarCollapsed={handleForceSidebarCollapsed}
+        />
       </div>
       <div className={`content-wrapper ${contentCollapsed && "collapsed"}`}>
-        <Header handleSidebarCollapsed={handleSidebarCollapsed} handleForceSidebarCollapsed={handleForceSidebarCollapsed} />
+        <Header
+          handleSidebarCollapsed={handleSidebarCollapsed}
+          handleForceSidebarCollapsed={handleForceSidebarCollapsed}
+        />
         <div className="p-4">{children}</div>
       </div>
     </main>

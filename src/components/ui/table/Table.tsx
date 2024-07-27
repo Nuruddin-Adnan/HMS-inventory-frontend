@@ -235,7 +235,7 @@ export default function Table({
               </div>
             )}
             {pagination && (
-              <PaginationControls totalPages={totalPages} limit={limit} />
+              <PaginationControls totalPages={totalPages} limit={limit} btnClass="py-1.5" />
             )}
             {print && (
               <Button

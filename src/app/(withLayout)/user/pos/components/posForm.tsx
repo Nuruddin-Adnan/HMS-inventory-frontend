@@ -616,7 +616,7 @@ export default function POSPForm({
                     name="vatPercent"
                     type="number"
                     className="pr-6 border-blue-300 py-0.5"
-                    defaultValue={tax?.tax}
+                    defaultValue={tax?.tax ?? 0}
                     onChange={(e: any) => setVatPercent(e.target.value)}
                     onFocus={(e: any) => e.target.select()}
                     required

@@ -27,50 +27,85 @@ export default function InvoiceLg({ order }: { order: any }) {
 
   return (
     <>
-      <div className="flex flex-col px-5 sm:px-20 pt-16 pb-10 bg-white  dark:bg-neutral-800">
+      <div className="flex flex-col px-5 sm:px-20 pt-16 pb-10 bg-white  dark:bg-neutral-800 text-[13px]">
         <div className="flex justify-between">
           <div>
             <Image src={logo} alt="logo" className="max-w-[70px]" />
             <h1 className="mt-2 text-lg md:text-xl font-semibold text-blue-600 dark:text-white">
               {process.env.NEXT_PUBLIC_APP_NAME}
             </h1>
+
+            <div className="mt-5">
+              <h3 className="text-lg font-semibold black">Bill to:</h3>
+              {customer[0]?.name && (
+                <h3 className="text-base font-semibold black">
+                  {customer[0]?.name}
+                </h3>
+              )}
+              {customer[0]?.address && (
+                <address className="mt-1 not-italic black">
+                  <span className="whitespace-pre-line">
+                    {customer[0]?.address}
+                  </span>
+                  <br />
+                  {customer[0]?.contactNo}
+                </address>
+              )}
+            </div>
           </div>
 
-          <div className="text-end">
-            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-neutral-200">
-              Invoice #
-            </h2>
-            <span className="mt-1 block text-gray-700 dark:text-neutral-500 font-bold">
-              ID: {BILLID}
-            </span>
+          <div>
+            <div className="text-end">
+              <h2 className="text-2xl md:text-3xl font-semibold black">
+                Invoice #
+              </h2>
+              <span className="mt-1 block black font-bold">ID: {BILLID}</span>
 
-            <address className="mt-4 not-italic text-gray-800 dark:text-neutral-200">
-              Your Shop Address
-              <br />
-              Road No: 13/A, House No: 35B
-              <br />
-              Dhaka, Bangladesh
-              <br />
-              <span className="font-medium">
-                {" "}
-                Contact No: {process.env.NEXT_PUBLIC_APP_CONTACT_NO}
-              </span>
-            </address>
+              <address className="my-3 not-italic black">
+                Your Shop Address
+                <br />
+                Road No: 13/A, House No: 35B
+                <br />
+                Dhaka, Bangladesh
+                <br />
+                <span className="font-medium">
+                  {" "}
+                  Contact No: {process.env.NEXT_PUBLIC_APP_CONTACT_NO}
+                </span>
+              </address>
+            </div>
+
+            <div className="sm:text-end space-y-2">
+              <div className="grid grid-cols-2 sm:grid-cols-1">
+                <dl className="grid sm:grid-cols-4 gap-x-3">
+                  <dt className="col-span-2 font-semibold black">
+                    Invoice date:
+                  </dt>
+                  <dd className="col-span-2 black whitespace-nowrap">
+                    {format(new Date(createdAt), "dd/MMM/yyyy p")}
+                  </dd>
+                </dl>
+                <dl className="grid sm:grid-cols-4 gap-x-3">
+                  <dt className="col-span-2 font-semibold black">
+                    Created By:
+                  </dt>
+                  <dd className="col-span-2 black">{createdBy[0]?.name}</dd>
+                </dl>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="mt-8 grid sm:grid-cols-2 gap-3">
+        {/* <div className="grid sm:grid-cols-2 gap-3">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-              Bill to:
-            </h3>
+            <h3 className="text-lg font-semibold black">Bill to:</h3>
             {customer[0]?.name && (
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
+              <h3 className="text-lg font-semibold black">
                 {customer[0]?.name}
               </h3>
             )}
             {customer[0]?.address && (
-              <address className="mt-2 not-italic text-gray-600 dark:text-neutral-500">
+              <address className="mt-2 not-italic black">
                 <span className="whitespace-pre-line">
                   {customer[0]?.address}
                 </span>
@@ -79,45 +114,24 @@ export default function InvoiceLg({ order }: { order: any }) {
               </address>
             )}
           </div>
+        </div> */}
 
-          <div className="sm:text-end space-y-2">
-            <div className="grid grid-cols-2 sm:grid-cols-1">
-              <dl className="grid sm:grid-cols-4 gap-x-3">
-                <dt className="col-span-2 font-semibold text-gray-800 dark:text-neutral-200">
-                  Invoice date:
-                </dt>
-                <dd className="col-span-2 text-gray-500 dark:text-neutral-500 whitespace-nowrap">
-                  {format(new Date(createdAt), "dd/MMM/yyyy p")}
-                </dd>
-              </dl>
-              <dl className="grid sm:grid-cols-4 gap-x-3">
-                <dt className="col-span-2 font-semibold text-gray-800 dark:text-neutral-200">
-                  Created By:
-                </dt>
-                <dd className="col-span-2 text-gray-500 dark:text-neutral-500">
-                  {createdBy[0]?.name}
-                </dd>
-              </dl>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <div className="border border-gray-200 p-3 rounded-lg  dark:border-neutral-700">
+        <div className="mt-2">
+          <div className="border border-gray-300 p-3 rounded-lg ">
             <div className="hidden sm:grid sm:grid-cols-7 p-2 bg-gray-200">
-              <div className="sm:col-span-3 text-xs font-medium text-gray-700 uppercase dark:text-neutral-500">
+              <div className="sm:col-span-3 text-xs font-medium black uppercase">
                 Item
               </div>
-              <div className="text-end text-xs font-medium text-gray-700 uppercase dark:text-neutral-500">
+              <div className="text-end text-xs font-medium black uppercase">
                 Qty
               </div>
-              <div className="text-end text-xs font-medium text-gray-700 uppercase dark:text-neutral-500">
+              <div className="text-end text-xs font-medium black uppercase">
                 Rate
               </div>
-              <div className="text-end text-xs font-medium text-gray-700 uppercase dark:text-neutral-500">
+              <div className="text-end text-xs font-medium black uppercase">
                 Discount%
               </div>
-              <div className="text-end text-xs font-medium text-gray-700 uppercase dark:text-neutral-500">
+              <div className="text-end text-xs font-medium black uppercase">
                 Amount
               </div>
             </div>
@@ -125,72 +139,66 @@ export default function InvoiceLg({ order }: { order: any }) {
             {items.map((product: any, index: number) => (
               <div
                 key={product?._id}
-                className="grid grid-cols-4 sm:grid-cols-7 border-b py-0.5 px-1 border-dashed text-[13px] font-medium"
+                className="grid grid-cols-4 sm:grid-cols-7 border-b border-b-gray-300 border-dashed py-0.5 px-1 text-[13px] font-medium"
               >
                 <div className="col-span-full sm:col-span-3">
-                  <h5 className="sm:hidden font-medium text-gray-500 uppercase dark:text-neutral-500">
+                  <h5 className="sm:hidden font-medium black uppercase">
                     Item
                   </h5>
-                  <p className="text-gray-800 dark:text-neutral-200">
+                  <p className="black">
                     <span className="me-1">{index + 1}. </span>{" "}
                     {product?.productDetails[0]?.name}
                   </p>
                 </div>
                 <div className="sm:text-end">
-                  <h5 className="sm:hidden font-medium text-gray-500 uppercase dark:text-neutral-500 ">
+                  <h5 className="sm:hidden font-medium black uppercase ">
                     Qty
                   </h5>
-                  <p className="text-gray-800 dark:text-neutral-200">
-                    {product?.quantity}
-                  </p>
+                  <p className="black">{product?.quantity}</p>
                 </div>
                 <div className="sm:text-end">
-                  <h5 className="sm:hidden font-medium text-gray-500 uppercase dark:text-neutral-500">
+                  <h5 className="sm:hidden font-medium black uppercase">
                     Rate
                   </h5>
-                  <p className="text-gray-800 dark:text-neutral-200">
-                    {product?.price}
-                  </p>
+                  <p className="black">{product?.price}</p>
                 </div>
                 <div className="sm:text-end">
-                  <h5 className="sm:hidden font-medium text-gray-500 uppercase dark:text-neutral-500">
+                  <h5 className="sm:hidden font-medium black uppercase">
                     Discount%
                   </h5>
-                  <p className="text-gray-800 dark:text-neutral-200">
-                    {product?.discountPercent}
+                  <p className="black">
+                    {product?.discountPercent?.toFixed(2)}
                   </p>
                 </div>
                 <div className="text-end">
-                  <h5 className="sm:hidden font-medium text-gray-500 uppercase dark:text-neutral-500">
+                  <h5 className="sm:hidden font-medium black uppercase">
                     Amount
                   </h5>
-                  <p className="sm:text-end text-gray-800 dark:text-neutral-200">
-                    ৳ {product?.total}
-                  </p>
+                  <p className="sm:text-end black">৳ {product?.total}</p>
                 </div>
               </div>
             ))}
           </div>
 
           {refunds && refunds.length > 0 && (
-            <fieldset className="mt-5 p-3 pt-2 border border-gray-200 rounded-lg">
+            <fieldset className="mt-5 p-3 pt-2 border border-gray-300 rounded-lg">
               <legend className="font-bold text-sm">Refund:</legend>
               <table className="w-full">
                 <thead className="bg-gray-200">
                   <tr>
-                    <th className="p-2 text-xs font-medium text-gray-700 uppercase text-start">
+                    <th className="p-2 text-xs font-medium black uppercase text-start">
                       Refund Date
                     </th>
-                    <th className="p-2 text-xs font-medium text-gray-700 uppercase text-start">
+                    <th className="p-2 text-xs font-medium black uppercase text-start">
                       Refund Item
                     </th>
-                    <th className="p-2 text-xs font-medium text-gray-700 uppercase text-end">
+                    <th className="p-2 text-xs font-medium black uppercase text-end">
                       Qty
                     </th>
-                    <th className="p-2 text-xs font-medium text-gray-700 uppercase text-end">
+                    <th className="p-2 text-xs font-medium black uppercase text-end">
                       Price
                     </th>
-                    <th className="p-2 text-xs font-medium text-gray-700 uppercase text-end">
+                    <th className="p-2 text-xs font-medium black uppercase text-end">
                       Amount
                     </th>
                   </tr>
@@ -199,15 +207,21 @@ export default function InvoiceLg({ order }: { order: any }) {
                   {refunds.map((item: any, index: number) => (
                     <tr
                       key={item._id}
-                      className="border-b border-dashed font-medium text-[13px]"
+                      className="border-b border-b-gray-300 border-dashed font-medium text-[13px]"
                     >
-                      <td className="py-0.5 px-1">{format(new Date(item?.createdAt), "dd/MMM/yyyy p")}</td>
+                      <td className="py-0.5 px-1">
+                        {format(new Date(item?.createdAt), "dd/MMM/yyyy p")}
+                      </td>
                       <td className="py-0.5 px-1">
                         {item?.productDetails[0]?.name}
                       </td>
                       <td className="py-0.5 px-1 text-end">{item?.quantity}</td>
-                      <td className="py-0.5 px-1 text-end">{toFixedIfNecessary(item?.total, 2)}</td>
-                      <td className="py-0.5 px-1 text-end">{toFixedIfNecessary(item?.amount, 2)}</td>
+                      <td className="py-0.5 px-1 text-end">
+                        {toFixedIfNecessary(item?.total, 2)}
+                      </td>
+                      <td className="py-0.5 px-1 text-end">
+                        {toFixedIfNecessary(item?.amount, 2)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -218,94 +232,67 @@ export default function InvoiceLg({ order }: { order: any }) {
 
         <div className="mt-4 flex sm:flex-row flex-col sm:justify-between items-center">
           <div className="text-center md:w-full">
-            <h2 className="font-bold md:text-3xl text-lg whitespace-nowrap border-8 border-double capitalize inline-block py-2 px-4 text-gray-500">
+            <h2 className="font-bold md:text-2xl text-lg whitespace-nowrap border-8 border-gray-700 border-double capitalize inline-block py-2 px-4 text-gray-700">
               {paymentStatus.replace("-", " ")}
             </h2>
           </div>
           <div className="w-full max-w-2xl sm:text-end space-y-2">
             <div className="grid grid-cols-2 sm:grid-cols-1 font-medium">
               <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
-                  Subtotal:
-                </dt>
-                <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {subtotal?.toFixed(2)}
-                </dd>
+                <dt className="col-span-3 black">Subtotal:</dt>
+                <dd className="col-span-2 black">৳ {subtotal?.toFixed(2)}</dd>
               </dl>
               <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
-                  Vat:
-                </dt>
-                <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {vatAmount?.toFixed(2)}
-                </dd>
+                <dt className="col-span-3 black">Vat:</dt>
+                <dd className="col-span-2 black">৳ {vatAmount?.toFixed(2)}</dd>
               </dl>
               <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
-                  Less:
-                </dt>
-                <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
+                <dt className="col-span-3 black">Less:</dt>
+                <dd className="col-span-2 black">
                   ৳ {discountAmount?.toFixed(2)}
                 </dd>
               </dl>
 
               <dl className="grid sm:grid-cols-5 gap-x-3 font-semibold">
-                <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
-                  Payable:
-                </dt>
-                <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {total?.toFixed(2)}
-                </dd>
+                <dt className="col-span-3 black">Payable:</dt>
+                <dd className="col-span-2 black">৳ {total?.toFixed(2)}</dd>
               </dl>
 
               {refunds && refunds.length > 0 && (
                 <>
                   <dl className="grid sm:grid-cols-5 gap-x-3">
-                    <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
-                      Refund Total:
-                    </dt>
-                    <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
+                    <dt className="col-span-3 black">Refund Total:</dt>
+                    <dd className="col-span-2 black">
                       ৳ {refundTotal?.toFixed(2)}
                     </dd>
                   </dl>
-                  <dl className="grid sm:grid-cols-5 gap-x-3 border-t border-t-300 font-semibold">
-                    <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
-                      Net Payable:
-                    </dt>
-                    <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                      ৳ {(total?.toFixed(2) - refundTotal?.toFixed(2)).toFixed(2)}
+                  <dl className="grid sm:grid-cols-5 gap-x-3 border-t border-t-gray-500 font-semibold">
+                    <dt className="col-span-3 black">Net Payable:</dt>
+                    <dd className="col-span-2 black">
+                      ৳{" "}
+                      {(total?.toFixed(2) - refundTotal?.toFixed(2)).toFixed(2)}
                     </dd>
                   </dl>
                 </>
               )}
 
               <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
-                  Amount paid:
-                </dt>
-                <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {received?.toFixed(2)}
-                </dd>
+                <dt className="col-span-3 black">Amount paid:</dt>
+                <dd className="col-span-2 black">৳ {received?.toFixed(2)}</dd>
               </dl>
 
               {refunds && refunds.length > 0 && (
                 <dl className="grid sm:grid-cols-5 gap-x-3">
-                  <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
-                    Amount Refund:
-                  </dt>
-                  <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
+                  <dt className="col-span-3 black">Amount Refund:</dt>
+                  <dd className="col-span-2 black">
                     ৳ {refundAmount?.toFixed(2)}
                   </dd>
                 </dl>
               )}
 
               <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 text-gray-600 dark:text-neutral-200">
-                  Due balance:
-                </dt>
-                <dd className="col-span-2 text-gray-800 dark:text-neutral-500">
-                  ৳ {due?.toFixed(2)}
-                </dd>
+                <dt className="col-span-3 black">Due balance:</dt>
+                <dd className="col-span-2 black">৳ {due?.toFixed(2)}</dd>
               </dl>
             </div>
           </div>
@@ -353,16 +340,14 @@ export default function InvoiceLg({ order }: { order: any }) {
         )}
 
         <div className="mt-8">
-          <h4 className="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-            Thank you!
-          </h4>
-          <p className="text-gray-700 dark:text-neutral-500">
+          <h4 className="text-lg font-semibold black">Thank you!</h4>
+          <p className="black">
             If you have any questions concerning this invoice, use the following
             contact information:
           </p>
         </div>
 
-        <p className="mt-5 text-sm text-gray-700 dark:text-neutral-500">
+        <p className="mt-5 black">
           <span className="pr-1">Powered by:</span>{" "}
           {process.env.NEXT_PUBLIC_POWERED_BY}
           <span className="pl-2 pr-1">Contact:</span>

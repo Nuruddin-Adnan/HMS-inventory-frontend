@@ -63,7 +63,7 @@ export default function ExpenseUpdateForm({
         <Textarea name="description" label="Description" defaultValue={data?.description} />
         <div className="text-right">
           <Link href={`/user/expense`} >
-            <Button type="submit" variant="primary-light" className="mr-2" loading={loading}>
+            <Button type="submit" variant="danger" className="mr-2" loading={loading}>
               Back
             </Button>
           </Link>

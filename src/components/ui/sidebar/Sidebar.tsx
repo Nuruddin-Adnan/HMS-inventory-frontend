@@ -34,7 +34,7 @@ const navigations = [
         group: "Stock",
         items: [
           { name: "All Stocks", href: "/user/stock" },
-          { name: "Low Stocks", href: "/user/stock/low-stock" },
+          { name: "Low Stocks", href: "/user/low-stock" },
         ],
         icon: TagIcon,
       },
@@ -147,11 +147,10 @@ export default function Sidebar({
             {navigations.map((nav: any, index: number) => (
               <div key={index}>
                 <p
-                  className={`${
-                    nav?.headingClassName
+                  className={`${nav?.headingClassName
                       ? nav?.headingClassName
                       : "pl-4 pt-6 pb-2"
-                  } text-gray-400`}
+                    } text-gray-400`}
                 >
                   {nav?.heading}
                 </p>

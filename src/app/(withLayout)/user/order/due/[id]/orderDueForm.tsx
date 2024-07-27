@@ -62,7 +62,7 @@ export default function OrderDueForm({ data }: { data: any }) {
     <>
       <div className="flex flex-col gap-3 xl:flex-row h-[calc(100vh-86px)]">
         <div className="w-full xl:w-[70%]">
-          <div className="bg-gray-200 rounded p-4">
+          <div className="bg-gray-100 rounded p-4">
             <div className="flex items-center gap-5  max-w-lg">
               <h2 className="text-base font-bold whitespace-nowrap flex-shrink-0">
                 Invoice No
@@ -172,7 +172,7 @@ export default function OrderDueForm({ data }: { data: any }) {
           </div>
         </div>
 
-        <div className="w-full xl:w-[30%] p-4 rounded flex flex-col justify-between bg-gray-200">
+        <div className="w-full xl:w-[30%] p-4 rounded flex flex-col justify-between bg-gray-100">
           <div className="mb-4 grid gap-2">
             <h2 className="text-lg font-bold bg-blue-500 bg-opacity-20 text-blue-700 py-1 px-4 rounded  grid grid-cols-5">
               <span className="col-span-2">Total </span> <span>:</span>{" "}
@@ -180,15 +180,14 @@ export default function OrderDueForm({ data }: { data: any }) {
                 {toFixedIfNecessary(total, 2)} TK
               </span>
             </h2>
-            {
-              refundTotal > 0 &&
+            {refundTotal > 0 && (
               <h2 className="text-lg font-bold bg-red-500 bg-opacity-30 text-red-700 py-1 px-4 rounded  grid grid-cols-5">
                 <span className="col-span-2">Refund </span> <span>:</span>{" "}
                 <span className="col-span-2">
                   {toFixedIfNecessary(refundTotal, 2)} TK
                 </span>
               </h2>
-            }
+            )}
             <h2 className="text-lg font-bold bg-green-500 bg-opacity-20 text-green-700 py-1 px-4 rounded grid grid-cols-5">
               <span className="col-span-2">Previous Paid </span> <span>:</span>
               <span className="col-span-2">
@@ -306,7 +305,7 @@ export default function OrderDueForm({ data }: { data: any }) {
             <div className="text-right flex gap-2 text-base mt-5">
               <Button
                 type="button"
-                variant="primary-light"
+                variant="danger"
                 onClick={() => router.back()}
               >
                 Back

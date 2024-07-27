@@ -96,25 +96,6 @@ export default function ProductCreateForm({
     setLoading(false);
   };
 
-  const handleReset = () => {
-    setProductCode("");
-    if (formRef.current) {
-      formRef.current.reset();
-    }
-    if (brandSelectRef.current) {
-      brandSelectRef.current.clearValue();
-    }
-    if (unitSelectRef.current) {
-      unitSelectRef.current.clearValue();
-    }
-    if (genericSelectRef.current) {
-      genericSelectRef.current.clearValue();
-    }
-    if (shelveSelectRef.current) {
-      shelveSelectRef.current.clearValue();
-    }
-  };
-
   const categoryOptions = categories.map((item: any) => {
     return { title: `${item?.name}`, value: item?._id };
   });
@@ -223,14 +204,14 @@ export default function ProductCreateForm({
         <div className="text-right">
           <Button
             type="reset"
-            variant="primary-light"
+            variant="danger"
             className="mr-2"
-            onClick={handleReset}
+            onClick={() => router.back()}
           >
-            Reset
+            Back
           </Button>
           <Button type="submit" variant="primary" loading={loading}>
-            Create
+            Create Product
           </Button>
         </div>
       </form>

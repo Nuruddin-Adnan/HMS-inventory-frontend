@@ -25,7 +25,7 @@ export default async function CreateProduct() {
   return (
     <div>
       <div className="card mx-auto">
-        <div className="border-b border-gray-200 2xl:p-4 p-3">
+        <div className="border-b border-gray-200 2xl:p-4 p-3 flex justify-between items-baseline">
           <h2 className="font-bold 2xl:text-2xl text-xl text-textPrimary">
             Create Product
           </h2>

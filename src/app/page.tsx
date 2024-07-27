@@ -7,7 +7,7 @@ import Header from "@/components/ui/header/Header";
 
 import dashboard from "../../public/icon/dashboard.png";
 import accounts from "../../public/icon/budget.png";
-import invoice from "../../public/icon/invoice.png";
+import vat from "../../public/icon/tax.png";
 import pos from "../../public/icon/point-of-sale.png";
 import brand from "../../public/icon/brand-image.png";
 import category from "../../public/icon/classification.png";
@@ -52,7 +52,7 @@ export default function Home() {
       link: "/user/support",
       status: "active",
     },
-    { img: invoice, text: "Print invoice", link: "/user/print-invoice", status: "active" },
+    { img: vat, text: "Vat tax", link: "/user/tax", status: "active" },
     {
       img: user,
       text: "User Profile",

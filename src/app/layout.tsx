@@ -1,13 +1,39 @@
 import type { Metadata } from "next";
-import { Roboto, Poppins, Dosis } from "next/font/google";
+// import { Roboto, Poppins, Dosis } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "core-js";
+import localFont from 'next/font/local'
 
-const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"] });
-const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
-const dosis = Dosis({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+const poppins = localFont({
+  src: [
+    {
+      path: '../../public/fonts/Poppins-Regular.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/Poppins-Medium.ttf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/Poppins-SemiBold.ttf',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/Poppins-Bold.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+})
+
+// const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"] });
+// const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+// const dosis = Dosis({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,
@@ -20,9 +46,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={poppins.className}>
-        {/* <body> */}
+    // <html lang="en" >
+    <html lang="en" className={poppins.className}>
+      <body>
         {children}
         <ToastContainer />
       </body>

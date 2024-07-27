@@ -9,7 +9,7 @@ import convertStringToNumber from "@/helpers/convertStringToNumber";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import { genderOptions, statusOptions } from "@/lib/selectOptions";
 import tagRevalidate from "@/lib/tagRevalidate";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import ReactSelect, { SelectInstance } from "react-select";
 
@@ -17,6 +17,8 @@ export default function SupplierUpdateForm({ data, brands }: { data: any, brands
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const brandSelectRef = useRef<SelectInstance | null>(null);
+
+  const router = useRouter()
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
@@ -137,7 +139,10 @@ export default function SupplierUpdateForm({ data, brands }: { data: any, brands
         </div>
         <Textarea label="Address" name="address" defaultValue={data?.address} />
         <div className="text-right">
-          <Button type="submit" variant="primary" loading={loading}>
+          <Button type="button" variant="danger" className="mr-2" onClick={() => router.back()}>
+            Back
+          </Button>
+          <Button type="submit" variant="primary" className="px-10" loading={loading}>
             Update
           </Button>
         </div>

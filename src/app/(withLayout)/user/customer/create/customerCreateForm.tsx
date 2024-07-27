@@ -8,12 +8,14 @@ import Textarea from "@/components/ui/form/Textarea";
 import convertStringToNumber from "@/helpers/convertStringToNumber";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import tagRevalidate from "@/lib/tagRevalidate";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
 export default function CustomerCreateForm() {
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const router = useRouter()
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
@@ -40,7 +42,7 @@ export default function CustomerCreateForm() {
       }
 
       await tagRevalidate("customer");
-      redirect("/user/customer");
+      router.back();
     }
     setLoading(false);
   };
@@ -78,8 +80,16 @@ export default function CustomerCreateForm() {
         </div>
         <Textarea label="Address" name="address" />
         <div className="text-right">
+          <Button
+            type="button"
+            variant="danger"
+            onClick={() => router.back()}
+            className="me-2"
+          >
+            Back
+          </Button>
           <Button type="submit" variant="primary" loading={loading}>
-            Create
+            Create Customer
           </Button>
         </div>
       </form>

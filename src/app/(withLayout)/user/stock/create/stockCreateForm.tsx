@@ -9,7 +9,7 @@ import convertStringToNumber from "@/helpers/convertStringToNumber";
 import toastError from "@/helpers/toastError";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import tagRevalidate from "@/lib/tagRevalidate";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import ReactSelect, { SelectInstance } from "react-select";
 
@@ -24,6 +24,8 @@ export default function StockCreateForm({ products }: { products: any }) {
   const [searchProduct, setSearchProduct] = useState<any>([]);
   const formRef = useRef<HTMLFormElement>(null);
   const productSelectRef = useRef<SelectInstance | null>(null);
+
+  const router = useRouter()
 
   const reactSelectStyles = {
     control: (baseStyles: any) => ({
@@ -101,19 +103,19 @@ export default function StockCreateForm({ products }: { products: any }) {
     setLoading(false);
   };
 
-  const handleReset = () => {
-    setProductCode("");
-    setProduct({
-      label: "",
-      value: "",
-    });
-    if (formRef.current) {
-      formRef.current.reset();
-    }
-    if (productSelectRef.current) {
-      productSelectRef.current.clearValue();
-    }
-  };
+  // const handleReset = () => {
+  //   setProductCode("");
+  //   setProduct({
+  //     label: "",
+  //     value: "",
+  //   });
+  //   if (formRef.current) {
+  //     formRef.current.reset();
+  //   }
+  //   if (productSelectRef.current) {
+  //     productSelectRef.current.clearValue();
+  //   }
+  // };
 
   const productOptions = products.map((item: any) => {
     return { label: `${item?.name} ⟶${item?.brand}`, value: item?._id };
@@ -165,14 +167,14 @@ export default function StockCreateForm({ products }: { products: any }) {
           </div>
           <div className="text-right">
             <Button
-              type="reset"
-              variant="primary-light"
-              className="mr-2"
-              onClick={handleReset}
+              type="button"
+              variant="danger"
+              className="me-2"
+              onClick={() => router.back()}
             >
-              Reset
+              Back
             </Button>
-            <Button type="submit" variant="primary" loading={loading}>
+            <Button type="submit" variant="primary" className="px-10" loading={loading}>
               Create
             </Button>
           </div>

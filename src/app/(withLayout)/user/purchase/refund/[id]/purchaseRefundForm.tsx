@@ -191,7 +191,7 @@ export default function PurchaseRefundForm({ data }: { data: any }) {
                           />
                         </div>
 
-                        <p className="text-red-500">New Refund Quantity:</p>
+                        <p className="text-red-500 font-semibold">New Refund Quantity:</p>
                         <div className="relative ml-auto w-2/3">
                           <Input
                             name="quantity"
@@ -205,24 +205,22 @@ export default function PurchaseRefundForm({ data }: { data: any }) {
                         </div>
 
                         <p
-                          className={`font-medium ${
-                            data?.quantity -
-                              (data?.refundQuantity + Number(refundQuantity)) <
+                          className={`font-medium ${data?.quantity -
+                            (data?.refundQuantity + Number(refundQuantity)) <
                             0
-                              ? "text-red-500"
-                              : "text-green-700"
-                          }`}
+                            ? "text-red-500"
+                            : "text-green-700"
+                            }`}
                         >
                           Remaining quantity :
                         </p>
                         <p
-                          className={`font-medium ${
-                            data?.quantity -
-                              (data?.refundQuantity + Number(refundQuantity)) <
+                          className={`font-medium ${data?.quantity -
+                            (data?.refundQuantity + Number(refundQuantity)) <
                             0
-                              ? "text-red-500"
-                              : "text-green-700"
-                          }`}
+                            ? "text-red-500"
+                            : "text-green-700"
+                            }`}
                         >
                           {data?.quantity -
                             (data?.refundQuantity + Number(refundQuantity))}

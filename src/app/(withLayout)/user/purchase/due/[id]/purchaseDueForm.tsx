@@ -192,11 +192,10 @@ export default function PurchaseDueForm({ data }: { data: any }) {
                             name="amount"
                             type="number"
                             step="0.001"
-                            className={`pr-6 text-lg ${
-                              data?.due - amount < 0
+                            className={`pr-6 text-lg ${data?.due - amount < 0
                                 ? "border-red-500"
                                 : "border-blue-300"
-                            }`}
+                              }`}
                             required
                             onChange={(e: any) => setAmount(e.target.value)}
                           />
@@ -209,11 +208,10 @@ export default function PurchaseDueForm({ data }: { data: any }) {
                           Due Amount :
                         </p>
                         <p
-                          className={`font-bold ${
-                            data?.due - amount < 0
+                          className={`font-bold ${data?.due - amount < 0
                               ? "text-red-500"
                               : "text-textPrimary"
-                          }`}
+                            }`}
                         >
                           {data?.due - amount}
                           TK
@@ -223,7 +221,7 @@ export default function PurchaseDueForm({ data }: { data: any }) {
                   </div>
                   <div className="text-right text-base mt-5">
                     <Button
-                      variant="primary-light"
+                      variant="danger"
                       className="mr-2"
                       onClick={() => router.back()}
                     >

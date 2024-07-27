@@ -13,13 +13,12 @@ export default async function Tax({
   const query = searchParams["query"] ?? "";
 
   const { data: taxs, meta } = await getAllTaxs(
-    `sort=status -createdAt&page=${page}&limit=${limit}${
-      query && `&search=${query}`
+    `sort=status -createdAt&page=${page}&limit=${limit}${query && `&search=${query}`
     }&fields=-createdBy -updatedBy`
   );
 
   return (
-    <div className="card py-4">
+    <div className="card py-4 max-w-5xl mx-auto">
       <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
         <SearchControl placeholder="Search by purpose..." />
         <PaginationControls totalPages={meta.total ?? 0} limit={100} />

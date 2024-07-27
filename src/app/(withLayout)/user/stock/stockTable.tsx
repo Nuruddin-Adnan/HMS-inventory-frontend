@@ -47,7 +47,7 @@ export default function StockTable({ stocks }: { stocks: any[] }) {
     },
     {
       key: "quantity",
-      label: "Quantity",
+      label: "Qty",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
         <div className="text-right font-medium pr-4">{row?.quantity}</div>

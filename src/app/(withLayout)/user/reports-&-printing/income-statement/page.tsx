@@ -6,6 +6,7 @@ import IncomeStatementTable from './incomeStatementTable';
 import { getTotalRefund } from '@/api-services/refund/getTotalRefund';
 import { getTotalOrderRefund } from '@/api-services/order-refund/getTotalOrderRefund';
 import { getTotalExpense } from '@/api-services/expense/getTotalExpense';
+import { getOrderSummary } from '@/api-services/order/getOrderSummary';
 
 export default async function IncomeStatement({
     searchParams,
@@ -22,6 +23,7 @@ export default async function IncomeStatement({
         redirect("/");
     }
 
+    const getOrderSummaryPromise = getOrderSummary(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}`);
     const totalSalePaymentPromise = totalPayment(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&sell[exists]=true`);
     const totalSaleRefundPromise = getTotalOrderRefund(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}`);
     const totalPurchasePaymentPromise = totalPayment(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&purchase[exists]=true`);
@@ -29,12 +31,14 @@ export default async function IncomeStatement({
     const totalExpensePromise = getTotalExpense(`expenseDate[gte]=${startDate}&expenseDate[lte]=${endDate}`);
 
     const [
+        orderSummary,
         totalSalePayment,
         totalSaleRefund,
         totalPurchasePayment,
         totalPurchaseRefund,
         totalExpense
     ] = await Promise.all([
+        getOrderSummaryPromise,
         totalSalePaymentPromise,
         totalSaleRefundPromise,
         totalPurchasePaymentPromise,
@@ -44,10 +48,11 @@ export default async function IncomeStatement({
 
     return (
         <IncomeStatementTable
+            orderSummary={orderSummary?.data}
             salePayment={totalSalePayment?.data}
-            saleReturn={totalSaleRefund?.data}
+            saleRefund={totalSaleRefund?.data}
             purchasePayment={totalPurchasePayment?.data}
-            purchaseReturn={totalPurchaseRefund?.data}
+            purchaseRefund={totalPurchaseRefund?.data}
             expense={totalExpense?.data}
             startDate={startDate}
             endDate={endDate}

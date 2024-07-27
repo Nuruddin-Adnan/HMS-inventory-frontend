@@ -71,7 +71,7 @@ export default function TaxUpdateForm({ data }: { data: any }) {
         />
         <div className="text-right">
           <Button
-            variant="primary-light"
+            variant="danger"
             className="mr-2"
             onClick={() => router.back()}
           >

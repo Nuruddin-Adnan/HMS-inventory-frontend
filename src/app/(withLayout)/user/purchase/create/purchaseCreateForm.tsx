@@ -11,7 +11,8 @@ import toastError from "@/helpers/toastError";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import { paymentMethodOptions, productUnitOptions } from "@/lib/selectOptions";
 import tagRevalidate from "@/lib/tagRevalidate";
-import { redirect } from "next/navigation";
+import { reactSelectStyles } from "@/styles/reactSelectStyles";
+import { redirect, useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import ReactSelect, { SelectInstance } from "react-select";
 import CreatableSelect from "react-select/creatable";
@@ -40,24 +41,7 @@ export default function PurchaseCreateForm({
   const [price, setPrice] = useState<number>(0);
   const [advance, setAdvance] = useState<number>(0);
 
-  const reactSelectStyles = {
-    control: (baseStyles: any) => ({
-      ...baseStyles,
-      minHeight: "auto",
-      color: "#18181B",
-      padding: "0px",
-      border: "1px solid #e5e7eb",
-    }),
-    indicatorsContainer: (provided: any) => ({
-      ...provided,
-      padding: "0px",
-      minHeight: "auto",
-    }),
-    dropdownIndicator: (provided: any) => ({
-      ...provided,
-      padding: "0px 4px",
-    }),
-  };
+  const router = useRouter()
 
   function openModal() {
     setIsOpen(true);
@@ -154,9 +138,8 @@ export default function PurchaseCreateForm({
 
   const productOptions = products.map((item: any) => {
     return {
-      label: `${item?.name} ${
-        item?.genericName ? `⟶${item?.genericName}` : ""
-      } ⟶${item?.brand}`,
+      label: `${item?.name} ${item?.genericName ? `⟶${item?.genericName}` : ""
+        } ⟶${item?.brand}`,
       value: item?._id,
     };
   });
@@ -314,6 +297,14 @@ export default function PurchaseCreateForm({
                   </div>
 
                   <div className="text-right text-base mt-5">
+                    <Button
+                      type="reset"
+                      variant="danger"
+                      className="mr-2"
+                      onClick={() => router.back()}
+                    >
+                      Back
+                    </Button>
                     <Button
                       type="reset"
                       variant="primary-light"

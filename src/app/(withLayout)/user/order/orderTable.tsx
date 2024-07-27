@@ -1,23 +1,30 @@
 "use client";
 
+import { getSingleOrderClient } from "@/api-services/order/getSingleOrderClient";
+import Invoice from "@/components/Invoice";
 import Table from "@/components/ui/table/Table";
+import toastError from "@/helpers/toastError";
 import { getUser } from "@/lib/getUser";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import {
   EllipsisVerticalIcon,
   EyeIcon,
   InboxArrowDownIcon,
-  PencilIcon,
   ReceiptRefundIcon,
 } from "@heroicons/react/24/outline";
 import { format } from "date-fns";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
+
+const pageStyle = `
+@page{
+    margin: 0px;
+}
+`;
 
 export default function OrderTable({ orders }: { orders: any[] }) {
   const [role, updateRole] = useState("");
-  const router = useRouter();
   const user = getUser();
 
   useEffect(() => {
@@ -28,6 +35,51 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       }
     }
   }, [user]);
+
+  // print setup
+  const [isPrinting, setIsPrinting] = useState(false);
+  const printRef = useRef(null);
+  const promiseResolveRef = useRef<((value: any) => void) | null>(null);
+  const [invoiceData, setInvoiceData] = useState<any>();
+
+  // We watch for the state to change here, and for the Promise resolve to be available
+  useEffect(() => {
+    if (isPrinting && promiseResolveRef.current) {
+      // Resolves the Promise, letting `react-to-print` know that the DOM updates are completed
+      promiseResolveRef.current(undefined);
+    }
+  }, [isPrinting]);
+
+  // print invoice
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    onBeforeGetContent: () => {
+      return new Promise((resolve) => {
+        promiseResolveRef.current = resolve;
+        setIsPrinting(true);
+      });
+    },
+    onAfterPrint: () => {
+      // Reset the Promise resolve so we can print again
+      promiseResolveRef.current = null;
+      setIsPrinting(false);
+    },
+    pageStyle: pageStyle,
+  });
+
+  const handlePrintInvoice = async (invoiceNo: any) => {
+    if (invoiceNo.length >= 8) {
+      const result = await getSingleOrderClient(invoiceNo);
+      if (result && result.success === true) {
+        if (!result?.data) {
+          toastError("No order found!");
+        } else {
+          setInvoiceData(result?.data);
+          handlePrint();
+        }
+      }
+    }
+  };
 
   const columns = [
     {
@@ -42,7 +94,22 @@ export default function OrderTable({ orders }: { orders: any[] }) {
         );
       },
     },
-    { key: "BILLID", label: "Invoice No", customClass: "w-24", },
+    // { key: "BILLID", label: "Invoice No", customClass: "w-24", },
+    {
+      key: "BILLID",
+      label: "Invoice",
+      customClass: "w-24",
+      render: (row: any) => {
+        return (
+          <button
+            className="underline text-[#000186] print:no-underline"
+            onClick={() => handlePrintInvoice(row.BILLID)}
+          >
+            {row.BILLID}
+          </button>
+        );
+      },
+    },
     {
       key: "customer",
       label: "Customer",
@@ -224,6 +291,13 @@ export default function OrderTable({ orders }: { orders: any[] }) {
         sort
         tableHeightClass="h-[calc(100vh-170px)]"
       />
+      {isPrinting && (
+        <div style={{ display: "none" }}>
+          <div ref={printRef} className="pos-print">
+            <Invoice order={invoiceData} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,20 +1,11 @@
 pending task list
 
-### *** BACK button add to add create and update page               ---> //Partial
-### Invoice payment and refunds table add. Amount in word           ---> //Refund details remain
-
-*** stock low quantity show in frontned. currently it is the same copy of stock.
-### Need to create new functionality and route in backend for low stock
-
 20/07/2024
-*** Income statement                                    ---> //Partial
-*** Low Stock quantity
 *** Product expiry date over product show in stock
-
-if internet
 *** Notification (Both frontend and backend)
-*** Home page design
-*** Dashboard design
+*** Last id show in POS and print by click on the id
+
+
 
 
 

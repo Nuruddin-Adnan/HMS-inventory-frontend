@@ -75,7 +75,7 @@ export default function OrderRefundForm({ data }: { data: any }) {
       );
       updatedProducts[existingProductIndex].amount = amountAfterDiscoutAndVat(
         updatedProducts[existingProductIndex].quantity *
-        productPriceAfterItemDiscount(product)
+          productPriceAfterItemDiscount(product)
       );
 
       if (updatedProducts[existingProductIndex].quantity === 0) {
@@ -148,7 +148,7 @@ export default function OrderRefundForm({ data }: { data: any }) {
     <>
       <div className="flex flex-col gap-3 xl:flex-row h-[calc(100vh-86px)]">
         <div className="w-full xl:w-[70%]">
-          <div className="bg-gray-200 rounded p-4">
+          <div className="bg-gray-100 rounded p-4">
             <div className="flex items-center gap-5 max-w-lg">
               <h2 className="text-base font-bold whitespace-nowrap flex-shrink-0">
                 Invoice No
@@ -248,12 +248,13 @@ export default function OrderRefundForm({ data }: { data: any }) {
                   {items.map((product: any, index: number) => (
                     <tr
                       key={index}
-                      className={`${product?.quantity === product?.refundQuantity
+                      className={`${
+                        product?.quantity === product?.refundQuantity
                           ? "bg-red-500 bg-opacity-20 text-red-700"
                           : product?.refundQuantity > 0
-                            ? "bg-yellow-500 bg-opacity-20 text-yellow-700"
-                            : ""
-                        }`}
+                          ? "bg-yellow-500 bg-opacity-20 text-yellow-700"
+                          : ""
+                      }`}
                     >
                       <td className="py-1 px-4 border text-center">
                         <input
@@ -290,9 +291,9 @@ export default function OrderRefundForm({ data }: { data: any }) {
                                 handleQuantityChange(
                                   index,
                                   Number(e.target.value) -
-                                  (selectedProducts.find(
-                                    (p: any) => p.product === product.product
-                                  )?.quantity || 0)
+                                    (selectedProducts.find(
+                                      (p: any) => p.product === product.product
+                                    )?.quantity || 0)
                                 )
                               }
                               onFocus={(e: any) => e.target.select()}
@@ -338,10 +339,12 @@ export default function OrderRefundForm({ data }: { data: any }) {
                         {product?.unit}
                       </td>
                       <td className="py-1 px-4 border text-center">
-                        {product?.price}
+                        {product?.price &&
+                          toFixedIfNecessary(product?.price, 2)}
                       </td>
                       <td className="py-1 px-4 border text-center">
-                        {product?.discountPercent}
+                        {product?.discountPercent &&
+                          toFixedIfNecessary(product?.discountPercent, 2)}
                       </td>
                       <td className="py-1 px-4 border text-center">
                         {product?.total}
@@ -350,7 +353,8 @@ export default function OrderRefundForm({ data }: { data: any }) {
                         {vatPercent}
                       </td>
                       <td className="py-1 px-4 border text-center">
-                        {discountPercent}
+                        {discountPercent &&
+                          toFixedIfNecessary(discountPercent, 2)}
                       </td>
                       <td className="py-1 px-4 border text-center text-nowrap">
                         {toFixedIfNecessary(
@@ -365,7 +369,7 @@ export default function OrderRefundForm({ data }: { data: any }) {
             </div>
           </div>
         </div>
-        <div className="w-full xl:w-[30%] p-4 rounded flex flex-col justify-between bg-gray-200">
+        <div className="w-full xl:w-[30%] p-4 rounded flex flex-col justify-between bg-gray-100">
           <div className="mb-4">
             <h2 className="text-lg font-bold bg-blue-500 bg-opacity-20 text-blue-700 py-1 px-4 rounded  grid grid-cols-5">
               <span className="col-span-2">Total </span> <span>:</span>{" "}

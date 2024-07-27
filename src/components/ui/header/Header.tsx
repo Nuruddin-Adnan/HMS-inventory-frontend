@@ -112,6 +112,22 @@ export default function Header({
                       </svg>
                     </button>
                 }
+                {
+                  pathname !== '/' &&
+                  <div className="ms-5 sm:block hidden">
+                    <nav className="w-full rounded-md">
+                      <ol className="flex font-medium text-base">
+                        <li>
+                          <Link
+                            href="/"
+                            className="text-primary pr-1"
+                          >Home</Link>
+                        </li>
+                        <li className="text-neutral-700">{pathname.replaceAll('/user', '').replaceAll('/', ' / ')}</li>
+                      </ol>
+                    </nav>
+                  </div>
+                }
 
               </div>
               <button onClick={handlePOS} className="border border-red-500 rounded py-1.5 px-4 font-bold inline-block text-red-600 mr-8 hover:bg-red-200 transition">

@@ -7,6 +7,7 @@ import { getUser } from '@/lib/getUser';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import "core-js";
+import { format } from 'date-fns';
 
 const listStyle: any = {
     list: {
@@ -50,7 +51,7 @@ const listItems = [
     { title: 'Purchase refund report', value: '/user/reports-&-printing/purchase-refund' },
     { title: 'Sales refund', value: '/user/reports-&-printing/sales-refund' },
     { title: 'Refund wise sales item', value: '/user/reports-&-printing/refund-wise-sales-item' },
-    { title: 'Sales Summary Report', value: '/user/reports-&-printing/sale-summary' },
+    { title: 'Sales Report (Summary)', value: '/user/reports-&-printing/sale-summary' },
     { title: 'Sales Report', value: '/user/reports-&-printing/sale' },
     { title: 'Sales Refund (Amount wise)', value: '/user/reports-&-printing/sale-refund-amount-wise' },
     { title: 'Sales Report (With Items)', value: '/user/reports-&-printing/sale-with-item' },
@@ -115,6 +116,14 @@ export default function ReportsAndPrintingForm() {
     const handleInputChange = (value: any) => {
         setSelectedValue(value);
     };
+
+    const startDateTime = () => {
+        const now = new Date();
+        // Set time to 12:00 AM
+        now.setHours(0, 0, 0, 0);
+        return format(now, "yyyy-MM-dd'T'HH:mm");
+    }
+
 
     const handleSubmit = async (formData: FormData) => {
         const date1 = new Date(formData.get("startDate") as any)
@@ -185,8 +194,8 @@ export default function ReportsAndPrintingForm() {
                 <div className='col-span-2'>
                     <div className="card p-6 border max-w-lg mx-auto grid space-y-3">
                         <div className="grid grid-cols-2 2xl:space-x-4 space-x-3">
-                            <Input type="datetime-local" name="startDate" label="Start Date" />
-                            <Input type="datetime-local" name="endDate" label="End Date" />
+                            <Input type="datetime-local" name="startDate" label="Start Date" defaultValue={startDateTime()} />
+                            <Input type="datetime-local" name="endDate" label="End Date" defaultValue={format(new Date, "yyyy-MM-dd'T'HH:mm")} />
                         </div>
                         <Button type="submit" variant="primary" className="w-full block">Show Result</Button>
                     </div>

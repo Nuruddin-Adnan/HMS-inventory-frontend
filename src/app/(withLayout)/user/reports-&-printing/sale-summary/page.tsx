@@ -6,6 +6,7 @@ import { getTotalRefund } from '@/api-services/refund/getTotalRefund';
 import { getTotalOrderRefund } from '@/api-services/order-refund/getTotalOrderRefund';
 import { getTotalExpense } from '@/api-services/expense/getTotalExpense';
 import SaleSummaryTable from './saleSummaryTable';
+import { getOrderSummary } from '@/api-services/order/getOrderSummary';
 
 export default async function SaleSummary({
     searchParams,
@@ -22,21 +23,25 @@ export default async function SaleSummary({
         redirect("/");
     }
 
+    const getOrderSummaryPromise = getOrderSummary(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}`);
     const totalSalePaymentPromise = totalPayment(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&sell[exists]=true`);
     const totalSaleRefundPromise = getTotalOrderRefund(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}`);
 
     const [
+        orderSummary,
         totalSalePayment,
         totalSaleRefund,
     ] = await Promise.all([
+        getOrderSummaryPromise,
         totalSalePaymentPromise,
         totalSaleRefundPromise,
     ])
 
     return (
         <SaleSummaryTable
+            orderSummary={orderSummary?.data}
             salePayment={totalSalePayment?.data}
-            saleReturn={totalSaleRefund?.data}
+            saleRefund={totalSaleRefund?.data}
             startDate={startDate}
             endDate={endDate}
         />

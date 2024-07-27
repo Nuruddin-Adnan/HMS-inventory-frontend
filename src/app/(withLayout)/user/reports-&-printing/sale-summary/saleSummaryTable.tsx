@@ -7,6 +7,7 @@ import { useReactToPrint } from 'react-to-print';
 import { format } from "date-fns";
 import numWords from 'num-words';
 import { useRouter } from 'next/navigation';
+import { sumArrayField } from '@/helpers/sumArrayField';
 
 const pageStyle = `
 @page{
@@ -16,19 +17,20 @@ const pageStyle = `
 `
 
 export default function SaleSummaryTable({
+    orderSummary,
     salePayment,
-    saleReturn,
+    saleRefund,
     startDate,
     endDate
 }: {
+    orderSummary: any;
     salePayment: any;
-    saleReturn: any;
+    saleRefund: any;
     startDate: any,
     endDate: any
 }) {
     const componentRef = useRef(null);
     const router = useRouter()
-
 
     const handlePrint = useReactToPrint({
         content: () => componentRef.current,
@@ -38,15 +40,14 @@ export default function SaleSummaryTable({
     const formatedStartDate = format(new Date(startDate), "dd-MMM-yyyy p");
     const formatedEndDate = format(new Date(endDate), "dd-MMM-yyyy p");
 
-    const totalSale = (salePayment?.totalNewPayment ?? 0) + (salePayment?.totalDuePayment ?? 0);
-    const totalSaleReturn = saleReturn?.amount ?? 0;
 
-    const netSale = totalSale - totalSaleReturn
+    const totalPaymentReceive = (salePayment?.totalNewPayment ?? 0) + (salePayment?.totalDuePayment ?? 0);
+    const totalSaleRefund = saleRefund?.amount ?? 0;
 
-
+    const netSale = (totalPaymentReceive - totalSaleRefund)
 
     return (
-        <div className="flex space-x-5">
+        <div className="flex space-x-5 max-w-5xl mx-auto">
             <div className="px-4 pb-6 w-full card overflow-auto">
                 <div className="flex items-center justify-between mb-4 border-b border-gray-200 2xl:p-4 p-3">
 
@@ -85,45 +86,80 @@ export default function SaleSummaryTable({
                             <table className="w-full table-auto md:whitespace-nowrap md:text-base">
                                 <tbody>
                                     <tr>
-                                        <td>Total New Payment: (Customer: {salePayment?.totalNewCustomer ?? 0})</td>
-                                        <td className='text-right'>{salePayment?.totalNewPayment.toFixed(2) ?? 0}</td>
+                                        <td>Subtotal: </td>
+                                        <td className='text-right'>{sumArrayField(orderSummary, 'subtotal') ?? 0}</td>
                                     </tr>
                                     <tr>
-                                        <td>(+) Total Due collection: (Customer: {salePayment?.totalDueCustomer ?? 0})</td>
-                                        <td className='text-right'>{salePayment?.totalDuePayment.toFixed(2) ?? 0}</td>
+                                        <td>VAT: </td>
+                                        <td className='text-right'>{sumArrayField(orderSummary, 'vat') ?? 0}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Discount: </td>
+                                        <td className='text-right'>{sumArrayField(orderSummary, 'discount') ?? 0}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Net Payable: </td>
+                                        <td className='text-right border-b border-black'>{sumArrayField(orderSummary, 'sale') ?? 0}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='font-medium'>New Payment Received: (Customer: {salePayment?.totalNewCustomer ?? 0})</td>
+                                        <td className='text-right font-medium border-t border-t-black'>{salePayment?.totalNewPayment.toFixed(2) ?? 0}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='font-medium'>(+) Total Due collection: (Customer: {salePayment?.totalDueCustomer ?? 0})</td>
+                                        <td className='text-right font-medium'>{salePayment?.totalDuePayment.toFixed(2) ?? 0}</td>
                                     </tr>
                                     <tr className='border-t border-black'>
-                                        <th className='text-right pt-2 w-full'>Total Sales</th>
+                                        <th className='text-right pt-2 w-full'>Net Recieved</th>
                                         <th className='text-right pt-2'><span className='sm:w-52 w-28 block'>
-                                            {totalSale.toFixed(2)}
+                                            {totalPaymentReceive.toFixed(2)}
                                             /-</span></th>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <h3 className='text-base font-bold text-textPrimary'>Sales Returns</h3>
+                        <h3 className='text-base font-bold text-textPrimary'>Sales Refunds</h3>
                         <div className="w-full overflow-auto md:px-5 px-2">
                             <table className="w-full table-auto md:whitespace-nowrap md:text-base">
                                 <tbody>
                                     <tr>
-                                        <td>(-) Total Sales Return:</td>
-                                        <td className='text-right'>{totalSaleReturn?.toFixed(2) ?? 0}</td>
+                                        <td>Total Sales Refund:</td>
+                                        <td className='text-right'>{totalSaleRefund?.toFixed(2) ?? 0}</td>
                                     </tr>
                                     <tr className='border-t border-black'>
-                                        <th className='text-right pt-2 w-full'>Total Returns</th>
+                                        <th className='text-right pt-2 w-full'>(-) Total Refunds</th>
                                         <th className='text-right pt-2'><span className='sm:w-52 w-28 block'>
-                                            {totalSaleReturn?.toFixed(2) ?? 0}
+                                            {totalSaleRefund?.toFixed(2) ?? 0}
                                             /-</span></th>
                                     </tr>
+                                    {
+                                        sumArrayField(orderSummary, 'due') > 0 &&
+                                        <tr className='text-red-500'>
+                                            <th className='text-right w-full'>Due</th>
+                                            <th className='text-right'><span className='sm:w-52 w-28 block'>
+                                                {sumArrayField(orderSummary, 'due')}
+                                                /-</span></th>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
 
-                        <h3 className='text-base font-bold text-textPrimary flex md:flex-row flex-col-reverse md:justify-between md:items-center items-end gap-4 mt-5'>
-                            <span>Net Sales: <span className='capitalize text-sm font-bold'>({numWords(Math.floor(netSale))}) Tk only</span></span>
-                            <span className='border-t-4 border-t-black border-double w-52 text-right md:mr-5'><span className='md:hidden inline-block pr-10'>Net:</span>{netSale.toFixed(2)}/-</span>
-                        </h3>
+                        {
+                            Math.floor(netSale) >= 0 ?
+                                <h3 className='text-base font-bold text-green-700 flex md:flex-row flex-col-reverse md:justify-between md:items-center items-end gap-4 mt-5'>
+                                    <span>Net Sales: <span className='capitalize text-sm font-bold'>({numWords(Math.floor(netSale))}) Tk only</span></span>
+                                    <span className='border-t-4 border-t-black border-double w-52 text-right md:mr-5'><span className='md:hidden inline-block pr-10'>Sales:</span>{netSale.toFixed(2)}/-</span>
+                                </h3> :
+                                <div>
+                                    <h3 className='text-base font-bold text-red-500 flex md:flex-row flex-col-reverse md:justify-between md:items-center items-end gap-4 mt-5'>
+                                        <span>Net Loss: <span className='capitalize text-sm font-bold'>({numWords(Math.abs(Math.floor(netSale)))}) Tk only</span></span>
+                                        <span className='border-t-4 border-t-black border-double w-52 text-right md:mr-5'><span className='md:hidden inline-block pr-10'>Refund:</span>{netSale.toFixed(2)}/-</span>
+                                    </h3>
+                                </div>
+                        }
+
                     </div>
                 </div>
             </div>

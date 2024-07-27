@@ -62,7 +62,7 @@ export default function ExpenseForm() {
         <Textarea name="description" label="Description" rows={6} />
         <div className="text-right">
           <Link href={`/user/expense`} >
-            <Button type="button" variant="primary-light" className="mr-2" loading={loading}>
+            <Button type="button" variant="danger" className="mr-2" loading={loading}>
               Back
             </Button>
           </Link>

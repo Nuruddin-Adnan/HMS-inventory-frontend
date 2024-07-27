@@ -243,7 +243,7 @@ export default function ProductUpdateForm({
         <div className="text-right">
           <Button
             type="button"
-            variant="primary-light"
+            variant="danger"
             className="me-2"
             onClick={() => router.back()}
           >

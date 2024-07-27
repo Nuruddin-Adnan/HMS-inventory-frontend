@@ -206,7 +206,7 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
 
                   <div className="text-right text-base mt-5">
                     <Button
-                      variant="primary-light"
+                      variant="danger"
                       className="mr-2"
                       onClick={() => router.back()}
                     >
