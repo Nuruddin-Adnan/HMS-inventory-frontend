@@ -3,6 +3,7 @@
 import { updateExpense } from "@/api-services/expense/updateExpense";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/ui/form/Input";
+import Select from "@/components/ui/form/Select";
 import Textarea from "@/components/ui/form/Textarea";
 import convertStringToNumber from "@/helpers/convertStringToNumber";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
@@ -12,12 +13,18 @@ import { redirect } from "next/navigation";
 import { useState, useRef } from "react";
 
 export default function ExpenseUpdateForm({
-  data
+  data,
+  expenseCategories
 }: {
   data: any
+  expenseCategories: any
 }) {
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const categoryOptions = expenseCategories.map((item: any) => {
+    return { title: `${item?.name}`, value: item?.name };
+  });
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
@@ -55,7 +62,14 @@ export default function ExpenseUpdateForm({
         action={handleSubmit}
         className="grid 2xl:space-y-4 space-y-3"
       >
-        <Input type="text" name="purpose" label="Purpose of expense*" defaultValue={data?.purpose} />
+        <Select
+          options={categoryOptions}
+          defaultValue={data?.purpose}
+          name="purpose"
+          label="Select purpose of expense*"
+          className="min-h-[34px]"
+          required
+        />
         <div className="grid grid-cols-2 2xl:space-x-4 space-x-3">
           <Input type="date" name="expenseDate" label="Expense Date" defaultValue={new Date(data.expenseDate).toISOString().split('T')[0]} />
           <Input type="number" name="amount" label="Amount" defaultValue={data?.amount} />

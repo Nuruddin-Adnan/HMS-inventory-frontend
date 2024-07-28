@@ -1,10 +1,9 @@
 import React from "react";
 import { getUserServer } from "@/lib/user";
 import { redirect } from "next/navigation";
-import ExpenseForm from "./expenseForm";
-import { getAllExpenseCategories } from "@/api-services/expense-category/getAllExpenseCategories";
+import ExpenseCategoryCreateForm from "./expenseCategoryCreateForm";
 
-export default async function CreateExpense() {
+export default async function CreateExpenseCategory() {
   const user = getUserServer();
 
   const allowedRoles = new Set(["super_admin", "admin", "store_incharge"]);
@@ -12,18 +11,16 @@ export default async function CreateExpense() {
     redirect("/");
   }
 
-  const { data: expenseCategories } = await getAllExpenseCategories("status=active&fields=name _id")
-
   return (
     <div>
       <div className="card mx-auto max-w-5xl">
         <div className="border-b border-gray-200 2xl:p-4 p-3">
           <h2 className="font-bold 2xl:text-2xl text-xl text-textPrimary">
-            Create Expense
+            Create Expense Category
           </h2>
         </div>
         <div className="2xl:px-4 px-3 2xl:py-5 py-4">
-          <ExpenseForm expenseCategories={expenseCategories} />
+          <ExpenseCategoryCreateForm />
         </div>
       </div>
     </div>

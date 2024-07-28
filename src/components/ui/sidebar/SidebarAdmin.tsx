@@ -10,6 +10,7 @@ import {
   UsersIcon,
   ShieldCheckIcon,
   NewspaperIcon,
+  ListBulletIcon
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import logo from "../../../../public/logo.svg";
@@ -24,6 +25,16 @@ const navigations = [
       { name: "Dashboard", href: "/admin/dashboard", icon: SquaresPlusIcon },
       { name: "Permission", href: "/admin/permission", icon: ShieldCheckIcon },
       { name: "User", href: "/admin/user", icon: UsersIcon },
+    ],
+  },
+  {
+    heading: "ACCOUNTS",
+    navItems: [
+      {
+        name: "Expense category",
+        href: "/admin/expense-category",
+        icon: ListBulletIcon,
+      },
     ],
   },
   {

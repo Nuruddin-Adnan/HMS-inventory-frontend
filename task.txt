@@ -4,6 +4,8 @@ pending task list
 *** Product expiry date over product show in stock
 *** Notification (Both frontend and backend)
 *** Last id show in POS and print by click on the id
+*** Print off checkbox on the POS
+*** Menu show based on user role
 
 
 
