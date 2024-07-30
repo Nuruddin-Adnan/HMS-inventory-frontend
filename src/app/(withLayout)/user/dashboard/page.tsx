@@ -11,6 +11,7 @@ import { getLowStocks } from "@/api-services/stock/getLowStocks";
 import Widget from "./components/Widget";
 import LowStockTable from "./components/LowStockTable";
 import RecentOrderTable from "./components/RecentOrderTable";
+import MostSellingProductPage from "./components/MostSellingProductPage";
 
 export default async function UserDashboard() {
   const user = getUserServer();
@@ -22,34 +23,34 @@ export default async function UserDashboard() {
 
   const orderSummaryPromise = getOrderSummary();
   const purchaseSummaryPromise = getPurchaseSummary();
-  const orderPromise = getAllOrders(`sort=-createdAt&page=1&limit=20&fields=createdAt BILLID total received due paymentStatus`);
-  const stocksPromise = getLowStocks(`page=1&limit=100&fields=-createdBy -createdAt -updatedBy`);
+  const orderPromise = getAllOrders(
+    `sort=-createdAt&page=1&limit=20&fields=createdAt BILLID subtotal vatAmount discountAmount total received due paymentStatus`
+  );
+  const stocksPromise = getLowStocks(
+    `page=1&limit=100&fields=-createdBy -createdAt -updatedBy`
+  );
 
-
-  const [
-    orderSummaries,
-    purchaseSummaries,
-    orders,
-    stocks
-  ] = await Promise.all([
-    orderSummaryPromise,
-    purchaseSummaryPromise,
-    orderPromise,
-    stocksPromise
-  ])
-
+  const [orderSummaries, purchaseSummaries, orders, stocks] = await Promise.all(
+    [orderSummaryPromise, purchaseSummaryPromise, orderPromise, stocksPromise]
+  );
 
   return (
     <div>
       <div className="mb-4">
         <Suspense fallback={<LoadingComponent />}>
-          <Widget orderSummaries={orderSummaries?.data} purchaseSummaries={purchaseSummaries?.data} />
+          <Widget
+            orderSummaries={orderSummaries?.data}
+            purchaseSummaries={purchaseSummaries?.data}
+          />
         </Suspense>
       </div>
       <div className="grid grid-cols-3 lg:gap-4 gap-3">
         <div className="lg:col-span-2 col-span-full">
           <Suspense fallback={<LoadingComponent />}>
-            <SalesSummaryBarChart orderSummaries={orderSummaries?.data} purchaseSummaries={purchaseSummaries?.data} />
+            <SalesSummaryBarChart
+              orderSummaries={orderSummaries?.data}
+              purchaseSummaries={purchaseSummaries?.data}
+            />
           </Suspense>
         </div>
         <div className="lg:col-span-1 col-span-full">
@@ -59,20 +60,30 @@ export default async function UserDashboard() {
         </div>
       </div>
       <div className="lg:grid grid-cols-2 gap-4 my-4">
-        <div className="card p-4 h-full">
+        <div className="card p-4 h-full lg:mb-0 mb-4">
           <Suspense fallback={<LoadingComponent />}>
-            <h2 className="font-bold text-lg text-red-500 pb-2">Low Stock Products</h2>
+            <h2 className="font-bold text-lg text-red-500 pb-2">
+              Low Stock Products
+            </h2>
             <LowStockTable stocks={stocks?.data} />
           </Suspense>
         </div>
         <div className="card p-4 h-full">
+          <h2 className="font-bold text-lg text-green-500 pb-2">
+            Most Selling Products{" "}
+            <span className="text-xs text-gray-600">(Last 30 days)</span>
+          </h2>
           <Suspense fallback={<LoadingComponent />}>
-            <h2 className="font-bold text-lg text-gray-700 pb-2">Recent Sales</h2>
-            <RecentOrderTable orders={orders?.data} />
+            <MostSellingProductPage />
           </Suspense>
         </div>
       </div>
-
+      <div className="card p-4 h-full">
+        <Suspense fallback={<LoadingComponent />}>
+          <h2 className="font-bold text-lg text-gray-700 pb-2">Recent Sales</h2>
+          <RecentOrderTable orders={orders?.data} />
+        </Suspense>
+      </div>
     </div>
   );
 }

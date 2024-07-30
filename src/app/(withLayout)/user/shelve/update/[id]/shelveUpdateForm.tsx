@@ -4,6 +4,7 @@ import { updateShelve } from "@/api-services/shelve/updateShelve";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/ui/form/Input";
 import Select from "@/components/ui/form/Select";
+import Textarea from "@/components/ui/form/Textarea";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import tagRevalidate from "@/lib/tagRevalidate";
 import { redirect, useRouter } from "next/navigation";
@@ -19,6 +20,7 @@ export default function ShelveUpdateForm({ data }: { data: any }) {
     setLoading(true);
     const payload = {
       name: (formData.get("name") ?? "") as string,
+      description: (formData.get("description") ?? "") as string,
       status: (formData.get("status") ?? "") as string,
     };
 
@@ -48,18 +50,23 @@ export default function ShelveUpdateForm({ data }: { data: any }) {
         action={handleSubmit}
         className="grid 2xl:gap-4 gap-3"
       >
-        <Input
-          type="text"
-          name="name"
-          label="Shelve Name*"
-          defaultValue={data.name}
-        />
-        <Select
-          options={statusOptions}
-          name="status"
-          label="Status*"
-          defaultValue={data?.status}
-        />
+        <div className="grid lg:grid-cols-3 2xl:gap-4 gap-3">
+          <div className="lg:col-span-2">
+            <Input
+              type="text"
+              name="name"
+              label="Shelve Name*"
+              defaultValue={data.name}
+            />
+          </div>
+          <Select
+            options={statusOptions}
+            name="status"
+            label="Status*"
+            defaultValue={data?.status}
+          />
+        </div>
+        <Textarea label="Items description" name="description" rows={7} defaultValue={data?.description} />
         <div className="text-right">
           <Button
             type="reset"

@@ -4,12 +4,21 @@ import SearchControl from "@/components/ui/SearchControl";
 import PurchaseTable from "./purchaseTable";
 import { getAllSuppliers } from "@/api-services/supplier/getAllSuppliers";
 import FilterPurchase from "@/components/FilterPurchase";
+import { getUserServer } from "@/lib/user";
+import { redirect } from "next/navigation";
 
 export default async function Purchase({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const user = getUserServer();
+
+  const allowedRoles = new Set(["super_admin", "admin", "store_incharge"]);
+  if (!allowedRoles.has(user!?.role)) {
+    redirect("/");
+  }
+
   const page = searchParams["page"] ?? "1";
   const limit = searchParams["limit"] ?? "100";
   const query = searchParams["query"] ?? "";
@@ -18,10 +27,8 @@ export default async function Purchase({
   const isDue = searchParams["isDue"] ?? "";
 
   const { data: purchases, meta } = await getAllPurchases(
-    `sort=-createdAt&page=${page}&limit=${limit}${query && `&search=${query}`}${
-      supplier && `&supplier=${supplier}`
-    }${paymentStatus && `&paymentStatus=${paymentStatus}`}${
-      isDue && `&due[gte]=1`
+    `sort=-createdAt&page=${page}&limit=${limit}${query && `&search=${query}`}${supplier && `&supplier=${supplier}`
+    }${paymentStatus && `&paymentStatus=${paymentStatus}`}${isDue && `&due[gte]=1`
     }&fields=-createdBy -updatedBy`
   );
 

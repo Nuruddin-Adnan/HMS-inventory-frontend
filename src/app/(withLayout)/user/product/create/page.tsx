@@ -5,7 +5,6 @@ import ProductCreateForm from "./productCreateForm";
 import { getAllBrands } from "@/api-services/brand/getAllBrands";
 import { getAllCategories } from "@/api-services/category/getAllCategories";
 import { getAllGenerics } from "@/api-services/generic/getAllGenerics";
-import { getAllShelves } from "@/api-services/shelve/getAllShelves";
 
 export default async function CreateProduct() {
   const user = getUserServer();
@@ -18,9 +17,12 @@ export default async function CreateProduct() {
   const categoriesPromise = getAllCategories("status=active&fields=name _id");
   const brandsPromise = getAllBrands("status=active&fields=name");
   const genericsPromise = getAllGenerics("status=active&fields=name");
-  const shelvesPromise = getAllShelves("status=active&fields=name _id");
 
-  const [categories, brands, generics, shelves] = await Promise.all([categoriesPromise, brandsPromise, genericsPromise, shelvesPromise])
+  const [categories, brands, generics] = await Promise.all([
+    categoriesPromise,
+    brandsPromise,
+    genericsPromise,
+  ]);
 
   return (
     <div>
@@ -31,7 +33,11 @@ export default async function CreateProduct() {
           </h2>
         </div>
         <div className="2xl:px-4 px-3 2xl:py-5 py-4">
-          <ProductCreateForm categories={categories?.data} brands={brands?.data} generics={generics?.data} shelves={shelves?.data} />
+          <ProductCreateForm
+            categories={categories?.data}
+            brands={brands?.data}
+            generics={generics?.data}
+          />
         </div>
       </div>
     </div>

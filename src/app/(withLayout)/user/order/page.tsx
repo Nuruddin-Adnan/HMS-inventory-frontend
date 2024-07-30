@@ -17,7 +17,7 @@ export default async function Order({
 
   const { data: orders, meta } = await getAllOrders(
     `sort=-createdAt&page=${page}&limit=${limit}${query && `&search=${query}`}${paymentStatus && `&paymentStatus=${paymentStatus}`}${isDue && `&due[gte]=1`
-    }&fields=-createdBy -updatedBy -items`
+    }&fields=-createdBy -customer -updatedBy -items`
   );
 
   return (

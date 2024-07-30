@@ -27,12 +27,6 @@ body {
   /* font-family: Arial, Helvetica, sans-serif; */
 }
 
-/* @media (min-width: 1600px) {
-  body {
-    font-size: 16px;
-  }
-} */
-
 
 /* user layout start */
 .sidebar {
@@ -51,24 +45,6 @@ body {
   right: 100%;
   transition: all 0.2s linear;
 }
-
-/* @media (max-width: 1279px) {
-  .sidebar {
-      left: auto;
-      right: 100%;
-      transition: all 0.2s linear;
-    }
-
-    .sidebar.collapsed {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 264px;
-      z-index: 999;
-      transition: all 0.2s linear;
-    }
-} */
 
 .content-wrapper {
   width: auto;

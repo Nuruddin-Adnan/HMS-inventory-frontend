@@ -2,6 +2,7 @@
 
 import Header from "@/components/ui/header/Header";
 import Sidebar from "@/components/ui/sidebar/Sidebar";
+import { getUser } from "@/lib/getUser";
 import React, { useState } from "react";
 
 export default function UserLayout({
@@ -11,6 +12,8 @@ export default function UserLayout({
 }>) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [contentCollapsed, setContentCollapsed] = useState(true);
+
+  const user = getUser();
 
   const handleSidebarCollapsed = () => {
     setSidebarCollapsed(!sidebarCollapsed);
@@ -31,6 +34,7 @@ export default function UserLayout({
         <Sidebar
           handleSidebarCollapsed={handleSidebarCollapsed}
           handleForceSidebarCollapsed={handleForceSidebarCollapsed}
+          user={user}
         />
       </div>
       <div className={`content-wrapper ${contentCollapsed && "collapsed"}`}>

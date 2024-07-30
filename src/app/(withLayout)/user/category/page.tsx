@@ -2,12 +2,21 @@ import { getAllCategories } from "@/api-services/category/getAllCategories";
 import PaginationControls from "@/components/ui/PaginationControls";
 import SearchControl from "@/components/ui/SearchControl";
 import CategoryTable from "./categoryTable";
+import { getUserServer } from "@/lib/user";
+import { redirect } from "next/navigation";
 
 export default async function Category({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const user = getUserServer();
+
+  const allowedRoles = new Set(["super_admin", "admin", "store_incharge", "salesman"]);
+  if (!allowedRoles.has(user!?.role)) {
+    redirect("/");
+  }
+
   const page = searchParams["page"] ?? "1";
   const limit = searchParams["limit"] ?? "100";
   const query = searchParams["query"] ?? "";

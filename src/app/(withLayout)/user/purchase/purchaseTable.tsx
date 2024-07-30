@@ -63,19 +63,6 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
         </div>
       ),
     },
-    { key: "invoiceNo", label: "Invoice No" },
-    { key: "lotNo", label: "Lot No" },
-    {
-      key: "expiryDate",
-      label: "Expiry Date",
-      render: (row: any) => {
-        return (
-          <span className="whitespace-nowrap">
-            {format(new Date(row?.expiryDate), "dd/MM/yyyy")}
-          </span>
-        );
-      },
-    },
     { key: "unit", label: "Unit" },
     {
       key: "price",
@@ -146,12 +133,25 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
         </div>
       ),
     },
+    { key: "invoiceNo", label: "Invoice No" },
+    { key: "lotNo", label: "Lot No" },
+    {
+      key: "expiryDate",
+      label: "Expiry Date",
+      render: (row: any) => {
+        return (
+          <span className="whitespace-nowrap">
+            {format(new Date(row?.expiryDate), "dd/MM/yyyy")}
+          </span>
+        );
+      },
+    },
     {
       key: "Action",
       label: "Action",
       customClass: "bg-white sticky right-0 print:hidden z-[941]",
       customDataClass: (row: any) =>
-        "sticky right-0 2xl:bg-transparent bg-white print:hidden z-[940]",
+        "sticky right-0  bg-white print:hidden z-[940]",
       render: (row: any) => (
         <Menu>
           <MenuButton className="bg-white p-1 rounded-full border border-gray-100 text-gray-500">

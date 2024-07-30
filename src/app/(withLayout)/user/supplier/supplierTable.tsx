@@ -25,6 +25,11 @@ export default function SupplierTable({ suppliers }: { suppliers: any[] }) {
 
   const columns = [
     { key: "SUPID", label: "ID" },
+    {
+      key: "brand",
+      label: "Brand",
+      render: (row: any) => <div className="capitalize">{row?.brand[0]?.name}</div>,
+    },
     { key: "name", label: "Supplier Name" },
     { key: "age", label: "Age" },
     {
@@ -35,11 +40,6 @@ export default function SupplierTable({ suppliers }: { suppliers: any[] }) {
     { key: "contactNo", label: "Contact" },
     { key: "email", label: "Email" },
     { key: "address", label: "Address" },
-    {
-      key: "brand",
-      label: "Brand",
-      render: (row: any) => <div className="capitalize">{row?.brand[0]?.name}</div>,
-    },
     {
       key: "createdAt",
       label: "Entry On",

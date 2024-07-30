@@ -16,7 +16,6 @@ export default async function RefundOrder({
     "admin",
     "store_incharge",
     "salesman",
-    "account_admin",
   ]);
   if (!allowedRoles.has(user!?.role)) {
     redirect("/");

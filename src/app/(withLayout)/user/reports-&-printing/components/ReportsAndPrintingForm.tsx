@@ -45,73 +45,32 @@ const listStyle: any = {
 };
 
 const listItems = [
-    { title: 'Expense', value: '/user/reports-&-printing/expense' },
-    { title: 'Purchase report', value: '/user/reports-&-printing/purchase' },
-    { title: 'Purchase Report (Payment Wise)', value: '/user/reports-&-printing/purchase-payment-wise' },
-    { title: 'Purchase refund report', value: '/user/reports-&-printing/purchase-refund' },
-    { title: 'Sales refund', value: '/user/reports-&-printing/sales-refund' },
-    { title: 'Refund wise sales item', value: '/user/reports-&-printing/refund-wise-sales-item' },
-    { title: 'Sales Report (Summary)', value: '/user/reports-&-printing/sale-summary' },
-    { title: 'Sales Report', value: '/user/reports-&-printing/sale' },
-    { title: 'Sales Refund (Amount wise)', value: '/user/reports-&-printing/sale-refund-amount-wise' },
-    { title: 'Sales Report (With Items)', value: '/user/reports-&-printing/sale-with-item' },
-    { title: 'Sales Report (Payment Wise)', value: '/user/reports-&-printing/sales-report-payment-wise' },
-    { title: 'Sales Report (Item wise)', value: '/user/reports-&-printing/item-wise-sale' },
+    { title: 'Expense', value: '/user/reports-&-printing/expense', roles: ["super_admin", "admin", "store_incharge"] },
+    { title: 'Purchase report', value: '/user/reports-&-printing/purchase', roles: ["super_admin", "admin", "store_incharge"] },
+    { title: 'Purchase Report (Payment Wise)', value: '/user/reports-&-printing/purchase-payment-wise', roles: ["super_admin", "admin", "store_incharge"] },
+    { title: 'Purchase refund report', value: '/user/reports-&-printing/purchase-refund', roles: ["super_admin", "admin", "store_incharge"] },
+    { title: 'Sales refund', value: '/user/reports-&-printing/sales-refund', roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+    { title: 'Refund wise sales item', value: '/user/reports-&-printing/refund-wise-sales-item', roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+    { title: 'Sales Report (Summary)', value: '/user/reports-&-printing/sale-summary', roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+    { title: 'Sales Report', value: '/user/reports-&-printing/sale', roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+    { title: 'Sales Refund (Amount wise)', value: '/user/reports-&-printing/sale-refund-amount-wise', roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+    { title: 'Sales Report (With Items)', value: '/user/reports-&-printing/sale-with-item', roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+    { title: 'Sales Report (Payment Wise)', value: '/user/reports-&-printing/sales-report-payment-wise', roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+    { title: 'Sales Report (Item wise)', value: '/user/reports-&-printing/item-wise-sale', roles: ["super_admin", "admin", "store_incharge", "salesman"] },
 
-    { title: 'Income statement', value: '/user/reports-&-printing/income-statement' },
+    { title: 'Income statement', value: '/user/reports-&-printing/income-statement', roles: ["super_admin", "admin", "store_incharge",] },
 ];
 
-export default function ReportsAndPrintingForm() {
+export default function ReportsAndPrintingForm({ user }: { user: any }) {
     const [selectedValue, setSelectedValue] = useState(null);
     const router = useRouter();
-    const user = getUser();
 
+    // sorted alphabetically 
+    const sortedItems = listItems.sort((a, b) => a.title.localeCompare(b.title));
 
-    // Filter navigation based on role
-    const filteredListItems = listItems
-        .filter(item => {
-            if (user?.role === "admin" || user?.role === "super_admin" || user?.role === "store_incharge" || user?.role === "salesman") {
-                // Show all menu items for selected user
-                return true;
-            } else if (
-                item.title === "Special report"
-                // item.title === "Refund wise sales" ||
-                // item.title === "Payment wise purchase" ||
-                // item.title === "Refund wise purchase"
-            ) {
-                return false;
-            }
+    // filter by user role
+    const filteredItemsByRole = sortedItems.filter((item: any) => item.roles.includes(user?.role))
 
-            // Show other menu items for other roles
-            return true;
-        })
-        .filter(item => {
-            if (user?.role === "super_admin") {
-                // Show all menu items for selected user
-                return true;
-            } else if (
-                item.title === "Some secret menu"
-            ) {
-                return false;
-            }
-            // Show other menu items for other roles
-            return true;
-        })
-        .filter(item => {
-            if (user?.role === "super_admin" || user?.role === "admin" || user?.role === "store_incharge") {
-                // Show all menu items for selected user
-                return true;
-            } else if (
-                item.title === "Expense" ||
-                item.title === "Income Statement"
-            ) {
-                return false;
-            }
-            // Show other menu items for other roles
-            return true;
-        })
-
-    const sortedListItems = filteredListItems.sort((a, b) => a.title.localeCompare(b.title));
 
     const handleInputChange = (value: any) => {
         setSelectedValue(value);
@@ -169,7 +128,7 @@ export default function ReportsAndPrintingForm() {
             <div className="grid grid-cols-3 items-center gap-10">
                 <div className="rounded-md border m-6 w-full col-span-1 overflow-hidden">
                     <ul style={listStyle.list} className='max-h-[70vh] overflow-y-auto'>
-                        {sortedListItems.map((item) => (
+                        {filteredItemsByRole.map((item) => (
                             <li className='hover:bg-gray-100' key={item.value} style={listStyle.listItem}>
 
                                 <input

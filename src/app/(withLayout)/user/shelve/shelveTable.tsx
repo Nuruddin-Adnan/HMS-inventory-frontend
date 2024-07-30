@@ -24,6 +24,7 @@ export default function ShelveTable({ shelves }: { shelves: any[] }) {
 
   const columns = [
     { key: "name", label: "Shelve Name" },
+    { key: "description", label: "Items Description", render: (rows: any) => <div className="whitespace-pre-line">{rows?.description}</div> },
     {
       key: "status",
       label: "Status",
@@ -83,8 +84,9 @@ export default function ShelveTable({ shelves }: { shelves: any[] }) {
         columns={columns}
         data={shelves}
         uniqueKey="_id"
-        customTfClass="text-right whitespace-nowrap"
         customThClass="whitespace-nowrap bg-gray-200"
+        customTdClass="align-top"
+        customTfClass="text-right whitespace-nowrap"
         create={
           new Set(["super_admin", "admin", "store_incharge"]).has(role) ? "/user/shelve/create" : undefined
         }
@@ -95,6 +97,7 @@ export default function ShelveTable({ shelves }: { shelves: any[] }) {
         tableHeightClass="h-[calc(100vh-170px)]"
         sort
         print
+        serialized
       />
     </div>
   );

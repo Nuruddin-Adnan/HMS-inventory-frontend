@@ -86,11 +86,11 @@ export default function GenericTable({ generics }: { generics: any[] }) {
         customTfClass="text-right whitespace-nowrap"
         customThClass="whitespace-nowrap bg-gray-200"
         create={
-          new Set(["super_admin", "admin", "store_incharge"]).has(role) ? "/user/generic/create" : undefined
+          new Set(["super_admin", "admin"]).has(role) ? "/user/generic/create" : undefined
         }
         onEdit={handleEdit}
         onDelete={new Set(["super_admin"]).has(role) ? handleDelete : undefined}
-        action={new Set(["super_admin", "admin", "store_incharge"]).has(role) ? true : false}
+        action={new Set(["super_admin", "admin"]).has(role) ? true : false}
         responsive
         tableHeightClass="h-[calc(100vh-170px)]"
         sort

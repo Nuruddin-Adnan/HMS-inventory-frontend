@@ -18,11 +18,11 @@ import { logoutUser } from "@/api-services/auth/logoutUser";
 import Avatar from "../Avatar";
 import { RiFullscreenExitLine, RiFullscreenLine } from "react-icons/ri";
 import Image from "next/image";
-import logo from '../../../../public/logo.svg'
+import logo from "../../../../public/logo.svg";
 
 export default function Header({
   handleSidebarCollapsed,
-  handleForceSidebarCollapsed
+  handleForceSidebarCollapsed,
 }: {
   handleSidebarCollapsed?: any;
   handleForceSidebarCollapsed?: any;
@@ -30,7 +30,7 @@ export default function Header({
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [userNameFirstLetter, setUserNameFirstLetter] = useState("H");
   const router = useRouter();
-  const pathname = usePathname()
+  const pathname = usePathname();
   const user = getUser();
 
   useEffect(() => {
@@ -60,6 +60,7 @@ export default function Header({
   const logout = async () => {
     await logoutUser();
     router.push("/login", { scroll: false });
+    router.refresh()
   };
 
   const toggleFullScreen = () => {
@@ -75,12 +76,14 @@ export default function Header({
   };
 
   const handlePOS = () => {
-    handleForceSidebarCollapsed()
+    if (pathname !== "/") {
+      handleForceSidebarCollapsed();
+    }
     document.documentElement.requestFullscreen().then(() => {
       setIsFullScreen(true);
     });
     router.push("/user/pos", { scroll: false });
-  }
+  };
 
   return (
     <Disclosure
@@ -92,45 +95,49 @@ export default function Header({
           <div className="px-4 py-2">
             <div className="relative flex items-center justify-between">
               <div className="flex flex-1 items-center justify-start lg:items-stretch lg:justify-start">
-                {
-                  pathname === '/' ? <Image src={logo} alt="logo" width={35} /> :
-
-                    <button onClick={() => handleSidebarCollapsed()}>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
-                        />
-                      </svg>
-                    </button>
-                }
-                {
-                  pathname !== '/' &&
+                {pathname === "/" ? (
+                  <Image src={logo} alt="logo" width={35} />
+                ) : (
+                  <button onClick={() => handleSidebarCollapsed()}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
+                      />
+                    </svg>
+                  </button>
+                )}
+                {pathname !== "/" && (
                   <div className="ms-5 sm:block hidden">
                     <nav className="w-full rounded-md">
                       <ol className="flex font-medium text-base">
                         <li>
-                          <Link
-                            href="/"
-                            className="text-primary pr-1"
-                          >Home</Link>
+                          <Link href="/" className="text-primary pr-1">
+                            Home
+                          </Link>
                         </li>
-                        <li className="text-neutral-700">{pathname.replaceAll('/user', '').replaceAll('/', ' / ')}</li>
+                        <li className="text-neutral-700">
+                          {pathname
+                            .replaceAll("/user", "")
+                            .replaceAll("/", " / ")}
+                        </li>
                       </ol>
                     </nav>
                   </div>
-                }
-
+                )}
               </div>
-              <button onClick={handlePOS} className="border border-red-500 rounded py-1.5 px-4 font-bold inline-block text-red-600 mr-8 hover:bg-red-200 transition">
+              <button
+                onClick={handlePOS}
+                className="border border-red-500 rounded py-1.5 px-4 font-bold inline-block text-red-600 mr-8 hover:bg-red-200 transition"
+              >
                 POS
               </button>
               <div className="flex items-center space-x-3">

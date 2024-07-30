@@ -11,8 +11,7 @@ export default async function DueOrder({ params }: { params: { id: string } }) {
     "super_admin",
     "admin",
     "store_incharge",
-    "salesman",
-    "account_admin",
+    "salesman"
   ]);
   if (!allowedRoles.has(user!?.role)) {
     redirect("/");

@@ -54,8 +54,10 @@ function classNames(...classes: any) {
 }
 export default function SidebarAdmin({
   handleSidebarCollapsed,
+  handleForceSidebarCollapsed,
 }: {
   handleSidebarCollapsed?: any;
+  handleForceSidebarCollapsed?: any;
 }) {
   const pathname = usePathname();
 

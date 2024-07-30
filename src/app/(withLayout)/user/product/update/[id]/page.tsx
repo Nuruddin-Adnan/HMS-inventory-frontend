@@ -5,7 +5,6 @@ import { getAllBrands } from "@/api-services/brand/getAllBrands";
 import { getSingleProduct } from "@/api-services/product/getSingleProduct";
 import { getAllCategories } from "@/api-services/category/getAllCategories";
 import { getAllGenerics } from "@/api-services/generic/getAllGenerics";
-import { getAllShelves } from "@/api-services/shelve/getAllShelves";
 import ProductUpdateForm from "./productUpdateForm";
 
 export default async function UpdateProduct({
@@ -15,11 +14,7 @@ export default async function UpdateProduct({
 }) {
   const user = getUserServer();
 
-  const allowedRoles = new Set([
-    "super_admin",
-    "admin",
-    "store_incharge",
-  ]);
+  const allowedRoles = new Set(["super_admin", "admin", "store_incharge"]);
   if (!allowedRoles.has(user!?.role)) {
     redirect("/");
   }
@@ -28,9 +23,13 @@ export default async function UpdateProduct({
   const categoriesPromise = getAllCategories("status=active&fields=name _id");
   const brandsPromise = getAllBrands("status=active&fields=name");
   const genericsPromise = getAllGenerics("status=active&fields=name");
-  const shelvesPromise = getAllShelves("status=active&fields=name _id");
 
-  const [product, categories, brands, generics, shelves] = await Promise.all([productPromise, categoriesPromise, brandsPromise, genericsPromise, shelvesPromise])
+  const [product, categories, brands, generics] = await Promise.all([
+    productPromise,
+    categoriesPromise,
+    brandsPromise,
+    genericsPromise,
+  ]);
 
   return (
     <div>
@@ -41,7 +40,12 @@ export default async function UpdateProduct({
           </h2>
         </div>
         <div className="2xl:px-4 px-3 2xl:py-5 py-4">
-          <ProductUpdateForm data={product.data} categories={categories?.data} brands={brands?.data} generics={generics?.data} shelves={shelves?.data} />
+          <ProductUpdateForm
+            data={product.data}
+            categories={categories?.data}
+            brands={brands?.data}
+            generics={generics?.data}
+          />
         </div>
       </div>
     </div>

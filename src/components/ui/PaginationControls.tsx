@@ -52,7 +52,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
         <ChevronLeftIcon className="size-6" />
       </Button>
 
-      <div>
+      <div className="text-nowrap">
         {currentPage} / {Math.ceil(totalPages / Number(limit))}
       </div>
 

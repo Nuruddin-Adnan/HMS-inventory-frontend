@@ -87,14 +87,17 @@ export default function SaleTable({
     ({ createdBy }: { createdBy: any }) => createdBy[0]?.name
   );
 
-  const filteredData = sales.filter(
-    (item: any) => createdBy === "All" || item?.createdBy[0]?.name === createdBy
-  ).filter(
-    (item: any) =>
-      paymentType === "All" ||
-      (paymentType === "due" && item?.due > 0) ||
-      (paymentType === "paid" && item?.due === 0)
-  )
+  const filteredData = sales
+    .filter(
+      (item: any) =>
+        createdBy === "All" || item?.createdBy[0]?.name === createdBy
+    )
+    .filter(
+      (item: any) =>
+        paymentType === "All" ||
+        (paymentType === "due" && item?.due > 0) ||
+        (paymentType === "paid" && item?.due === 0)
+    )
     .filter(
       (item: any) =>
         discountType === "All" ||
@@ -130,31 +133,12 @@ export default function SaleTable({
       },
     },
     {
-      key: "customer",
-      label: "Customer",
-      render: (row: any) => {
-        return (
-          <span className="whitespace-nowrap">
-            {row?.customer[0]?.contactNo}
-          </span>
-        );
-      },
-    },
-    {
       key: "subtotal",
       label: "Subtotal",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.subtotal, 2)}</div>
-      ),
-    },
-    {
-      key: "discountPercent",
-      label: "Discount%",
-      customClass: "text-right",
-      render: (row: any) => (
         <div className="capitalize text-right font-medium">
-          {row?.discountPercent}
+          {toFixedIfNecessary(row?.subtotal, 2)}
         </div>
       ),
     },
@@ -164,7 +148,27 @@ export default function SaleTable({
       customClass: "text-right",
       render: (row: any) => (
         <div className="capitalize text-right font-medium">
-          {row?.vatPercent}
+          {toFixedIfNecessary(row?.vatPercent, 2)}
+        </div>
+      ),
+    },
+    {
+      key: "discountPercent",
+      label: "Discount%",
+      customClass: "text-right",
+      render: (row: any) => (
+        <div className="capitalize text-right font-medium">
+          {toFixedIfNecessary(row?.discountPercent, 2)}
+        </div>
+      ),
+    },
+    {
+      key: "discountAmount",
+      label: "Discount",
+      customClass: "text-right",
+      render: (row: any) => (
+        <div className="capitalize text-right font-medium">
+          {toFixedIfNecessary(row?.discountAmount, 2)}
         </div>
       ),
     },
@@ -173,7 +177,9 @@ export default function SaleTable({
       label: "Total",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.total, 2)}</div>
+        <div className="capitalize text-right font-medium">
+          {toFixedIfNecessary(row?.total, 2)}
+        </div>
       ),
     },
     {
@@ -181,7 +187,9 @@ export default function SaleTable({
       label: "Received",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.received, 2)}</div>
+        <div className="capitalize text-right font-medium">
+          {toFixedIfNecessary(row?.received, 2)}
+        </div>
       ),
     },
     {
@@ -189,7 +197,9 @@ export default function SaleTable({
       label: "Due",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="capitalize text-right font-medium">{toFixedIfNecessary(row?.due, 2)}</div>
+        <div className="capitalize text-right font-medium">
+          {toFixedIfNecessary(row?.due, 2)}
+        </div>
       ),
     },
   ];
@@ -237,8 +247,7 @@ export default function SaleTable({
                 : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
                 }`}
               onClick={() => {
-                setPaymentType("All"),
-                  setHeading("All");
+                setPaymentType("All"), setHeading("All");
               }}
             >
               All
@@ -249,8 +258,7 @@ export default function SaleTable({
                 : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
                 }`}
               onClick={() => {
-                setPaymentType("paid"),
-                  setHeading("Paid");
+                setPaymentType("paid"), setHeading("Paid");
               }}
             >
               Paid
@@ -261,8 +269,7 @@ export default function SaleTable({
                 : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
                 }`}
               onClick={() => {
-                setPaymentType("due"),
-                  setHeading("Due");
+                setPaymentType("due"), setHeading("Due");
               }}
             >
               Due
@@ -278,8 +285,7 @@ export default function SaleTable({
                 : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
                 }`}
               onClick={() => {
-                setDiscountType("All"),
-                  setDiscountHeading("All");
+                setDiscountType("All"), setDiscountHeading("All");
               }}
             >
               All
@@ -302,8 +308,7 @@ export default function SaleTable({
                 : "focus:bg-primary focus:bg-opacity-10 focus:text-primary hover:bg-gray-200"
                 }`}
               onClick={() => {
-                setDiscountType("discount"),
-                  setDiscountHeading("Discount");
+                setDiscountType("discount"), setDiscountHeading("Discount");
               }}
             >
               Discount
@@ -342,7 +347,7 @@ export default function SaleTable({
             sort
             print
             pageStyle={pageStyle}
-            sumFields={["total", "received", "due"]}
+            sumFields={["total", "discountAmount", "received", "due"]}
             backBtn
             tableHeightClass="h-[calc(100vh-180px)]"
             pagination

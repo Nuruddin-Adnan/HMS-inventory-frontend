@@ -4,6 +4,7 @@ import { getSingleOrderClient } from "@/api-services/order/getSingleOrderClient"
 import Invoice from "@/components/Invoice";
 import Table from "@/components/ui/table/Table";
 import toastError from "@/helpers/toastError";
+import { toFixedIfNecessary } from "@/helpers/toFixedIfNecessary";
 import { getUser } from "@/lib/getUser";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import {
@@ -110,6 +111,36 @@ export default function RecentOrderTable({ orders }: { orders: any[] }) {
       },
     },
     {
+      key: "subtotal",
+      label: "Subtotal",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">
+          {row?.subtotal.toFixed(2)}
+        </div>
+      ),
+    },
+    {
+      key: "vatAmount",
+      label: "Vat",
+      customClass: "text-right w-20",
+      render: (row: any) => (
+        <div className="text-right font-medium">
+          {row?.vatAmount?.toFixed(2)}
+        </div>
+      ),
+    },
+    {
+      key: "discountAmount",
+      label: "Disount",
+      customClass: "text-right w-24 pr-5",
+      render: (row: any) => (
+        <div className="text-right font-medium pr-4">
+          {row?.discountAmount?.toFixed(2)}
+        </div>
+      ),
+    },
+    {
       key: "total",
       label: "Total",
       customClass: "text-right w-24 pr-5",
@@ -147,11 +178,11 @@ export default function RecentOrderTable({ orders }: { orders: any[] }) {
         <div
           className={
             row?.paymentStatus === "paid" ||
-              row?.paymentStatus === "discount-paid"
+            row?.paymentStatus === "discount-paid"
               ? "bg-[#28A745] bg-opacity-[.12] text-[#28A745] font-medium rounded-full text-center m-auto w-28 py-0.5"
               : row?.paymentStatus.includes("refund")
-                ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0.5"
-                : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0.5"
+              ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0.5"
+              : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0.5"
           }
         >
           <span className="capitalize">

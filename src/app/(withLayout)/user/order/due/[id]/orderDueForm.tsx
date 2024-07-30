@@ -159,7 +159,7 @@ export default function OrderDueForm({ data }: { data: any }) {
                         {product?.subtotal}
                       </td>
                       <td className="py-1 px-4 border text-center">
-                        {product?.discountPercent}
+                        {toFixedIfNecessary(product?.discountPercent, 2)}
                       </td>
                       <td className="py-1 px-4 border text-center">
                         {product?.total}

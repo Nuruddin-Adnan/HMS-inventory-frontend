@@ -44,7 +44,6 @@ export default function UserUpdateForm({
     seal,
     signature,
     status,
-    department,
   } = data;
 
   const handlePermissionChange = (value: string) => {

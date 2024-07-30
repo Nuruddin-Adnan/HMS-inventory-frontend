@@ -216,7 +216,7 @@ export default function Table({
       {(title || search || print || create || backBtn) && (
         <div className="flex items-center justify-between border-b border-gray-200 2xl:p-4 p-3">
           {title && (
-            <h2 className="font-bold 2xl:text-2xl text-xl text-textPrimary">
+            <h2 className="font-bold 2xl:text-2xl text-lg text-textPrimary">
               {title}
             </h2>
           )}

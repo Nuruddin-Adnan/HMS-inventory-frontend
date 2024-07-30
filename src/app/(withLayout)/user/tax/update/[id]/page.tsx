@@ -11,7 +11,7 @@ export default async function UpdateTax({
 }) {
   const user = getUserServer();
 
-  const allowedRoles = new Set(["super_admin", "admin", "store_incharge"]);
+  const allowedRoles = new Set(["super_admin", "admin"]);
   if (!allowedRoles.has(user!?.role)) {
     redirect("/");
   }

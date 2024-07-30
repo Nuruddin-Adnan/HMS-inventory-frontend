@@ -2,19 +2,28 @@ import PaginationControls from "@/components/ui/PaginationControls";
 import { getAllShelves } from "@/api-services/shelve/getAllShelves";
 import ShelveTable from "./shelveTable";
 import SearchControl from "@/components/ui/SearchControl";
+import { getUserServer } from "@/lib/user";
+import { redirect } from "next/navigation";
 
 export default async function Shelve({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const user = getUserServer();
+
+  const allowedRoles = new Set(["super_admin", "admin", "store_incharge", "salesman"]);
+  if (!allowedRoles.has(user!?.role)) {
+    redirect("/");
+  }
+
   const page = searchParams["page"] ?? "1";
   const limit = searchParams["limit"] ?? "100";
   const query = searchParams["query"] ?? "";
 
   const { data: shelves, meta } = await getAllShelves(
     `sort=status -createdAt&page=${page}&limit=${limit}${query && `&search=${query}`
-    }&fields=name createdAt status`
+    }&fields=name description status`
   );
 
   return (

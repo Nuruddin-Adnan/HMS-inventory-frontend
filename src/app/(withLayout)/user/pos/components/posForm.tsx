@@ -19,6 +19,7 @@ import { useReactToPrint } from "react-to-print";
 import { getSingleOrderClient } from "@/api-services/order/getSingleOrderClient";
 import Invoice from "@/components/Invoice";
 import { toFixedIfNecessary } from "@/helpers/toFixedIfNecessary";
+import Checkbox from "@/components/ui/form/Checkbox";
 
 type Product = {
   _id: string;
@@ -32,6 +33,7 @@ type Product = {
   quantity?: number;
   subtotal: number;
   discountPercent?: number;
+  addedQuantity?: number;
   total?: number;
 };
 
@@ -43,9 +45,13 @@ const pageStyle = `
 export default function POSPForm({
   productsList,
   tax,
+  permissions,
+  user,
 }: {
   productsList: any;
   tax: any;
+  permissions: any;
+  user: any;
 }) {
   const productCodeInputRef = useRef<HTMLInputElement>(null);
   const customerFormRef = useRef<HTMLFormElement>(null);
@@ -54,6 +60,9 @@ export default function POSPForm({
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [invoiceNo, setInvoiceNo] = useState<any>(null);
+  const [isPrint, setIsPrint] = useState<boolean>(
+    localStorage.getItem("isPrint") === "true" ? true : false
+  );
   const [received, setReceived] = useState<number>(0);
   const [discountPercent, setDiscountPercent] = useState<number>(0);
   const [discountTotal, setDiscountTotal] = useState<number>(0);
@@ -82,7 +91,7 @@ export default function POSPForm({
 
   const vatAmount = calculatePercentageToAmount(vatPercent, subtotal) || 0;
 
-  // cancule total
+  // calcule total
   const total =
     discountTotal > 0
       ? subtotal + vatAmount - discountTotal
@@ -98,7 +107,8 @@ export default function POSPForm({
       if (existingProductIndex > -1) {
         const updatedProducts = [...products];
 
-        updatedProducts[existingProductIndex].quantity! += 1;
+        updatedProducts[existingProductIndex].quantity! +=
+          product?.addedQuantity ?? 1;
         setProducts(updatedProducts);
         setProductCode("");
       } else {
@@ -108,11 +118,13 @@ export default function POSPForm({
         const discount = price * (discountPercent / 100);
         const total = price - discount;
 
+        const quantity = product?.addedQuantity ?? 1;
+
         setProducts([
           ...products,
           {
             ...product,
-            quantity: 1,
+            quantity: quantity,
             unit,
             price,
             discountPercent,
@@ -279,8 +291,10 @@ export default function POSPForm({
     });
 
     // Convert  fields as number
-    const discountPercent = (formData.get("discountPercent") ?? "") as string;
-    const discountAmount = (formData.get("discountAmount") ?? "") as string;
+    const discountPercent =
+      ((formData.get("discountPercent") ?? "") as string) || "0";
+    const discountAmount =
+      ((formData.get("discountAmount") ?? "") as string) || "0";
     const vatPercent = (formData.get("vatPercent") ?? "") as string;
     const received = (formData.get("received") ?? "") as string;
 
@@ -302,14 +316,17 @@ export default function POSPForm({
     };
 
     const nonEmptyPayload = removeEmptyFields(payload);
+
     const result = await createOrder(nonEmptyPayload);
     if (result && result.success === true) {
       setInvoiceData(result?.data);
       await tagRevalidate("order");
       await tagRevalidate("stock");
 
-      // print
-      handlePrint();
+      if (isPrint) {
+        // print
+        handlePrint();
+      }
 
       // reset all the data and get ready for next order
       // Reset the form
@@ -317,6 +334,7 @@ export default function POSPForm({
         formRef.current.reset();
       }
       handleReset();
+      setInvoiceNo(result?.data?.BILLID);
     }
     setLoading(false);
   };
@@ -364,10 +382,15 @@ export default function POSPForm({
     setShowDuplicateModal(false);
   };
 
+  // get only the discount permission id from permission
+  const discountPermission =
+    permissions.filter((permission: any) => permission?.name === "discount")[0]
+      ?._id ?? "";
+
   return (
     <div className="flex flex-col gap-3 xl:flex-row h-[calc(100vh-86px)]">
-      <div className="w-full xl:w-[70%]">
-        <div className="bg-gray-200 rounded p-4">
+      <div className="w-full xl:w-[70%] bg-gray-100 rounded">
+        <div className="rounded p-4">
           <div className="grid grid-cols-3 gap-4">
             <div className="flex items-center gap-5 col-span-2">
               <h2 className="text-base font-bold whitespace-nowrap w-28 flex-shrink-0">
@@ -400,7 +423,10 @@ export default function POSPForm({
                 required
                 onFocus={(e: any) => e.target.select()}
               />
-              <div className="absolute right-0 bg-primary rounded-r  text-white px-3 border grid place-items-center h-full top-1/2 -translate-y-1/2 z-10">
+              <div
+                className="absolute right-0 bg-primary rounded-r cursor-pointer text-white px-3 border grid place-items-center h-full top-1/2 -translate-y-1/2 z-10"
+                onClick={() => handlePrintInvoice(invoiceNo)}
+              >
                 <PrinterIcon className="w-5 h-5" />
               </div>
             </div>
@@ -423,7 +449,7 @@ export default function POSPForm({
             </form>
           </div>
 
-          <div className="border-t border-gray-100 pt-4 mt-4">
+          <div className="border-t border-gray-300 pt-2 mt-2 ">
             <div className="grid grid-cols-6 md:gap-4 gap-3">
               <div className="md:col-span-2 col-span-full">
                 <form
@@ -475,8 +501,8 @@ export default function POSPForm({
           </div>
         </div>
 
-        <div className="mt-3">
-          <div className="xl:h-[calc(100vh-316px)] h-[250px] overflow-auto">
+        <div>
+          <div className="xl:h-[calc(100vh-292px)] h-[250px] overflow-auto">
             <table className="min-w-full bg-white">
               <thead>
                 <tr>
@@ -549,16 +575,31 @@ export default function POSPForm({
                       {product?.price * product?.quantity!}
                     </td>
                     <td className="py-1 px-4 border text-center">
-                      <Input
-                        type="number"
-                        value={product?.discountPercent}
-                        className="w-16 border-gray-300"
-                        inlineClassName="flex justify-center"
-                        onChange={(e: any) =>
-                          handleChangeDiscountPercentItem(index, e.target.value)
-                        }
-                        onFocus={(e: any) => e.target.select()}
-                      />
+                      {new Set(["super_admin", "admin", "store_incharge"]).has(
+                        user?.role
+                      ) || (user?.permission).includes(discountPermission) ? (
+                        <Input
+                          type="number"
+                          value={product?.discountPercent}
+                          className="w-16 border-gray-300"
+                          inlineClassName="flex justify-center"
+                          onChange={(e: any) =>
+                            handleChangeDiscountPercentItem(
+                              index,
+                              e.target.value
+                            )
+                          }
+                          onFocus={(e: any) => e.target.select()}
+                        />
+                      ) : (
+                        <Input
+                          type="number"
+                          value={product?.discountPercent}
+                          className="w-16 border-gray-300"
+                          inlineClassName="flex justify-center"
+                          onFocus={(e: any) => e.target.select()}
+                        />
+                      )}
                     </td>
                     <td className="py-1 px-4 border text-center">
                       {product.price * product.quantity! -
@@ -582,7 +623,7 @@ export default function POSPForm({
         </div>
       </div>
 
-      <div className="w-full xl:w-[30%] p-4 rounded flex flex-col justify-between bg-gray-200">
+      <div className="w-full xl:w-[30%] p-4 rounded flex flex-col justify-between bg-gray-100">
         <div className="mb-4">
           <h2 className="text-lg font-bold bg-green-500 bg-opacity-20 text-green-700 py-1 px-4 rounded  text-center">
             <span className="me-5">Total: </span> {toFixedIfNecessary(total, 2)}{" "}
@@ -600,7 +641,7 @@ export default function POSPForm({
         <form
           ref={formRef}
           action={handleSubmit}
-          className="md:sticky bottom-5"
+          className="xl:sticky bottom-5"
         >
           <div className="flex justify-between text-base whitespace-nowrap">
             <div className="grid 2xl:gap-4 gap-3 w-full">
@@ -625,41 +666,47 @@ export default function POSPForm({
                     %
                   </span>
                 </div>
+                {(new Set(["super_admin", "admin", "store_incharge"]).has(
+                  user?.role
+                ) ||
+                  (user?.permission).includes(discountPermission)) && (
+                    <>
+                      <p className="text-textPrimary">Discount % :</p>
+                      <div className="relative ml-auto w-2/3">
+                        <Input
+                          id="discountPercent"
+                          name="discountPercent"
+                          type="number"
+                          value={discountPercent}
+                          onChange={(e: any) => handleChangeDiscountPercent(e)}
+                          onFocus={(e: any) => e.target.select()}
+                          className="pr-6 border-blue-300 py-0.5"
+                          required
+                        />
+                        <span className="absolute top-1/2 right-2 -translate-y-1/2">
+                          %
+                        </span>
+                      </div>
 
-                <p className="text-textPrimary">Discount % :</p>
-                <div className="relative ml-auto w-2/3">
-                  <Input
-                    id="discountPercent"
-                    name="discountPercent"
-                    type="number"
-                    value={discountPercent}
-                    onChange={(e: any) => handleChangeDiscountPercent(e)}
-                    onFocus={(e: any) => e.target.select()}
-                    className="pr-6 border-blue-300 py-0.5"
-                    required
-                  />
-                  <span className="absolute top-1/2 right-2 -translate-y-1/2">
-                    %
-                  </span>
-                </div>
-
-                <p className="text-textPrimary">Discount :</p>
-                <div className="relative ml-auto w-2/3">
-                  <Input
-                    id="discountAmount"
-                    name="discountAmount"
-                    type="number"
-                    step="0.001"
-                    value={discountTotal}
-                    onChange={(e: any) => handleChangeDiscountAmount(e)}
-                    onFocus={(e: any) => e.target.select()}
-                    className="pr-6 border-blue-300 py-0.5"
-                    required
-                  />
-                  <span className="absolute top-1/2 right-2 -translate-y-1/2">
-                    TK
-                  </span>
-                </div>
+                      <p className="text-textPrimary">Discount :</p>
+                      <div className="relative ml-auto w-2/3">
+                        <Input
+                          id="discountAmount"
+                          name="discountAmount"
+                          type="number"
+                          step="0.001"
+                          value={discountTotal}
+                          onChange={(e: any) => handleChangeDiscountAmount(e)}
+                          onFocus={(e: any) => e.target.select()}
+                          className="pr-6 border-blue-300 py-0.5"
+                          required
+                        />
+                        <span className="absolute top-1/2 right-2 -translate-y-1/2">
+                          TK
+                        </span>
+                      </div>
+                    </>
+                  )}
 
                 <div className="border-b col-span-2 border-b-gray-100"></div>
 
@@ -702,8 +749,25 @@ export default function POSPForm({
             </div>
           </div>
 
-          <div className="text-right flex gap-2 text-base mt-5">
-            <Button type="reset" variant="primary-light" onClick={handleReset}>
+          <div className="text-right flex gap-2 text-base mt-2 border-t border-gray-300 pt-2">
+            <Checkbox
+              label="Print"
+              inlineClassName="items-center"
+              checked={isPrint}
+              onChange={() => {
+                setIsPrint(!isPrint);
+                localStorage.setItem("isPrint", `${!isPrint}`);
+              }}
+            />
+            <Button
+              type="reset"
+              variant="primary-light"
+              onClick={() => {
+                handleReset();
+                setIsPrint(true);
+                localStorage.setItem("isPrint", "true");
+              }}
+            >
               Reset
             </Button>
             <button

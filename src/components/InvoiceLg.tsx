@@ -47,9 +47,12 @@ export default function InvoiceLg({ order }: { order: any }) {
                   <span className="whitespace-pre-line">
                     {customer[0]?.address}
                   </span>
-                  <br />
-                  {customer[0]?.contactNo}
                 </address>
+              )}
+              {customer[0]?.contactNo && (
+                <span className="block black">
+                  Contact: {customer[0]?.contactNo}
+                </span>
               )}
             </div>
           </div>

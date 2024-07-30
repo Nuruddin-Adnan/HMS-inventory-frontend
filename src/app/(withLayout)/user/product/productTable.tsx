@@ -37,7 +37,9 @@ export default function ProductTable({ products }: { products: any[] }) {
       key: "name",
       label: "Product Name",
       render: (row: any) => (
-        <div className="whitespace-nowrap print:whitespace-normal">{row?.name}</div>
+        <div className="whitespace-nowrap print:whitespace-normal">
+          {row?.name}
+        </div>
       ),
     },
     { key: "unit", label: "Unit" },
@@ -46,7 +48,9 @@ export default function ProductTable({ products }: { products: any[] }) {
       label: "Price",
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
-        <div className="text-right font-medium pr-4">{Math.floor(row?.price)}</div>
+        <div className="text-right font-medium pr-4">
+          {Math.floor(row?.price)}
+        </div>
       ),
     },
     {
@@ -54,7 +58,9 @@ export default function ProductTable({ products }: { products: any[] }) {
       label: "Disc%",
       customClass: "text-right",
       render: (row: any) => (
-        <div className="text-right font-medium">{Math.floor(row?.discountPercent)}</div>
+        <div className="text-right font-medium">
+          {Math.floor(row?.discountPercent)}
+        </div>
       ),
     },
     {
@@ -62,7 +68,9 @@ export default function ProductTable({ products }: { products: any[] }) {
       label: "Discount",
       customClass: "text-right w-24",
       render: (row: any) => (
-        <div className="text-right font-medium">{Math.floor(row?.discountAmount)}</div>
+        <div className="text-right font-medium">
+          {Math.floor(row?.discountAmount)}
+        </div>
       ),
     },
     {
@@ -73,17 +81,17 @@ export default function ProductTable({ products }: { products: any[] }) {
       ),
     },
     {
+      key: "formulation",
+      label: "Formulation",
+      render: (row: any) => (
+        <div className="whitespace-nowrap">{row?.formulation}</div>
+      ),
+    },
+    {
       key: "brand",
       label: "Brand",
       render: (row: any) => (
         <div className="whitespace-nowrap">{row?.brand}</div>
-      ),
-    },
-    {
-      key: "shelve",
-      label: "Shelve",
-      render: (row: any) => (
-        <div className="whitespace-nowrap">{row?.shelve}</div>
       ),
     },
     {

@@ -8,7 +8,6 @@ import {
 import {
   SquaresPlusIcon,
   ShoppingBagIcon,
-  ChartBarIcon,
   ShoppingCartIcon,
   TagIcon,
   BuildingStorefrontIcon,
@@ -28,39 +27,43 @@ const navigations = [
     heading: "MENU",
     headingClassName: "pl-4 pt-2 pb-4",
     navItems: [
-      { name: "Dashboard", href: "/user/dashboard", icon: SquaresPlusIcon },
-      { name: "Product", href: "/user/product", icon: ShoppingBagIcon },
+      { name: "Dashboard", href: "/user/dashboard", icon: SquaresPlusIcon, roles: ["super_admin", "admin", "store_incharge"] },
+      { name: "Product", href: "/user/product", icon: ShoppingBagIcon, roles: ["super_admin", "admin", "store_incharge", "salesman"] },
       {
         group: "Stock",
         items: [
-          { name: "All Stocks", href: "/user/stock" },
-          { name: "Low Stocks", href: "/user/low-stock" },
+          { name: "All Stocks", href: "/user/stock", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+          { name: "Low Stocks", href: "/user/low-stock", roles: ["super_admin", "admin", , "store_incharge", "salesman"] },
         ],
         icon: TagIcon,
+        roles: ["super_admin", "admin", "store_incharge", "salesman"],
       },
-      { name: "Customer", href: "/user/customer", icon: UserIcon },
+      { name: "Customer", href: "/user/customer", icon: UserIcon, roles: ["super_admin", "admin", "store_incharge", "salesman"] },
       {
         group: "Sales",
-        items: [{ name: "Sales History", href: "/user/order" }],
+        items: [{ name: "Sales History", href: "/user/order", roles: ["super_admin", "admin", "store_incharge", "salesman"] }],
         icon: ShoppingCartIcon,
+        roles: ["super_admin", "admin", "store_incharge", "salesman"],
       },
       {
         group: "Purchases",
         items: [
-          { name: "Purchase", href: "/user/purchase" },
-          { name: "Suppliers Management", href: "/user/supplier" },
+          { name: "Purchase", href: "/user/purchase", roles: ["super_admin", "admin", "store_incharge",] },
+          { name: "Suppliers Management", href: "/user/supplier", roles: ["super_admin", "admin", "store_incharge",] },
         ],
         icon: TagIcon,
+        roles: ["super_admin", "admin", "store_incharge",],
       },
       {
         group: "Inventory",
         items: [
-          { name: "Shelves", href: "/user/shelve" },
-          { name: "Category", href: "/user/category" },
-          { name: "Generic", href: "/user/generic" },
-          { name: "Brand", href: "/user/brand" },
+          { name: "Shelves", href: "/user/shelve", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+          { name: "Category", href: "/user/category", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+          { name: "Generic", href: "/user/generic", roles: ["super_admin", "admin",] },
+          { name: "Brand", href: "/user/brand", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
         ],
         icon: BuildingStorefrontIcon,
+        roles: ["super_admin", "admin", "store_incharge", "salesman"],
       },
     ],
   },
@@ -71,21 +74,39 @@ const navigations = [
         name: "Reports",
         href: "/user/reports-&-printing",
         icon: ClipboardDocumentListIcon,
+        roles: ["super_admin", "admin", "store_incharge", "salesman"],
       },
-      { name: "Expenses", href: "/user/expense", icon: IoWalletOutline },
+      { name: "Expenses", href: "/user/expense", icon: IoWalletOutline, roles: ["super_admin", "admin", "store_incharge"] },
     ],
   },
   {
     heading: "SETTINGS",
-    navItems: [{ name: "Tax", href: "/user/tax", icon: HiOutlineReceiptTax }],
+    navItems: [{ name: "Tax", href: "/user/tax", icon: HiOutlineReceiptTax, roles: ["super_admin", "admin"] }],
   },
   {
     heading: "HELP",
     navItems: [
-      { name: "Contact Support", href: "/user/support", icon: BiSupport },
+      { name: "Contact Support", href: "/user/support", icon: BiSupport, roles: ["super_admin", "admin", "store_incharge", "salesman"] },
     ],
   },
 ];
+
+function filterNavigationsByRole(navigations: any, userRole: any) {
+  return navigations.map((section: any) => {
+    const filteredNavItems = section.navItems.filter((navItem: any) => {
+      // If it's a group, filter the items within the group
+      if (navItem.group) {
+        navItem.items = navItem.items.filter((item: any) => item.roles.includes(userRole));
+        return navItem.items.length > 0 && navItem.roles.includes(userRole);
+      }
+      // If it's a regular nav item, just check its roles
+      return navItem.roles.includes(userRole);
+    });
+
+    return { ...section, navItems: filteredNavItems };
+  }).filter((section: any) => section.navItems.length > 0);
+}
+
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
@@ -93,11 +114,15 @@ function classNames(...classes: any) {
 export default function Sidebar({
   handleSidebarCollapsed,
   handleForceSidebarCollapsed,
+  user
 }: {
   handleSidebarCollapsed?: any;
   handleForceSidebarCollapsed?: any;
+  user: any;
 }) {
   const pathname = usePathname();
+
+  const filteredNavigations = filterNavigationsByRole(navigations, user?.role)
 
   return (
     <aside>
@@ -144,12 +169,12 @@ export default function Sidebar({
               </button>
             </div>
             {/* full navigation start */}
-            {navigations.map((nav: any, index: number) => (
+            {filteredNavigations.map((nav: any, index: number) => (
               <div key={index}>
                 <p
                   className={`${nav?.headingClassName
-                      ? nav?.headingClassName
-                      : "pl-4 pt-6 pb-2"
+                    ? nav?.headingClassName
+                    : "pl-4 pt-6 pb-2"
                     } text-gray-400`}
                 >
                   {nav?.heading}

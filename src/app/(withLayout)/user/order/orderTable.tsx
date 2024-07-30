@@ -4,6 +4,7 @@ import { getSingleOrderClient } from "@/api-services/order/getSingleOrderClient"
 import Invoice from "@/components/Invoice";
 import Table from "@/components/ui/table/Table";
 import toastError from "@/helpers/toastError";
+import { toFixedIfNecessary } from "@/helpers/toFixedIfNecessary";
 import { getUser } from "@/lib/getUser";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import {
@@ -111,12 +112,6 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       },
     },
     {
-      key: "customer",
-      label: "Customer",
-      customClass: "w-36",
-      render: (row: any) => <div>{row?.customer[0]?.contactNo}</div>,
-    },
-    {
       key: "subtotal",
       label: "Subtotal",
       customClass: "text-right w-24 pr-5",
@@ -133,6 +128,16 @@ export default function OrderTable({ orders }: { orders: any[] }) {
       render: (row: any) => (
         <div className="text-right font-medium pr-4">
           {row?.vatAmount?.toFixed(2)}
+        </div>
+      ),
+    },
+    {
+      key: "discountPercent",
+      label: "Discount%",
+      customClass: "text-right w-16 pr-4",
+      render: (row: any) => (
+        <div className="capitalize text-right font-medium pr-4">
+          {toFixedIfNecessary(row?.discountPercent, 2)}
         </div>
       ),
     },

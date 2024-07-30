@@ -25,11 +25,11 @@ export default async function Expense({
   );
 
   return (
-    <div className="card pb-4">
+    <div className="card pb-4 px-4">
       <Suspense fallback={<div>Loading...</div>}>
         <ExpenseTable expenses={expenses} />
       </Suspense>
-      <div className="px-4 py-2 flex justify-end">
+      <div className="py-2 px-4 flex justify-end">
         <PaginationControls totalPages={meta.total ?? 0} limit={10} />
       </div>
     </div>
