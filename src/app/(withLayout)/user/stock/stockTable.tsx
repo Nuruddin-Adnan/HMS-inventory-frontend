@@ -136,7 +136,7 @@ export default function StockTable({ stocks }: { stocks: any[] }) {
         customThClass="whitespace-nowrap bg-gray-200"
         customTdClass="py-0.5"
         create={
-          new Set(["super_admin", "admin"]).has(role)
+          new Set(["super_admin", "admin", "store_incharge"]).has(role)
             ? "/user/stock/create"
             : undefined
         }

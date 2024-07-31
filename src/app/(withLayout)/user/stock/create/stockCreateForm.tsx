@@ -117,9 +117,11 @@ export default function StockCreateForm({ products }: { products: any }) {
   //   }
   // };
 
-  const productOptions = products.map((item: any) => {
-    return { label: `${item?.name} ⟶${item?.brand}`, value: item?._id };
-  });
+  const productOptions = products.map((product: any) => ({
+    value: product?._id,
+    label: `${product?.name} ${product?.genericName ? `⟶${product?.genericName}` : ""
+      } ⟶${product?.brand}`,
+  }));
 
   return (
     <>

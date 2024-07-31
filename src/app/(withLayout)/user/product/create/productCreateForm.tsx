@@ -44,25 +44,26 @@ export default function ProductCreateForm({
     const price = (formData.get("price") ?? "") as string;
     const discountPercent = (formData.get("discountPercent") ?? "") as string;
     const discountAmount = (formData.get("discountAmount") ?? "") as string;
-    const addedQuantity = (formData.get("addedQuantity") ?? "") as string;
+    const stripQuantity = (formData.get("stripQuantity") ?? "") as string;
 
     const priceAsNumber: number = convertStringToNumber(price);
     const discountPercentAsNumber: number =
       convertStringToNumber(discountPercent);
     const discountAmountAsNumber: number =
       convertStringToNumber(discountAmount);
-    const addedQuantityAsNumber: number = convertStringToNumber(addedQuantity);
+    const stripQuantityAsNumber: number = convertStringToNumber(stripQuantity);
 
     const payload = {
       name: (formData.get("name") ?? "") as string,
       code: productCode,
       category: (formData.get("category") ?? "") as string,
       genericName: (formData.get("genericName") ?? "") as string,
+      strength: (formData.get("strength") ?? "") as string,
       brand: (formData.get("brand") ?? "") as string,
       formulation: (formData.get("formulation") ?? "") as string,
       unit: (formData.get("unit") ?? "") as string,
       price: priceAsNumber,
-      addedQuantity: addedQuantityAsNumber,
+      stripQuantity: stripQuantityAsNumber,
       discountPercent: discountPercentAsNumber,
       discountAmount: discountAmountAsNumber,
       description: (formData.get("description") ?? "") as string,
@@ -111,20 +112,16 @@ export default function ProductCreateForm({
         action={handleSubmit}
         className="grid 2xl:gap-4 gap-3"
       >
+        <Select
+          options={categoryOptions}
+          name="category"
+          label="Select category*"
+          className="min-h-[34px]"
+        />
         <div className="grid lg:grid-cols-3 2xl:gap-4 gap-3">
           <div className="lg:col-span-2">
             <Input type="text" name="name" label="Product Name*" />
           </div>
-          <div className="grid 2xl:gap-4 gap-3">
-            <Select
-              options={categoryOptions}
-              name="category"
-              label="Select category*"
-              className="min-h-[34px]"
-            />
-          </div>
-        </div>
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 2xl:gap-4 gap-3">
           <label>
             <span className="font-semibold block pb-0.5">Generic Name</span>
             <ReactSelect
@@ -135,6 +132,9 @@ export default function ProductCreateForm({
               styles={reactSelectStyles}
             />
           </label>
+        </div>
+        <div className="grid lg:grid-cols-4 md:grid-cols-2 2xl:gap-4 gap-3">
+          <Input label="Strength" name="strength" />
           <label>
             <span className="font-semibold block pb-0.5">Formulation</span>
             <CreatableSelect
@@ -157,8 +157,8 @@ export default function ProductCreateForm({
           </label>
           <Input
             type="number"
-            label="POS added quantity"
-            name="addedQuantity"
+            label="Strip quantity"
+            name="stripQuantity"
           />
         </div>
 
@@ -173,7 +173,7 @@ export default function ProductCreateForm({
               styles={reactSelectStyles}
             />
           </label>
-          <Input type="number" name="price" label="Product price*" />
+          <Input type="number" name="price" label="Unit price*" />
           <Input
             type="number"
             name="discountPercent"

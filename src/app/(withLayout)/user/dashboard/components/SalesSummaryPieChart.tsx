@@ -34,7 +34,7 @@ export default function SalesSummaryPieChart({
   const dataByYear = orderSummaries.filter((data: any) => data.year === year)
 
   const defaultEmptyData = {
-    year: dataByYear[0].year,
+    year: dataByYear[0] ? dataByYear[0].year : new Date().getFullYear(),
     sale: 0,
     received: 0,
     due: 0,

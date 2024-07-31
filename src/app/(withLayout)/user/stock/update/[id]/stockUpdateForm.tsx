@@ -91,9 +91,15 @@ export default function StockUpdateForm({
     setLoading(false);
   };
 
-  const productOptions = products.map((item: any) => {
-    return { label: `${item?.name}`, value: item?._id };
-  });
+  // const productOptions = products.map((item: any) => {
+  //   return { label: `${item?.name}`, value: item?._id };
+  // });
+
+  const productOptions = products.map((product: any) => ({
+    value: product?._id,
+    label: `${product?.name} ${product?.genericName ? `⟶${product?.genericName}` : ""
+      } ⟶${product?.brand}`,
+  }));
 
   if (new Set(["super_admin", "admin"]).has(role)) {
     return (
@@ -111,7 +117,7 @@ export default function StockUpdateForm({
               options={productOptions}
               styles={reactSelectStyles}
               defaultValue={{
-                label: `${data?.product[0]?.name} ⟶${data?.product[0]?.brand}`,
+                label: `${data?.product[0]?.name} ⟶${data?.product[0]?.genericName} ⟶${data?.product[0]?.brand}`,
                 value: data?.product[0]?._id,
               }}
             />
@@ -172,7 +178,7 @@ export default function StockUpdateForm({
             options={productOptions}
             styles={reactSelectStyles}
             defaultValue={{
-              label: `${data?.product[0]?.name} ⟶${data?.product[0]?.brand}`,
+              label: `${data?.product[0]?.name} ⟶${data?.product[0]?.genericName} ⟶${data?.product[0]?.brand}`,
               value: data?.product[0]?._id,
             }}
             isDisabled={true}

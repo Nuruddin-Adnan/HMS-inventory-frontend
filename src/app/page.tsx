@@ -54,7 +54,7 @@ export default function Home() {
       status: "active",
       roles: ["super_admin", "admin", "store_incharge",]
     },
-    { img: product, text: "Producct", link: "/user/product", status: "active", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+    { img: product, text: "Product", link: "/user/product", status: "active", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
     { img: stock, text: "Stock", link: "/user/stock", status: "active", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
     { img: pos, text: "POS", link: "/user/pos", status: "active", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
     {

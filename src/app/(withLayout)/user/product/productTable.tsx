@@ -80,13 +80,20 @@ export default function ProductTable({ products }: { products: any[] }) {
         <div className="whitespace-nowrap">{row?.genericName}</div>
       ),
     },
-    {
-      key: "formulation",
-      label: "Formulation",
-      render: (row: any) => (
-        <div className="whitespace-nowrap">{row?.formulation}</div>
-      ),
-    },
+    // {
+    //   key: "strength",
+    //   label: "Strength",
+    //   render: (row: any) => (
+    //     <div className="whitespace-nowrap">{row?.strength}</div>
+    //   ),
+    // },
+    // {
+    //   key: "formulation",
+    //   label: "Formulation",
+    //   render: (row: any) => (
+    //     <div className="whitespace-nowrap">{row?.formulation}</div>
+    //   ),
+    // },
     {
       key: "brand",
       label: "Brand",
@@ -168,14 +175,14 @@ export default function ProductTable({ products }: { products: any[] }) {
         customThClass="whitespace-nowrap bg-gray-200"
         customTdClass="py-0.5"
         create={
-          new Set(["super_admin", "admin", "store_incharge"]).has(role)
+          new Set(["super_admin", "admin"]).has(role)
             ? "/user/product/create"
             : undefined
         }
         onEdit={handleEdit}
         onDelete={new Set(["super_admin"]).has(role) ? handleDelete : undefined}
         action={
-          new Set(["super_admin", "admin", "store_incharge"]).has(role)
+          new Set(["super_admin", "admin",]).has(role)
             ? true
             : false
         }

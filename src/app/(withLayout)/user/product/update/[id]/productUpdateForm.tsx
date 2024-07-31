@@ -42,6 +42,22 @@ export default function ProductUpdateForm({
     data?.discountPercent
   );
 
+  let productName = ''
+
+  // remove formulation from name
+  if (data?.formulation) {
+    productName = data?.name
+      .replace(`(${data?.formulation})`, '')
+      .trim();
+  }
+
+  // remove strength from name
+  if (data?.strength) {
+    productName = productName
+      .replace(data?.strength, '')
+      .trim();
+  }
+
   const router = useRouter();
 
   const handleSubmit = async (formData: FormData) => {
@@ -51,25 +67,26 @@ export default function ProductUpdateForm({
     const price = (formData.get("price") ?? "") as string;
     const discountPercent = (formData.get("discountPercent") ?? "") as string;
     const discountAmount = (formData.get("discountAmount") ?? "") as string;
-    const addedQuantity = (formData.get("addedQuantity") ?? "") as string;
+    const stripQuantity = (formData.get("stripQuantity") ?? "") as string;
 
     const priceAsNumber: number = convertStringToNumber(price);
     const discountPercentAsNumber: number =
       convertStringToNumber(discountPercent);
     const discountAmountAsNumber: number =
       convertStringToNumber(discountAmount);
-    const addedQuantityAsNumber: number = convertStringToNumber(addedQuantity);
+    const stripQuantityAsNumber: number = convertStringToNumber(stripQuantity);
 
     const payload = {
       name: (formData.get("name") ?? "") as string,
       code: (formData.get("code") ?? "") as string,
       category: (formData.get("category") ?? "") as string,
       genericName: (formData.get("genericName") ?? "") as string,
+      strength: (formData.get("strength") ?? "") as string,
       brand: (formData.get("brand") ?? "") as string,
       formulation: (formData.get("formulation") ?? "") as string,
       unit: (formData.get("unit") ?? "") as string,
       price: priceAsNumber,
-      addedQuantity: addedQuantityAsNumber,
+      stripQuantity: stripQuantityAsNumber,
       discountPercent: discountPercentAsNumber,
       discountAmount: discountAmountAsNumber,
       description: (formData.get("description") ?? "") as string,
@@ -110,54 +127,58 @@ export default function ProductUpdateForm({
         action={handleSubmit}
         className="grid 2xl:gap-4 gap-3"
       >
-        <div className="grid lg:grid-cols-4 2xl:gap-4 gap-3">
+        <div className="grid  lg:grid-cols-3 2xl:gap-4 gap-3">
+          <Input
+            type="text"
+            name="code"
+            label="Product Code"
+            defaultValue={data?.code}
+          />
+          <Select
+            options={categoryOptions}
+            name="category"
+            label="Select category*"
+            className="min-h-[34px]"
+            defaultValue={data?.category[0]?._id}
+          />
+          <Select
+            options={statusOptions}
+            name="status"
+            label="Status*"
+            className="min-h-[34px]"
+            defaultValue={data?.status}
+          />
+        </div>
+        <div className="grid lg:grid-cols-3 2xl:gap-4 gap-3">
           <div className="lg:col-span-2 col-span-4">
             <Input
               type="text"
               name="name"
               label="Product Name*"
-              defaultValue={data?.name}
+              defaultValue={productName}
               autoFocus
             />
           </div>
-          <div className="grid lg:col-span-2 col-span-4 lg:grid-cols-3 grid-cols-2 2xl:gap-4 gap-3">
-            <Input
-              type="text"
-              name="code"
-              label="Product Code"
-              defaultValue={data?.code}
-            />
-            <Select
-              options={categoryOptions}
-              name="category"
-              label="Select category*"
-              className="min-h-[34px]"
-              defaultValue={data?.category[0]?._id}
-            />
-            <Select
-              options={statusOptions}
-              name="status"
-              label="Status*"
-              className="min-h-[34px]"
-              defaultValue={data?.status}
-            />
+          <div>
+            <label>
+              <span className="font-semibold block pb-0.5">Generic Name</span>
+              <ReactSelect
+                ref={genericSelectRef}
+                name="genericName"
+                isClearable={true}
+                options={genericOptions}
+                styles={reactSelectStyles}
+                defaultValue={{
+                  label: data?.genericName,
+                  value: data?.genericName,
+                }}
+              />
+            </label>
           </div>
         </div>
         <div className="grid lg:grid-cols-4 2xl:gap-4 gap-3">
-          <label>
-            <span className="font-semibold block pb-0.5">Generic Name</span>
-            <ReactSelect
-              ref={genericSelectRef}
-              name="genericName"
-              isClearable={true}
-              options={genericOptions}
-              styles={reactSelectStyles}
-              defaultValue={{
-                label: data?.genericName,
-                value: data?.genericName,
-              }}
-            />
-          </label>
+
+          <Input label="Strength" name="strength" defaultValue={data?.strength} />
           <label>
             <span className="font-semibold block pb-0.5">Formulation</span>
             <CreatableSelect
@@ -184,9 +205,9 @@ export default function ProductUpdateForm({
           </label>
           <Input
             type="number"
-            label="POS added quantity"
-            name="addedQuantity"
-            defaultValue={data?.addedQuantity}
+            label="Strip quantity"
+            name="stripQuantity"
+            defaultValue={data?.stripQuantity}
           />
         </div>
 

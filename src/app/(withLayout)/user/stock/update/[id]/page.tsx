@@ -18,7 +18,7 @@ export default async function UpdateStock({
   }
 
   const Stock = await getSingleStock(params.id);
-  const products = await getAllProducts("status=active&fields=name _id");
+  const products = await getAllProducts("status=active&fields=name genericName brand _id");
 
   return (
     <div>

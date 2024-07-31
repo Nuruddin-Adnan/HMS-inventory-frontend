@@ -33,7 +33,7 @@ type Product = {
   quantity?: number;
   subtotal: number;
   discountPercent?: number;
-  addedQuantity?: number;
+  stripQuantity?: number;
   total?: number;
 };
 
@@ -108,7 +108,7 @@ export default function POSPForm({
         const updatedProducts = [...products];
 
         updatedProducts[existingProductIndex].quantity! +=
-          product?.addedQuantity ?? 1;
+          product?.stripQuantity ?? 1;
         setProducts(updatedProducts);
         setProductCode("");
       } else {
@@ -118,7 +118,7 @@ export default function POSPForm({
         const discount = price * (discountPercent / 100);
         const total = price - discount;
 
-        const quantity = product?.addedQuantity ?? 1;
+        const quantity = product?.stripQuantity ?? 1;
 
         setProducts([
           ...products,

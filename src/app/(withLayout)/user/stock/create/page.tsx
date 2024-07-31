@@ -7,12 +7,12 @@ import StockCreateForm from "./stockCreateForm";
 export default async function CreateStock() {
   const user = getUserServer();
 
-  const allowedRoles = new Set(["super_admin", "admin"]);
+  const allowedRoles = new Set(["super_admin", "admin", "store_incharge"]);
   if (!allowedRoles.has(user!?.role)) {
     redirect("/");
   }
 
-  const products = await getAllProducts("status=active&fields=name brand _id");
+  const products = await getAllProducts("status=active&fields=name genericName brand _id");
 
   return (
     <div>

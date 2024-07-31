@@ -23,7 +23,7 @@ export default async function Product({
   const { data: products, meta } = await getAllProducts(
     `sort=status -createdAt&page=${page}&limit=${limit}${query && `&search=${query}`
     }${category && `&category=${category}`}${brand && `&brand=${brand}`}${genericName && `&genericName=${genericName}`
-    }${status && `&status=${status}`}&fields=-createdBy -updatedBy`
+    }${status && `&status=${status}`}&fields=-createdBy -updatedBy -strength -formulation`
   );
 
   const categoriesPromise = getAllCategories("status=active&fields=name _id");
