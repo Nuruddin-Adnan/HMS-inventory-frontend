@@ -125,11 +125,11 @@ export default function ReportsAndPrintingForm({ user }: { user: any }) {
             <div className="border-b border-gray-200 2xl:p-4 p-3">
                 <h2 className='font-bold 2xl:text-xl text-lg text-textPrimary'>Reports & Printing</h2>
             </div>
-            <div className="grid grid-cols-3 items-center gap-10">
-                <div className="rounded-md border m-6 w-full col-span-1 overflow-hidden">
+            <div className="md:grid grid-cols-3 items-center gap-10">
+                <div className="rounded-md border md:m-6 w-full col-span-1 overflow-hidden">
                     <ul style={listStyle.list} className='max-h-[70vh] overflow-y-auto'>
                         {filteredItemsByRole.map((item) => (
-                            <li className='hover:bg-gray-100' key={item.value} style={listStyle.listItem}>
+                            <li className='hover:bg-gray-100 sm:text-sm text-xs' key={item.value} style={listStyle.listItem}>
 
                                 <input
                                     type="radio"
@@ -150,8 +150,8 @@ export default function ReportsAndPrintingForm({ user }: { user: any }) {
                         ))}
                     </ul>
                 </div>
-                <div className='col-span-2'>
-                    <div className="card p-6 border max-w-lg mx-auto grid space-y-3">
+                <div className='col-span-2 md:mt-0 mt-4'>
+                    <div className="card md:p-6 p-3 border max-w-lg mx-auto grid space-y-3">
                         <div className="grid grid-cols-2 2xl:space-x-4 space-x-3">
                             <Input type="datetime-local" name="startDate" label="Start Date" defaultValue={startDateTime()} />
                             <Input type="datetime-local" name="endDate" label="End Date" defaultValue={format(new Date, "yyyy-MM-dd'T'HH:mm")} />

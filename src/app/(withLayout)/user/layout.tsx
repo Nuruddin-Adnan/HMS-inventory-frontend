@@ -42,7 +42,7 @@ export default function UserLayout({
           handleSidebarCollapsed={handleSidebarCollapsed}
           handleForceSidebarCollapsed={handleForceSidebarCollapsed}
         />
-        <div className="p-4">{children}</div>
+        <div className="sm:p-4 p-2">{children}</div>
       </div>
     </main>
   );

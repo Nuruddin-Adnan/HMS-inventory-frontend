@@ -124,8 +124,8 @@ export default function Home() {
       <div className="w-full">
         <Header />
       </div>
-      <div className="container mx-auto  md:p-6 p-4 max-w-6xl  my-4">
-        <div className="grid lg xl:grid-cols-5 md:grid-cols-4 grid-cols-3 2xl:gap-4 gap-3">
+      <div className="container mx-auto  md:p-6 p-3 max-w-6xl  my-4">
+        <div className="grid lg xl:grid-cols-5 md:grid-cols-4 grid-cols-3 2xl:gap-4 gap-1">
           {filteredItemsByRole.map((item, index) => (
             <Link
               key={index}
@@ -141,7 +141,7 @@ export default function Home() {
                   }`}
               >
                 <div>
-                  <div className="2xl:w-20 2xl:h-20 md:w-14 md:h-14 w-12 h-12 group-hover:scale-110 transition-all rounded-full grid place-items-center mx-auto ">
+                  <div className="2xl:w-20 2xl:h-20 md:w-14 md:h-14 w-8 h-8 group-hover:scale-110 transition-all rounded-full grid place-items-center mx-auto ">
                     <Image src={item.img} alt="icon" className="mx-auto" />
                   </div>
                   <p className="mt-2 text-textPrimary 2xl:text-base md:text-sm text-xs font-bold  text-nowrap overflow-clip">

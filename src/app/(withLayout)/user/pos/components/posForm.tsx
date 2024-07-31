@@ -391,12 +391,12 @@ export default function POSPForm({
     <div className="flex flex-col gap-3 xl:flex-row h-[calc(100vh-86px)]">
       <div className="w-full xl:w-[70%] bg-gray-100 rounded">
         <div className="rounded p-4">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="flex items-center gap-5 col-span-2">
-              <h2 className="text-base font-bold whitespace-nowrap w-28 flex-shrink-0">
+          <div className="sm:grid grid-cols-3 gap-4">
+            <div className="flex sm:items-center sm:flex-row flex-col sm:gap-5 gap-1 col-span-2">
+              <h2 className="text-base font-bold whitespace-nowrap sm:w-28 flex-shrink-0">
                 Product Code
               </h2>
-              <span className="font-bold">:</span>
+              <span className="font-bold sm:inline-block hidden">:</span>
               <input
                 ref={productCodeInputRef}
                 type="text"
@@ -409,7 +409,7 @@ export default function POSPForm({
                 autoFocus
               />
             </div>
-            <div className="flex h-full w-full relative rounded overflow-hidden">
+            <div className="flex h-full w-full relative rounded overflow-hidden sm:mt-0 mt-2">
               <Input
                 value={invoiceNo}
                 onChange={(e: any) => {
@@ -431,11 +431,11 @@ export default function POSPForm({
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-5 mt-3">
+          <div className="flex sm:items-center sm:flex-row flex-col sm:gap-5 gap-1 mt-3">
             <h2 className="text-base font-bold whitespace-nowrap w-28 flex-shrink-0">
               Search Product
             </h2>
-            <span className="font-bold">:</span>
+            <span className="font-bold sm:inline-block hidden">:</span>
             <form onSubmit={handleAddProduct} className="w-full">
               <div className="flex items-center gap-2">
                 <ReactSelect

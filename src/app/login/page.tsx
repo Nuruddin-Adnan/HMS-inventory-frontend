@@ -26,7 +26,7 @@ export default function Login() {
 
   return (
     <main className="grid place-items-center h-screen bg-[#E9EFF2]">
-      <div className="max-w-md w-full">
+      <div className="max-w-md w-full p-2">
         <div className="text-center">
           <Image src={logo} alt="logo" width={50} className="mx-auto" />
           <h1 className="text-textPrimary text-3xl font-bold py-4">Sign in </h1>
@@ -35,7 +35,7 @@ export default function Login() {
             recommendation for you.
           </p>
         </div>
-        <div className="p-8 shadow-lg rounded-2xl bg-white mt-4">
+        <div className="sm:p-8 p-4 shadow-lg rounded-2xl bg-white mt-4">
           <form action={handleSubmit} className="grid space-y-5">
             <Input
               type="text"

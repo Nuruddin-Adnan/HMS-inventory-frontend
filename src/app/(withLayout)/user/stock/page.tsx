@@ -19,8 +19,16 @@ export default async function Stock({
 
   return (
     <div className="card py-4">
+      <h2 className="sm:hidden block  pt-0 pb-2 px-4 mb-2 border-b font-bold text-lg">
+        Stocks
+      </h2>
+      <div className="lg:hidden block pt-2 px-6 pb-4">
+        <SearchControl placeholder="Search by name & code..." />
+      </div>
       <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
-        <SearchControl placeholder="Search by name..." />
+        <div className="lg:block hidden">
+          <SearchControl placeholder="Search by name..." />
+        </div>
         <PaginationControls totalPages={meta.total ?? 0} limit={100} />
       </div>
       <div className="px-4">

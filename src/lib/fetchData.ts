@@ -12,7 +12,8 @@ export interface IGenericErrorResponse {
   errorMessages: IGenericErrorMessage[];
 }
 
-const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
+// const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
+const BASE_URL = `https://inventory-backend-drab.vercel.app/api/v1`;
 
 export const fetchData = async (
   endpoint: string,

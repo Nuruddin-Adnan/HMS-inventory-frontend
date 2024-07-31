@@ -214,9 +214,9 @@ export default function Table({
   return (
     <>
       {(title || search || print || create || backBtn) && (
-        <div className="flex items-center justify-between border-b border-gray-200 2xl:p-4 p-3">
+        <div className="sm:flex items-center justify-between border-b border-gray-200 2xl:p-4 p-3">
           {title && (
-            <h2 className="font-bold 2xl:text-2xl text-lg text-textPrimary">
+            <h2 className="font-bold 2xl:text-2xl text-lg text-textPrimary sm:py-2 py-2">
               {title}
             </h2>
           )}
@@ -249,9 +249,9 @@ export default function Table({
             {create && (
               <Link
                 href={create}
-                className="bg-primary text-white flex items-center py-1.5 px-4 rounded font-medium"
+                className="bg-primary text-white flex items-center py-1.5 sm:px-4 px-2 rounded font-medium"
               >
-                <PlusIcon className="h-5 w-5 mr-2" /> Create
+                <PlusIcon className="h-5 w-5 sm:mr-2" /> <span className="sm:inline-block hidden">Create</span>
               </Link>
             )}
             {backBtn && (

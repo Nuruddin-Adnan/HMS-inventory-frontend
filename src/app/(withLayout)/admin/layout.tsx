@@ -32,7 +32,7 @@ export default function UserLayout({
       </div>
       <div className={`content-wrapper ${contentCollapsed && "collapsed"}`}>
         <Header handleSidebarCollapsed={handleSidebarCollapsed} handleForceSidebarCollapsed={handleForceSidebarCollapsed} />
-        <div className="p-4">{children}</div>
+        <div className="sm:p-4 p-2">{children}</div>
       </div>
     </main>
   );

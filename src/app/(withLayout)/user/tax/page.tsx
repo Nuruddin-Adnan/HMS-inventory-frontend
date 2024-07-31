@@ -27,8 +27,16 @@ export default async function Tax({
 
   return (
     <div className="card py-4 max-w-5xl mx-auto">
-      <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
+      <h2 className="sm:hidden block  pt-0 pb-2 px-4 mb-2 border-b font-bold text-lg">
+        Tax
+      </h2>
+      <div className="lg:hidden block pt-2 px-6 pb-4">
         <SearchControl placeholder="Search by purpose..." />
+      </div>
+      <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
+        <div className="lg:block hidden">
+          <SearchControl placeholder="Search by purpose..." />
+        </div>
         <PaginationControls totalPages={meta.total ?? 0} limit={100} />
       </div>
       <div className="px-4">

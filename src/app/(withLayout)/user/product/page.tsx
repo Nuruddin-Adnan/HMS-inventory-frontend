@@ -38,6 +38,9 @@ export default async function Product({
 
   return (
     <div className="card py-4 w-auto">
+      <h2 className="sm:hidden block  pt-0 pb-2 px-4 mb-2 border-b font-bold text-lg">
+        Product
+      </h2>
       <div className="lg:hidden block pt-2 px-6 pb-4">
         <SearchControl placeholder="Search by name & code..." />
       </div>
