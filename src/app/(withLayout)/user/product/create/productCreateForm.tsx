@@ -123,7 +123,7 @@ export default function ProductCreateForm({
             <Input type="text" name="name" label="Product Name*" />
           </div>
           <label>
-            <span className="font-semibold block pb-0.5">Generic Name</span>
+            <span className="text-textPrimary font-semibold block pb-0.5">Generic Name</span>
             <ReactSelect
               ref={genericSelectRef}
               name="genericName"
@@ -136,7 +136,7 @@ export default function ProductCreateForm({
         <div className="grid lg:grid-cols-4 md:grid-cols-2 2xl:gap-4 gap-3">
           <Input label="Strength" name="strength" />
           <label>
-            <span className="font-semibold block pb-0.5">Formulation</span>
+            <span className="text-textPrimary font-semibold block pb-0.5">Formulation</span>
             <CreatableSelect
               ref={formulaltionSelectRef}
               name="formulation"
@@ -146,7 +146,7 @@ export default function ProductCreateForm({
             />
           </label>
           <label>
-            <span className="font-semibold block pb-0.5">Brand*</span>
+            <span className="text-textPrimary font-semibold block pb-0.5">Brand*</span>
             <ReactSelect
               ref={brandSelectRef}
               name="brand"
@@ -164,7 +164,7 @@ export default function ProductCreateForm({
 
         <div className="grid lg:grid-cols-4 grid-cols-2 2xl:gap-4 gap-3">
           <label>
-            <span className="font-semibold block pb-0.5">Sell Unit*</span>
+            <span className="text-textPrimary font-semibold block pb-0.5">Sell Unit*</span>
             <CreatableSelect
               ref={unitSelectRef}
               name="unit"

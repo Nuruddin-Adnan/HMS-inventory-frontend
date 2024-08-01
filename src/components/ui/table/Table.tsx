@@ -492,7 +492,7 @@ export default function Table({
                         Print By: {user ? user?.email : ""}
                       </span>
                       <span className="text-xs">
-                        Powered By: {process.env.NEXT_PUBLIC_POWERED_BY}
+                        Powered By: medisoftit.com
                       </span>
                     </div>
                   </td>

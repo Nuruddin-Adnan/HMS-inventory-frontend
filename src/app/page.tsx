@@ -121,7 +121,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex justify-between flex-col bg-zinc-100">
-      <div className="w-full">
+      <div className="w-full sticky top-0">
         <Header />
       </div>
       <div className="container mx-auto  md:p-6 p-3 max-w-6xl  my-4">
@@ -153,14 +153,14 @@ export default function Home() {
           ))}
         </div>
       </div>
-      <footer className="text-center pb-5 pt-10 md:text-base">
+      <footer className="text-center pb-5 md:pt-10 md:text-base">
         Powered By{" "}
         <a
           target="blank"
           className="underline italic text-primary"
-          href={process.env.NEXT_PUBLIC_POWERED_BY_LINK}
+          href={"https://medisoftit.com"}
         >
-          {process.env.NEXT_PUBLIC_POWERED_BY}
+          medisoftit.com
         </a>
       </footer>
     </main>

@@ -75,7 +75,7 @@ export default function OrderRefundForm({ data }: { data: any }) {
       );
       updatedProducts[existingProductIndex].amount = amountAfterDiscoutAndVat(
         updatedProducts[existingProductIndex].quantity *
-          productPriceAfterItemDiscount(product)
+        productPriceAfterItemDiscount(product)
       );
 
       if (updatedProducts[existingProductIndex].quantity === 0) {
@@ -150,7 +150,7 @@ export default function OrderRefundForm({ data }: { data: any }) {
         <div className="w-full xl:w-[70%]">
           <div className="bg-gray-100 rounded p-4">
             <div className="flex items-center gap-5 max-w-lg">
-              <h2 className="text-base font-bold whitespace-nowrap flex-shrink-0">
+              <h2 className=" text-textPrimary text-base font-bold whitespace-nowrap flex-shrink-0">
                 Invoice No
               </h2>
               <span className="font-bold">:</span>
@@ -248,13 +248,12 @@ export default function OrderRefundForm({ data }: { data: any }) {
                   {items.map((product: any, index: number) => (
                     <tr
                       key={index}
-                      className={`${
-                        product?.quantity === product?.refundQuantity
+                      className={`${product?.quantity === product?.refundQuantity
                           ? "bg-red-500 bg-opacity-20 text-red-700"
                           : product?.refundQuantity > 0
-                          ? "bg-yellow-500 bg-opacity-20 text-yellow-700"
-                          : ""
-                      }`}
+                            ? "bg-yellow-500 bg-opacity-20 text-yellow-700"
+                            : ""
+                        }`}
                     >
                       <td className="py-1 px-4 border text-center">
                         <input
@@ -291,9 +290,9 @@ export default function OrderRefundForm({ data }: { data: any }) {
                                 handleQuantityChange(
                                   index,
                                   Number(e.target.value) -
-                                    (selectedProducts.find(
-                                      (p: any) => p.product === product.product
-                                    )?.quantity || 0)
+                                  (selectedProducts.find(
+                                    (p: any) => p.product === product.product
+                                  )?.quantity || 0)
                                 )
                               }
                               onFocus={(e: any) => e.target.select()}

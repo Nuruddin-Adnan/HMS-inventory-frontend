@@ -10,13 +10,15 @@ import toastError from "@/helpers/toastError";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import tagRevalidate from "@/lib/tagRevalidate";
 import { IPermission } from "@/types/permission";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
 export default function UserForm({ data }: { data: IPermission[] }) {
   const [loading, setLoading] = useState(false);
   const [permissions, setPermissions] = useState<string[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const router = useRouter()
 
   const handlePermissionChange = (value: string) => {
     // Update the state with the checked values
@@ -121,6 +123,7 @@ export default function UserForm({ data }: { data: IPermission[] }) {
               key={item._id}
               name={item._id}
               value={item._id}
+              inlineClassName="items-center"
               label={item.name}
               onChange={() => handlePermissionChange(item._id!)}
             />
@@ -136,6 +139,7 @@ export default function UserForm({ data }: { data: IPermission[] }) {
           label="Confirm Password*"
         />
         <div className="text-right">
+          <Button type='reset' variant='danger' className="me-2" onClick={() => router.back()}>Back</Button>
           <Button type="submit" variant="primary" loading={loading}>
             Create User
           </Button>

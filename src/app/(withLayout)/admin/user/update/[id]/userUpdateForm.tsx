@@ -191,6 +191,7 @@ export default function UserUpdateForm({
             {permissionsData.map((item) => (
               <Checkbox
                 key={item._id}
+                inlineClassName="items-center"
                 name={item._id}
                 value={item._id}
                 label={item.name}

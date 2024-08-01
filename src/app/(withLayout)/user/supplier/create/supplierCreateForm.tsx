@@ -78,12 +78,13 @@ export default function SupplierCreateForm({ brands }: { brands: any }) {
               name="gender"
               label="Gender*"
               className="min-h-[34px]"
+              required
             />
           </div>
         </div>
         <div className="grid lg:grid-cols-3 2xl:gap-4 gap-3">
           <label>
-            <span className="font-semibold block pb-0.5">Select Brand</span>
+            <span className="text-textPrimary font-semibold block pb-0.5">Select Brand</span>
             <ReactSelect
               ref={brandSelectRef}
               name="brand"
@@ -106,9 +107,10 @@ export default function SupplierCreateForm({ brands }: { brands: any }) {
                   padding: "0px 4px",
                 }),
               }}
+              required
             />
           </label>
-          <Input type="text" name="contactNo" label="ContactNo*" />
+          <Input type="text" name="contactNo" label="ContactNo*" required />
           <Input type="email" name="email" label="Email Address" />
         </div>
         <Textarea label="Address" name="address" />

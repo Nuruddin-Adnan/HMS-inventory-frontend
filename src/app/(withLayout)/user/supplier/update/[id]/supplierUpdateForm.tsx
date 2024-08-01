@@ -98,7 +98,7 @@ export default function SupplierUpdateForm({ data, brands }: { data: any, brands
         </div>
         <div className="grid lg:grid-cols-3 2xl:gap-4 gap-3">
           <label>
-            <span className="font-semibold block pb-0.5">Select Brand</span>
+            <span className="text-textPrimary font-semibold block pb-0.5">Select Brand</span>
             <ReactSelect
               ref={brandSelectRef}
               name="brand"

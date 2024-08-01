@@ -72,7 +72,7 @@ export default function SidebarAdmin({
             >
               <Image src={logo} alt="Logo" width={45} className="flex-shrink-0" />
               <h2 className="truncate">
-                {process.env.NEXT_PUBLIC_APP_NAME || "Your app name"}
+                Medinova Pharmacy
               </h2>
             </Link>
           </div>
@@ -189,12 +189,12 @@ export default function SidebarAdmin({
           <p className="text-gray-300 text-xs">
             Powered by
             <a
-              href={process.env.NEXT_PUBLIC_POWERED_BY_LINK}
+              href={"https://medisoftit.com"}
               className=" ml-1 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {process.env.NEXT_PUBLIC_POWERED_BY}
+              medisoftit.com
             </a>
           </p>
         </div>

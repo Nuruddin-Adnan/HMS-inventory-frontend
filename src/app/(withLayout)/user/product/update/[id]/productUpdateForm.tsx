@@ -161,7 +161,7 @@ export default function ProductUpdateForm({
           </div>
           <div>
             <label>
-              <span className="font-semibold block pb-0.5">Generic Name</span>
+              <span className="text-textPrimary font-semibold block pb-0.5">Generic Name</span>
               <ReactSelect
                 ref={genericSelectRef}
                 name="genericName"
@@ -180,7 +180,7 @@ export default function ProductUpdateForm({
 
           <Input label="Strength" name="strength" defaultValue={data?.strength} />
           <label>
-            <span className="font-semibold block pb-0.5">Formulation</span>
+            <span className="text-textPrimary font-semibold block pb-0.5">Formulation</span>
             <CreatableSelect
               ref={formulaltionSelectRef}
               name="formulation"
@@ -194,7 +194,7 @@ export default function ProductUpdateForm({
             />
           </label>
           <label>
-            <span className="font-semibold block pb-0.5">Brand*</span>
+            <span className="text-textPrimary font-semibold block pb-0.5">Brand*</span>
             <ReactSelect
               ref={brandSelectRef}
               name="brand"
@@ -213,7 +213,7 @@ export default function ProductUpdateForm({
 
         <div className="grid lg:grid-cols-4 grid-cols-2 2xl:gap-4 gap-3">
           <label>
-            <span className="font-semibold block pb-0.5">Sell Unit*</span>
+            <span className="text-textPrimary font-semibold block pb-0.5">Sell Unit*</span>
             <CreatableSelect
               ref={unitSelectRef}
               name="unit"

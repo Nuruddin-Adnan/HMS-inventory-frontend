@@ -153,7 +153,7 @@ export default function StockCreateForm({ products }: { products: any }) {
           className="grid 2xl:gap-4 gap-3"
         >
           <label>
-            <span className="font-semibold block pb-0.5">Product Name</span>
+            <span className="text-textPrimary font-semibold block pb-0.5">Product Name</span>
             <ReactSelect
               ref={productSelectRef}
               name="product"

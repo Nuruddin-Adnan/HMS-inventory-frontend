@@ -27,13 +27,6 @@ export default function ProductTable({ products }: { products: any[] }) {
     { key: "code", label: "Code" },
     { key: "tag", label: "Tag" },
     {
-      key: "category",
-      label: "Category",
-      render: (row: any) => (
-        <div className="capitalize">{row?.category[0]?.name}</div>
-      ),
-    },
-    {
       key: "name",
       label: "Product Name",
       render: (row: any) => (
@@ -161,7 +154,7 @@ export default function ProductTable({ products }: { products: any[] }) {
         caption={
           <div>
             <h1 className="hidden print:block pt-3 text-black text-2xl font-bold">
-              {process.env.NEXT_PUBLIC_APP_NAME}
+              Medinova Pharmacy
             </h1>
             <h2 className="hidden mb-2 print:block text-black text-xl font-bold underline">
               Products

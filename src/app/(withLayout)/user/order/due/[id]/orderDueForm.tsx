@@ -64,7 +64,7 @@ export default function OrderDueForm({ data }: { data: any }) {
         <div className="w-full xl:w-[70%]">
           <div className="bg-gray-100 rounded p-4">
             <div className="flex items-center gap-5  max-w-lg">
-              <h2 className="text-base font-bold whitespace-nowrap flex-shrink-0">
+              <h2 className=" text-textPrimary text-base font-bold whitespace-nowrap flex-shrink-0">
                 Invoice No
               </h2>
               <span className="font-bold">:</span>
@@ -77,7 +77,7 @@ export default function OrderDueForm({ data }: { data: any }) {
               />
             </div>
 
-            <div className="border-t border-gray-100 pt-4 mt-4">
+            <div className="border-t border-gray-300 pt-4 mt-4">
               <div className="grid grid-cols-6 gap-4">
                 <div className="col-span-2">
                   <Input

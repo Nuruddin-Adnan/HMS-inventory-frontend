@@ -74,7 +74,7 @@ export default function ShelveTable({ shelves }: { shelves: any[] }) {
         caption={
           <div>
             <h1 className="hidden print:block pt-3 text-black text-2xl font-bold">
-              {process.env.NEXT_PUBLIC_APP_NAME}
+              Medinova Pharmacy
             </h1>
             <h2 className="hidden mb-2 print:block text-black text-xl font-bold underline">
               Shelves

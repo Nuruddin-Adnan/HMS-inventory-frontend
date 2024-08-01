@@ -25,7 +25,7 @@ export default function Invoice({ order }: { order: any }) {
       <header>
         <div className="text-center text-[13px]">
           <h1 className="font-bold text-lg">
-            {process.env.NEXT_PUBLIC_APP_NAME}
+            Medinova Pharmacy
           </h1>
           <address className="not-italic font-bold">
             236/1/A, Soth Pirerbag, Mirpur, Dhaka 1216 <br />
@@ -209,11 +209,11 @@ export default function Invoice({ order }: { order: any }) {
           </li>
         </ul>
         <h4 className="text-center leading-tight mt-4 text-xs font-bold p-1 border border-black">
-          Thank you for shoping at {process.env.NEXT_PUBLIC_APP_NAME}
+          Thank you for shoping at Medinova Pharmacy
         </h4>
         <p className="mt-1 block text-center font-medium text-xs">
           System by: medisoftit.com{" "}
-          {process.env.NEXT_PUBLIC_POWERED_BY_CONTACT_NO}
+          {"01300635567"}
         </p>
       </footer>
     </div>

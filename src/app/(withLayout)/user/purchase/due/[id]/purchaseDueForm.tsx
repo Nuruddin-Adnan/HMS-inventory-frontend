@@ -63,7 +63,7 @@ export default function PurchaseDueForm({ data }: { data: any }) {
           <div className="flex 2xl:gap-4 gap-3 lg:flex-row flex-col">
             <div className="lg:w-3/5 flex flex-col 2xl:gap-4 gap-3">
               <label>
-                <span className="font-semibold block pb-0.5">
+                <span className="text-textPrimary font-semibold block pb-0.5">
                   Product Name*
                 </span>
                 <ReactSelect
@@ -78,7 +78,7 @@ export default function PurchaseDueForm({ data }: { data: any }) {
               </label>
               <div className="grid grid-cols-2 2xl:gap-4 gap-3">
                 <label>
-                  <span className="font-semibold block pb-0.5">Supplier*</span>
+                  <span className="text-textPrimary font-semibold block pb-0.5">Supplier*</span>
                   <ReactSelect
                     name="supplier"
                     styles={reactSelectStyles}
@@ -121,7 +121,7 @@ export default function PurchaseDueForm({ data }: { data: any }) {
               <div className="grid 2xl:gap-52 gap-16">
                 <div className="grid  gap-3">
                   <label className="lg:flex items-center gap-4">
-                    <span className="font-semibold block lg:w-1/3">
+                    <span className="text-textPrimary font-semibold block lg:w-1/3">
                       Purchase Unit:
                     </span>
                     <div className="lg:w-2/3">
@@ -193,8 +193,8 @@ export default function PurchaseDueForm({ data }: { data: any }) {
                             type="number"
                             step="0.001"
                             className={`pr-6 text-lg ${data?.due - amount < 0
-                                ? "border-red-500"
-                                : "border-blue-300"
+                              ? "border-red-500"
+                              : "border-blue-300"
                               }`}
                             required
                             onChange={(e: any) => setAmount(e.target.value)}
@@ -209,8 +209,8 @@ export default function PurchaseDueForm({ data }: { data: any }) {
                         </p>
                         <p
                           className={`font-bold ${data?.due - amount < 0
-                              ? "text-red-500"
-                              : "text-textPrimary"
+                            ? "text-red-500"
+                            : "text-textPrimary"
                             }`}
                         >
                           {data?.due - amount}

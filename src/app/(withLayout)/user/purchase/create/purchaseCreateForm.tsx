@@ -183,7 +183,7 @@ export default function PurchaseCreateForm({
           <div className="flex 2xl:gap-4 gap-3 lg:flex-row flex-col">
             <div className="lg:w-3/5 flex flex-col 2xl:gap-4 gap-3">
               <label>
-                <span className="font-semibold block pb-0.5">
+                <span className="text-textPrimary font-semibold block pb-0.5">
                   Product Name*
                 </span>
                 <ReactSelect
@@ -200,7 +200,7 @@ export default function PurchaseCreateForm({
               </label>
               <div className="grid grid-cols-2 2xl:gap-4 gap-3">
                 <label>
-                  <span className="font-semibold block pb-0.5">Supplier*</span>
+                  <span className="text-textPrimary font-semibold block pb-0.5">Supplier*</span>
                   <ReactSelect
                     ref={supplierSelectRef}
                     name="supplier"

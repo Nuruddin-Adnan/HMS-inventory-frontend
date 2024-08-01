@@ -5,12 +5,14 @@ import Button from "@/components/ui/button/Button"
 import Input from "@/components/ui/form/Input"
 import { removeEmptyFields } from "@/lib/removeEmptyFields"
 import tagRevalidate from "@/lib/tagRevalidate"
-import { redirect } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import { useState, useRef } from "react"
 
 export default function PermissionForm() {
     const [loading, setLoading] = useState(false)
     const formRef = useRef<HTMLFormElement>(null);
+
+    const router = useRouter();
 
 
 
@@ -39,7 +41,8 @@ export default function PermissionForm() {
             <form ref={formRef} action={handleSubmit} className="grid 2xl:space-y-4 space-y-3">
                 <Input type='text' name='name' label='Permission Name*' autoFocus />
                 <div className="text-right">
-                    <Button type='submit' variant='primary' loading={loading}>Create</Button>
+                    <Button type='reset' variant='danger' className="me-2" onClick={() => router.back()}>Back</Button>
+                    <Button type='submit' variant='primary' className="px-10" loading={loading}>Create</Button>
                 </div>
             </form>
         </div>

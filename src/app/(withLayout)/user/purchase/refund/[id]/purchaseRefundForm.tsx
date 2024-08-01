@@ -50,7 +50,7 @@ export default function PurchaseRefundForm({ data }: { data: any }) {
             <div className="lg:w-3/5 flex flex-col 2xl:gap-4 gap-3">
               <div className="grid lg:grid-cols-3  2xl:gap-4 gap-3">
                 <label className="lg:col-span-2">
-                  <span className="font-semibold block pb-0.5">
+                  <span className="text-textPrimary font-semibold block pb-0.5">
                     Product Name*
                   </span>
                   <ReactSelect
@@ -73,7 +73,7 @@ export default function PurchaseRefundForm({ data }: { data: any }) {
               </div>
               <div className="grid grid-cols-2 2xl:gap-4 gap-3">
                 <label>
-                  <span className="font-semibold block pb-0.5">Supplier*</span>
+                  <span className="text-textPrimary font-semibold block pb-0.5">Supplier*</span>
                   <ReactSelect
                     name="supplier"
                     styles={reactSelectStyles}

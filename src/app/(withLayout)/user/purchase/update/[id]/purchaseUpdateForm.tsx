@@ -56,7 +56,7 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
           <div className="flex 2xl:gap-4 gap-3 lg:flex-row flex-col">
             <div className="lg:w-3/5 flex flex-col 2xl:gap-4 gap-3">
               <label>
-                <span className="font-semibold block pb-0.5">
+                <span className="text-textPrimary font-semibold block pb-0.5">
                   Product Name*
                 </span>
                 <ReactSelect
@@ -71,7 +71,7 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
               </label>
               <div className="grid grid-cols-2 2xl:gap-4 gap-3">
                 <label>
-                  <span className="font-semibold block pb-0.5">Supplier*</span>
+                  <span className="text-textPrimary font-semibold block pb-0.5">Supplier*</span>
                   <ReactSelect
                     name="supplier"
                     styles={reactSelectStyles}
@@ -111,7 +111,7 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
               <div className="grid lg:gap-52 gap-16">
                 <div className="grid  gap-3">
                   <label className="lg:flex items-center gap-4">
-                    <span className="font-semibold block lg:w-1/3">
+                    <span className="text-textPrimary font-semibold block lg:w-1/3">
                       Purchase Unit:
                     </span>
                     <div className="lg:w-2/3">

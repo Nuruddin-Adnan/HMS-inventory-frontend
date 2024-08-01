@@ -172,7 +172,7 @@ export default function PurchasePaymentWiseTable({
             caption={
               <div className="pt-3">
                 <h1 className="hidden print:block text-black text-2xl font-bold">
-                  {process.env.NEXT_PUBLIC_APP_NAME}
+                  Medinova Pharmacy
                 </h1>
                 <h2 className="hidden print:block text-black text-xl font-bold underline">
                   Purchase Report(Payment wise)

@@ -393,10 +393,10 @@ export default function POSPForm({
         <div className="rounded p-4">
           <div className="sm:grid grid-cols-3 gap-4">
             <div className="flex sm:items-center sm:flex-row flex-col sm:gap-5 gap-1 col-span-2">
-              <h2 className="text-base font-bold whitespace-nowrap sm:w-28 flex-shrink-0">
+              <h2 className="text-base font-bold whitespace-nowrap sm:w-28 flex-shrink-0 text-textPrimary">
                 Product Code
               </h2>
-              <span className="font-bold sm:inline-block hidden">:</span>
+              <span className="font-bold sm:inline-block hidden  text-textPrimary">:</span>
               <input
                 ref={productCodeInputRef}
                 type="text"
@@ -432,7 +432,7 @@ export default function POSPForm({
             </div>
           </div>
           <div className="flex sm:items-center sm:flex-row flex-col sm:gap-5 gap-1 mt-3">
-            <h2 className="text-base font-bold whitespace-nowrap w-28 flex-shrink-0">
+            <h2 className=" text-textPrimary text-base font-bold whitespace-nowrap w-28 flex-shrink-0">
               Search Product
             </h2>
             <span className="font-bold sm:inline-block hidden">:</span>
