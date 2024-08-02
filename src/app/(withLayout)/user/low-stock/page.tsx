@@ -14,7 +14,7 @@ export default async function LowStock({
   );
 
   return (
-    <div className="card px-4 pb-4">
+    <div className="card px-4 pb-2">
       <LowStockTable stocks={stocks} totalPages={meta.total ?? 0} limit={Number(limit)} />
     </div>
   );

@@ -1,8 +1,0 @@
-
-### product collection --> stripQuantity and Formulation field     --> (both backend and frontend)  -->//Done
-### remove the shelvs field from product collection                --> (both backend and frontend)  -->//Done
-### home menu with icon filter based on user role                                                   -->//Done
-### Reports and printing filter based on user role                                                  -->//Done
-### most Selling product of last 30 days                           --> (backend)                    -->//Done
-### update dashboard -> show most Selling product.                 --> (frontend)                   -->//Done
-### POS update. stripQuantity add to quantity                                                       -->//Done

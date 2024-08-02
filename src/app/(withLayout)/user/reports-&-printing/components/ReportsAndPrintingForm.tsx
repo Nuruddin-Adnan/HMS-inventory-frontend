@@ -129,7 +129,7 @@ export default function ReportsAndPrintingForm({ user }: { user: any }) {
                 <div className="rounded-md border md:m-6 w-full col-span-1 overflow-hidden">
                     <ul style={listStyle.list} className='max-h-[70vh] overflow-y-auto'>
                         {filteredItemsByRole.map((item) => (
-                            <li className='hover:bg-gray-100 sm:text-sm text-xs' key={item.value} style={listStyle.listItem}>
+                            <li className='hover:bg-gray-100 text-sm' key={item.value} style={listStyle.listItem}>
 
                                 <input
                                     type="radio"

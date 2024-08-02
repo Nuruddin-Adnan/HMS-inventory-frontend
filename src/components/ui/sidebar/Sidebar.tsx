@@ -126,7 +126,7 @@ export default function Sidebar({
 
   return (
     <aside>
-      <nav className="h-screen bg-gray-800 text-gray-100  overflow-auto flex flex-col justify-between  scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin">
+      <nav className="h-screen bg-gray-800 text-gray-100  overflow-auto flex flex-col justify-between  scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thin 2xl:text-base text-sm">
         <div>
           <div className="p-3 top-0 sticky z-[999] border-b border-gray-600 bg-gray-800">
             <Link
@@ -233,8 +233,8 @@ export default function Sidebar({
                                   href={item.href}
                                   className={
                                     pathname.startsWith(item.href)
-                                      ? "block pl-4 py-0.5 text-sm leading-7  bg-gray-700 text-white border-l border-l-gray-600"
-                                      : "block pl-4 py-0.5 text-sm leading-7 transition duration-200 hover:bg-gray-700 text-gray-400 hover:text-white border-l border-l-gray-600"
+                                      ? "block pl-4 py-0.5 leading-7  bg-gray-700 text-white border-l border-l-gray-600"
+                                      : "block pl-4 py-0.5 leading-7 transition duration-200 hover:bg-gray-700 text-gray-400 hover:text-white border-l border-l-gray-600"
                                   }
                                   onClick={handleForceSidebarCollapsed}
                                 >
@@ -256,10 +256,10 @@ export default function Sidebar({
 
         {/* Sidebar footer */}
         <div className="w-full p-4 border-t mt-5 border-t-gray-800 sticky bottom-0 bg-gray-900">
-          <p className="text-gray-300 text-xs">
+          <p className="text-gray-300 text-center">
             Powered by
             <a
-              href={"https://medisoftit.com"}
+              href="https://medisoftit.com"
               className=" ml-1 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
