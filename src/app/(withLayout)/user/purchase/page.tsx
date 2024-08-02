@@ -26,6 +26,7 @@ export default async function Purchase({
   const paymentStatus = searchParams["paymentStatus"] ?? "";
   const isDue = searchParams["isDue"] ?? "";
 
+
   const { data: purchases, meta } = await getAllPurchases(
     `sort=-createdAt&page=${page}&limit=${limit}${query && `&search=${query}`}${supplier && `&supplier=${supplier}`
     }${paymentStatus && `&paymentStatus=${paymentStatus}`}${isDue && `&due[gte]=1`

@@ -18,21 +18,27 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
 
   const router = useRouter();
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
-    const payload = {
-      invoiceNo: (formData.get("invoiceNo") ?? "") as string,
-      lotNo: (formData.get("lotNo") ?? "") as string,
-      expiryDate: (formData.get("expiryDate") ?? "") as string,
-    };
 
-    const nonEmptyPayload = removeEmptyFields(payload);
-    const result = await updatePurchase(data?.BILLID, nonEmptyPayload);
-    if (result && result.success === true) {
-      await tagRevalidate("purchase");
-      router.back();
+    const formData = new FormData(event.currentTarget);
+    try {
+      const payload = {
+        invoiceNo: (formData.get("invoiceNo") ?? "") as string,
+        lotNo: (formData.get("lotNo") ?? "") as string,
+        expiryDate: (formData.get("expiryDate") ?? "") as string,
+      };
+
+      const nonEmptyPayload = removeEmptyFields(payload);
+      const result = await updatePurchase(data?.BILLID, nonEmptyPayload);
+      if (result && result.success === true) {
+        await tagRevalidate("purchase");
+        router.back();
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -52,7 +58,7 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
             />
           </div>
         </form>
-        <form action={handleSubmit} className="grid 2xl:gap-4 gap-3">
+        <form onSubmit={handleSubmit} className="grid 2xl:gap-4 gap-3">
           <div className="flex 2xl:gap-4 gap-3 lg:flex-row flex-col">
             <div className="lg:w-3/5 flex flex-col 2xl:gap-4 gap-3">
               <label>
@@ -76,7 +82,7 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
                     name="supplier"
                     styles={reactSelectStyles}
                     value={{
-                      label: `${data?.supplier?.name} ⟶${data?.supplier?.contactNo} ⟶${data?.supplier?.brandInfo?.name}`,
+                      label: `${data?.supplier?.name} ⟶${data?.supplier?.contactNo} ⟶${data?.supplier?.brandInfo[0]?.name}`,
                       value: data?.supplier[0]?._id,
                     }}
                     isDisabled={true}
@@ -204,7 +210,7 @@ export default function PurchaseUpdateForm({ data }: { data: any }) {
                     </div>
                   </div>
 
-                  <div className="text-right text-base mt-5">
+                  <div className="text-right text-base mt-5 flex items-center justify-end">
                     <Button
                       variant="danger"
                       className="mr-2"

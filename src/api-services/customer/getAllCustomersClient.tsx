@@ -14,7 +14,7 @@ export const getAllCustomersClient = async (
         "Content-Type": "application/json",
         Authorization: Cookies.get("accessToken"),
       },
-      next: { revalidate: 60, tags: ["product"] },
+      next: { revalidate: 60, tags: ["customer"] },
     },
     undefined, // notification false
     successNotify, //success notification false

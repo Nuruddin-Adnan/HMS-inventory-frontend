@@ -17,34 +17,41 @@ export default function CustomerCreateForm() {
 
   const router = useRouter()
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
 
-    // Convert age fields as number
-    const age = (formData.get("age") ?? "") as string;
-    const ageAsNumber: number = convertStringToNumber(age);
+    const formData = new FormData(event.currentTarget);
 
-    const payload = {
-      name: (formData.get("name") ?? "") as string,
-      age: ageAsNumber,
-      gender: (formData.get("gender") ?? "") as string,
-      contactNo: (formData.get("contactNo") ?? "") as string,
-      email: (formData.get("email") ?? "") as string,
-      address: (formData.get("address") ?? "") as string,
-    };
+    try {
+      // Convert age fields as number
+      const age = (formData.get("age") ?? "") as string;
+      const ageAsNumber: number = convertStringToNumber(age);
 
-    const nonEmptyPayload = removeEmptyFields(payload);
-    const result = await createCustomer(nonEmptyPayload);
-    if (result && result.success === true) {
-      // Reset the form
-      if (formRef.current) {
-        formRef.current.reset();
+      const payload = {
+        name: (formData.get("name") ?? "") as string,
+        age: ageAsNumber,
+        gender: (formData.get("gender") ?? "") as string,
+        contactNo: (formData.get("contactNo") ?? "") as string,
+        email: (formData.get("email") ?? "") as string,
+        address: (formData.get("address") ?? "") as string,
+      };
+
+      const nonEmptyPayload = removeEmptyFields(payload);
+      const result = await createCustomer(nonEmptyPayload);
+      if (result && result.success === true) {
+        // Reset the form
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+
+        await tagRevalidate("customer");
+        router.back();
       }
-
-      await tagRevalidate("customer");
-      router.back();
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+
   };
 
   const genderOptions = [
@@ -57,12 +64,12 @@ export default function CustomerCreateForm() {
     <div className="border border-gray-200 rounded-lg p-4 shadow">
       <form
         ref={formRef}
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className="grid 2xl:gap-4 gap-3"
       >
         <div className="grid lg:grid-cols-4 2xl:gap-4 gap-3">
           <div className="lg:col-span-3">
-            <Input type="text" name="name" label="Customer Name*" autoFocus />
+            <Input type="text" name="name" label="Customer Name*" autoFocus required />
           </div>
           <div className="grid grid-cols-2 2xl:gap-4 gap-3">
             <Input type="number" name="age" label="Age" />
@@ -71,11 +78,12 @@ export default function CustomerCreateForm() {
               name="gender"
               label="Gender*"
               className="min-h-[34px]"
+              required
             />
           </div>
         </div>
         <div className="grid lg:grid-cols-2 2xl:gap-4 gap-3">
-          <Input type="text" name="contactNo" label="Contact No*" />
+          <Input type="text" name="contactNo" label="Contact No*" required />
           <Input type="email" name="email" label="Email Address" />
         </div>
         <Textarea label="Address" name="address" />

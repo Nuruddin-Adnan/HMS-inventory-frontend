@@ -10,44 +10,48 @@ import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import tagRevalidate from "@/lib/tagRevalidate";
 import { format } from "date-fns";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
 export default function ExpenseForm({ expenseCategories }: { expenseCategories: any }) {
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter()
 
   const categoryOptions = expenseCategories.map((item: any) => {
     return { title: `${item?.name}`, value: item?.name };
   });
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
 
-    const amount = (formData.get("amount") ?? "") as string;
+    const formData = new FormData(event.currentTarget);
+
+    try {
+      const amount = (formData.get("amount") ?? "") as string;
 
 
-    const amountAsNumber: number = convertStringToNumber(amount);
+      const amountAsNumber: number = convertStringToNumber(amount);
 
-    const payload = {
-      purpose: (formData.get("purpose") ?? "") as string,
-      expenseDate: (formData.get("expenseDate") ?? "") as string,
-      amount: amountAsNumber,
-      description: (formData.get("description") ?? "") as string,
-    };
+      const payload = {
+        purpose: (formData.get("purpose") ?? "") as string,
+        expenseDate: (formData.get("expenseDate") ?? "") as string,
+        amount: amountAsNumber,
+        description: (formData.get("description") ?? "") as string,
+      };
 
-    const nonEmptyPayload = removeEmptyFields(payload);
-    const result = await createExpense(nonEmptyPayload);
-    if (result && result.success === true) {
-      // Reset the form
-      if (formRef.current) {
-        formRef.current.reset();
+      const nonEmptyPayload = removeEmptyFields(payload);
+      const result = await createExpense(nonEmptyPayload);
+      if (result && result.success === true) {
+        // Reset the form
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+        await tagRevalidate("expense");
+        router.back();
       }
-      setLoading(false);
-
-      await tagRevalidate("expense");
-      redirect("/user/expense");
-    } else {
+    } finally {
       setLoading(false);
     }
   };
@@ -56,7 +60,7 @@ export default function ExpenseForm({ expenseCategories }: { expenseCategories: 
     <div className="border border-gray-200 rounded-lg p-4 shadow">
       <form
         ref={formRef}
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className="grid 2xl:space-y-4 space-y-3"
       >
         <Select
@@ -71,9 +75,9 @@ export default function ExpenseForm({ expenseCategories }: { expenseCategories: 
           <Input type="number" name="amount" label="Amount" required />
         </div>
         <Textarea name="description" label="Description" rows={6} />
-        <div className="text-right">
+        <div className="text-right flex items-center justify-end">
           <Link href={`/user/expense`} >
-            <Button type="button" variant="danger" className="mr-2" loading={loading}>
+            <Button type="button" variant="danger" className="mr-2">
               Back
             </Button>
           </Link>

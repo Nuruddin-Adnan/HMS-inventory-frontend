@@ -60,52 +60,59 @@ export default function ProductUpdateForm({
 
   const router = useRouter();
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
 
-    // Convert  fields as number
-    const price = (formData.get("price") ?? "") as string;
-    const discountPercent = (formData.get("discountPercent") ?? "") as string;
-    const discountAmount = (formData.get("discountAmount") ?? "") as string;
-    const stripQuantity = (formData.get("stripQuantity") ?? "") as string;
+    const formData = new FormData(event.currentTarget);
 
-    const priceAsNumber: number = convertStringToNumber(price);
-    const discountPercentAsNumber: number =
-      convertStringToNumber(discountPercent);
-    const discountAmountAsNumber: number =
-      convertStringToNumber(discountAmount);
-    const stripQuantityAsNumber: number = convertStringToNumber(stripQuantity);
+    try {
+      // Convert  fields as number
+      const price = (formData.get("price") ?? "") as string;
+      const discountPercent = (formData.get("discountPercent") ?? "") as string;
+      const discountAmount = (formData.get("discountAmount") ?? "") as string;
+      const stripQuantity = (formData.get("stripQuantity") ?? "") as string;
 
-    const payload = {
-      name: (formData.get("name") ?? "") as string,
-      code: (formData.get("code") ?? "") as string,
-      category: (formData.get("category") ?? "") as string,
-      genericName: (formData.get("genericName") ?? "") as string,
-      strength: (formData.get("strength") ?? "") as string,
-      brand: (formData.get("brand") ?? "") as string,
-      formulation: (formData.get("formulation") ?? "") as string,
-      unit: (formData.get("unit") ?? "") as string,
-      price: priceAsNumber,
-      stripQuantity: stripQuantityAsNumber,
-      discountPercent: discountPercentAsNumber,
-      discountAmount: discountAmountAsNumber,
-      description: (formData.get("description") ?? "") as string,
-      status: (formData.get("status") ?? "") as string,
-    };
+      const priceAsNumber: number = convertStringToNumber(price);
+      const discountPercentAsNumber: number =
+        convertStringToNumber(discountPercent);
+      const discountAmountAsNumber: number =
+        convertStringToNumber(discountAmount);
+      const stripQuantityAsNumber: number = convertStringToNumber(stripQuantity);
 
-    const result = await updateProduct(data._id!, payload);
-    if (result && result.success === true) {
-      // Reset the form
-      if (formRef.current) {
-        formRef.current.reset();
+      const payload = {
+        name: (formData.get("name") ?? "") as string,
+        code: (formData.get("code") ?? "") as string,
+        category: (formData.get("category") ?? "") as string,
+        genericName: (formData.get("genericName") ?? "") as string,
+        strength: (formData.get("strength") ?? "") as string,
+        brand: (formData.get("brand") ?? "") as string,
+        formulation: (formData.get("formulation") ?? "") as string,
+        unit: (formData.get("unit") ?? "") as string,
+        price: priceAsNumber,
+        stripQuantity: stripQuantityAsNumber,
+        discountPercent: discountPercentAsNumber,
+        discountAmount: discountAmountAsNumber,
+        description: (formData.get("description") ?? "") as string,
+        status: (formData.get("status") ?? "") as string,
+      };
+
+      const result = await updateProduct(data._id!, payload);
+      if (result && result.success === true) {
+        // Reset the form
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+
+        await tagRevalidate("product");
+        await tagRevalidate("stock");
+        await tagRevalidate("purchase");
+        router.back();
       }
-
-      await tagRevalidate("product");
-      await tagRevalidate("stock");
-      await tagRevalidate("purchase");
-      router.back();
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+
   };
 
   const categoryOptions = categories.map((item: any) => {
@@ -124,7 +131,7 @@ export default function ProductUpdateForm({
     <div className="border border-gray-200 rounded-lg p-4 shadow">
       <form
         ref={formRef}
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className="grid 2xl:gap-4 gap-3"
       >
         <div className="grid  lg:grid-cols-3 2xl:gap-4 gap-3">
@@ -254,7 +261,7 @@ export default function ProductUpdateForm({
           name="description"
           defaultValue={data?.description}
         />
-        <div className="text-right">
+        <div className="text-right flex items-center justify-end">
           <Button
             type="button"
             variant="danger"

@@ -59,7 +59,7 @@ export default function PurchaseTable({ purchases }: { purchases: any[] }) {
             {" "}
             {row?.supplier?.name} ({row?.supplier?.contactNo})
           </span>
-          <span className="block">{row?.supplier?.brandInfo?.name}</span>
+          <span className="block">{row?.supplier?.brandInfo[0]?.name}</span>
         </div>
       ),
     },

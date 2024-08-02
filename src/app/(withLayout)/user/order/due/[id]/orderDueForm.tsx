@@ -33,8 +33,11 @@ export default function OrderDueForm({ data }: { data: any }) {
 
   const router = useRouter();
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
+
+    const formData = new FormData(event.currentTarget);
 
     try {
       // Convert  fields as number
@@ -51,9 +54,8 @@ export default function OrderDueForm({ data }: { data: any }) {
       if (result && result.success === true) {
         await tagRevalidate("order");
         router.back();
-        setLoading(false);
       }
-    } catch (error) {
+    } finally {
       setLoading(false);
     }
   };
@@ -215,7 +217,7 @@ export default function OrderDueForm({ data }: { data: any }) {
 
           <form
             // ref={formRef}
-            action={handleSubmit}
+            onSubmit={handleSubmit}
             className="lg:sticky bottom-5"
           >
             <div className="flex justify-between text-base whitespace-nowrap">
@@ -312,9 +314,10 @@ export default function OrderDueForm({ data }: { data: any }) {
               </Button>
               <button
                 type="submit"
-                className="bg-green-500 text-white py-2 px-4 rounded w-full font-semibold"
+                className="bg-green-500 text-white py-2 px-4 rounded w-full font-semibold disabled:cursor-not-allowed"
+                disabled={loading}
               >
-                Due Payment
+                {loading ? 'Loading...' : 'Due Payment'}
               </button>
             </div>
           </form>

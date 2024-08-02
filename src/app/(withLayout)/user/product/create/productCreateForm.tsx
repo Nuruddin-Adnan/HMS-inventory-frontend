@@ -37,50 +37,57 @@ export default function ProductCreateForm({
 
   const router = useRouter();
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
 
-    // Convert  fields as number
-    const price = (formData.get("price") ?? "") as string;
-    const discountPercent = (formData.get("discountPercent") ?? "") as string;
-    const discountAmount = (formData.get("discountAmount") ?? "") as string;
-    const stripQuantity = (formData.get("stripQuantity") ?? "") as string;
+    const formData = new FormData(event.currentTarget);
 
-    const priceAsNumber: number = convertStringToNumber(price);
-    const discountPercentAsNumber: number =
-      convertStringToNumber(discountPercent);
-    const discountAmountAsNumber: number =
-      convertStringToNumber(discountAmount);
-    const stripQuantityAsNumber: number = convertStringToNumber(stripQuantity);
+    try {
+      // Convert  fields as number
+      const price = (formData.get("price") ?? "") as string;
+      const discountPercent = (formData.get("discountPercent") ?? "") as string;
+      const discountAmount = (formData.get("discountAmount") ?? "") as string;
+      const stripQuantity = (formData.get("stripQuantity") ?? "") as string;
 
-    const payload = {
-      name: (formData.get("name") ?? "") as string,
-      code: productCode,
-      category: (formData.get("category") ?? "") as string,
-      genericName: (formData.get("genericName") ?? "") as string,
-      strength: (formData.get("strength") ?? "") as string,
-      brand: (formData.get("brand") ?? "") as string,
-      formulation: (formData.get("formulation") ?? "") as string,
-      unit: (formData.get("unit") ?? "") as string,
-      price: priceAsNumber,
-      stripQuantity: stripQuantityAsNumber,
-      discountPercent: discountPercentAsNumber,
-      discountAmount: discountAmountAsNumber,
-      description: (formData.get("description") ?? "") as string,
-    };
+      const priceAsNumber: number = convertStringToNumber(price);
+      const discountPercentAsNumber: number =
+        convertStringToNumber(discountPercent);
+      const discountAmountAsNumber: number =
+        convertStringToNumber(discountAmount);
+      const stripQuantityAsNumber: number = convertStringToNumber(stripQuantity);
 
-    const nonEmptyPayload = removeEmptyFields(payload);
-    const result = await createProduct(nonEmptyPayload);
-    if (result && result.success === true) {
-      // Reset the form
-      if (formRef.current) {
-        formRef.current.reset();
+      const payload = {
+        name: (formData.get("name") ?? "") as string,
+        code: productCode,
+        category: (formData.get("category") ?? "") as string,
+        genericName: (formData.get("genericName") ?? "") as string,
+        strength: (formData.get("strength") ?? "") as string,
+        brand: (formData.get("brand") ?? "") as string,
+        formulation: (formData.get("formulation") ?? "") as string,
+        unit: (formData.get("unit") ?? "") as string,
+        price: priceAsNumber,
+        stripQuantity: stripQuantityAsNumber,
+        discountPercent: discountPercentAsNumber,
+        discountAmount: discountAmountAsNumber,
+        description: (formData.get("description") ?? "") as string,
+      };
+
+      const nonEmptyPayload = removeEmptyFields(payload);
+      const result = await createProduct(nonEmptyPayload);
+      if (result && result.success === true) {
+        // Reset the form
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+
+        await tagRevalidate("product");
+        router.back()
       }
-
-      await tagRevalidate("product");
-      redirect("/user/product");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+
   };
 
   const categoryOptions = categories.map((item: any) => {
@@ -109,7 +116,7 @@ export default function ProductCreateForm({
       />
       <form
         ref={formRef}
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className="grid 2xl:gap-4 gap-3"
       >
         <Select
@@ -117,10 +124,11 @@ export default function ProductCreateForm({
           name="category"
           label="Select category*"
           className="min-h-[34px]"
+          required
         />
         <div className="grid lg:grid-cols-3 2xl:gap-4 gap-3">
           <div className="lg:col-span-2">
-            <Input type="text" name="name" label="Product Name*" />
+            <Input type="text" name="name" label="Product Name*" required />
           </div>
           <label>
             <span className="text-textPrimary font-semibold block pb-0.5">Generic Name</span>
@@ -153,12 +161,14 @@ export default function ProductCreateForm({
               options={brandOptions}
               isClearable={true}
               styles={reactSelectStyles}
+              required
             />
           </label>
           <Input
             type="number"
-            label="Strip quantity"
+            label="Strip quantity*"
             name="stripQuantity"
+            required
           />
         </div>
 
@@ -171,9 +181,10 @@ export default function ProductCreateForm({
               options={productUnitOptions}
               isClearable={true}
               styles={reactSelectStyles}
+              required
             />
           </label>
-          <Input type="number" name="price" label="Unit price*" />
+          <Input type="number" name="price" label="Unit price*" required />
           <Input
             type="number"
             name="discountPercent"
@@ -188,7 +199,7 @@ export default function ProductCreateForm({
           />
         </div>
         <Textarea label="Description" name="description" />
-        <div className="text-right">
+        <div className="text-right flex items-center justify-end">
           <Button
             type="reset"
             variant="danger"

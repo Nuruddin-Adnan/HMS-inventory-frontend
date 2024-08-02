@@ -7,7 +7,6 @@ import toastError from "@/helpers/toastError";
 import { MinusIcon, PlusIcon, PrinterIcon } from "@heroicons/react/24/outline";
 import Input from "@/components/ui/form/Input";
 import Button from "@/components/ui/button/Button";
-import { getAllCustomersClient } from "@/api-services/customer/getAllCustomersClient";
 import { paymentMethodOptions } from "@/lib/selectOptions";
 import Select from "@/components/ui/form/Select";
 import convertStringToNumber from "@/helpers/convertStringToNumber";
@@ -20,6 +19,7 @@ import { getSingleOrderClient } from "@/api-services/order/getSingleOrderClient"
 import Invoice from "@/components/Invoice";
 import { toFixedIfNecessary } from "@/helpers/toFixedIfNecessary";
 import Checkbox from "@/components/ui/form/Checkbox";
+import { getAllCustomersClient } from "@/api-services/customer/getAllCustomersClient";
 
 type Product = {
   _id: string;
@@ -276,8 +276,11 @@ export default function POSPForm({
     }
   };
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
+
+    const formData = new FormData(event.currentTarget);
 
     const orderItems = products.map((item) => {
       return {
@@ -290,53 +293,57 @@ export default function POSPForm({
       };
     });
 
-    // Convert  fields as number
-    const discountPercent =
-      ((formData.get("discountPercent") ?? "") as string) || "0";
-    const discountAmount =
-      ((formData.get("discountAmount") ?? "") as string) || "0";
-    const vatPercent = (formData.get("vatPercent") ?? "") as string;
-    const received = (formData.get("received") ?? "") as string;
+    try {
+      // Convert  fields as number
+      const discountPercent =
+        ((formData.get("discountPercent") ?? "") as string) || "0";
+      const discountAmount =
+        ((formData.get("discountAmount") ?? "") as string) || "0";
+      const vatPercent = (formData.get("vatPercent") ?? "") as string;
+      const received = (formData.get("received") ?? "") as string;
 
-    const discountPercentAsNumber: number =
-      convertStringToNumber(discountPercent);
-    const discountAmountAsNumber: number =
-      convertStringToNumber(discountAmount);
-    const vatPercentAsNumber: number = convertStringToNumber(vatPercent);
-    const receivedAsNumber: number = convertStringToNumber(received);
+      const discountPercentAsNumber: number =
+        convertStringToNumber(discountPercent);
+      const discountAmountAsNumber: number =
+        convertStringToNumber(discountAmount);
+      const vatPercentAsNumber: number = convertStringToNumber(vatPercent);
+      const receivedAsNumber: number = convertStringToNumber(received);
 
-    const payload = {
-      CUSID: customer?.CUSID,
-      items: orderItems,
-      discountPercent: discountPercentAsNumber,
-      discountAmount: discountAmountAsNumber,
-      vatPercent: vatPercentAsNumber,
-      received: total - receivedAsNumber > 0 ? receivedAsNumber : total,
-      paymentMethod: (formData.get("paymentMethod") ?? "") as string,
-    };
+      const payload = {
+        CUSID: customer?.CUSID,
+        items: orderItems,
+        discountPercent: discountPercentAsNumber,
+        discountAmount: discountAmountAsNumber,
+        vatPercent: vatPercentAsNumber,
+        received: total - receivedAsNumber > 0 ? receivedAsNumber : total,
+        paymentMethod: (formData.get("paymentMethod") ?? "") as string,
+      };
 
-    const nonEmptyPayload = removeEmptyFields(payload);
+      const nonEmptyPayload = removeEmptyFields(payload);
 
-    const result = await createOrder(nonEmptyPayload);
-    if (result && result.success === true) {
-      setInvoiceData(result?.data);
-      await tagRevalidate("order");
-      await tagRevalidate("stock");
+      const result = await createOrder(nonEmptyPayload);
+      if (result && result.success === true) {
+        setInvoiceData(result?.data);
+        await tagRevalidate("order");
+        await tagRevalidate("stock");
 
-      if (isPrint) {
-        // print
-        handlePrint();
+        if (isPrint) {
+          // print
+          handlePrint();
+        }
+
+        // reset all the data and get ready for next order
+        // Reset the form
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+        handleReset();
+        setInvoiceNo(result?.data?.BILLID);
       }
-
-      // reset all the data and get ready for next order
-      // Reset the form
-      if (formRef.current) {
-        formRef.current.reset();
-      }
-      handleReset();
-      setInvoiceNo(result?.data?.BILLID);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+
   };
 
   const handlePrintInvoice = async (invoiceNo: any) => {
@@ -640,7 +647,7 @@ export default function POSPForm({
 
         <form
           ref={formRef}
-          action={handleSubmit}
+          onSubmit={handleSubmit}
           className="xl:sticky bottom-5"
         >
           <div className="flex justify-between text-base whitespace-nowrap">
@@ -772,9 +779,9 @@ export default function POSPForm({
             </Button>
             <button
               type="submit"
-              className="bg-green-500 text-white py-2 px-4 rounded w-full font-semibold"
+              className="bg-green-500 text-white py-2 px-4 rounded w-full font-semibold disabled:cursor-not-allowed" disabled={loading}
             >
-              Submit Order
+              {loading ? 'Loading...' : 'Submit Order'}
             </button>
           </div>
         </form>

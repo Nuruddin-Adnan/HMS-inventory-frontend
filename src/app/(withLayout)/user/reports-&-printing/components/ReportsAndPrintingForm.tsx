@@ -3,11 +3,11 @@
 import Button from '@/components/ui/button/Button';
 import Input from '@/components/ui/form/Input';
 import toastError from '@/helpers/toastError';
-import { getUser } from '@/lib/getUser';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import "core-js";
 import { format } from 'date-fns';
+
 
 const listStyle: any = {
     list: {
@@ -63,6 +63,7 @@ const listItems = [
 
 export default function ReportsAndPrintingForm({ user }: { user: any }) {
     const [selectedValue, setSelectedValue] = useState(null);
+    const [loading, setLoading] = useState<boolean>(false)
     const router = useRouter();
 
     // sorted alphabetically 
@@ -84,44 +85,53 @@ export default function ReportsAndPrintingForm({ user }: { user: any }) {
     }
 
 
-    const handleSubmit = async (formData: FormData) => {
-        const date1 = new Date(formData.get("startDate") as any)
-        const date2 = new Date(formData.get("endDate") as any)
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setLoading(true);
 
-        if (!selectedValue) {
-            toastError('Please select a list')
-        } else if (!(formData.get("startDate") && formData.get("endDate") && formData.get("list"))) {
-            toastError('Please enter a valid date')
-        } else if (date1.getTime() > date2.getTime()) {
-            toastError('End date can not be larger than start date')
-        } else {
-            const list = selectedValue;
+        const formData = new FormData(event.currentTarget);
 
-            const startDateString = `${formData.get("startDate")}:00.000Z`;
-            const endDateString = `${formData.get("endDate")}:59.999Z`;
+        try {
+            const date1 = new Date(formData.get("startDate") as any)
+            const date2 = new Date(formData.get("endDate") as any)
 
-            // Create a new Date object
-            const startDate = new Date(startDateString);
-            const endDate = new Date(endDateString);
+            if (!selectedValue) {
+                toastError('Please select a list')
+            } else if (!(formData.get("startDate") && formData.get("endDate") && formData.get("list"))) {
+                toastError('Please enter a valid date')
+            } else if (date1.getTime() > date2.getTime()) {
+                toastError('End date can not be larger than start date')
+            } else {
+                const list = selectedValue;
 
-            // Subtract 6 hours from the current date and time
-            startDate.setHours(startDate.getHours() - 6);//bangladesh local time is less than UTC time
-            startDate.setSeconds(0);
-            startDate.setMilliseconds(0);
+                const startDateString = `${formData.get("startDate")}:00.000Z`;
+                const endDateString = `${formData.get("endDate")}:59.999Z`;
 
-            endDate.setHours(endDate.getHours() - 6);//bangladesh local time is less than UTC time
-            endDate.setSeconds(59);
-            endDate.setMilliseconds(999);
+                // Create a new Date object
+                const startDate = new Date(startDateString);
+                const endDate = new Date(endDateString);
 
-            const startDateToISOString = startDate.toISOString();
-            const endDateToISOString = endDate.toISOString();
+                // Subtract 6 hours from the current date and time
+                startDate.setHours(startDate.getHours() - 6);//bangladesh local time is less than UTC time
+                startDate.setSeconds(0);
+                startDate.setMilliseconds(0);
 
-            router.push(`${list}?startDate=${startDateToISOString}&endDate=${endDateToISOString}`)
+                endDate.setHours(endDate.getHours() - 6);//bangladesh local time is less than UTC time
+                endDate.setSeconds(59);
+                endDate.setMilliseconds(999);
+
+                const startDateToISOString = startDate.toISOString();
+                const endDateToISOString = endDate.toISOString();
+
+                router.push(`${list}?startDate=${startDateToISOString}&endDate=${endDateToISOString}`)
+            }
+        } finally {
+            setLoading(false)
         }
     };
 
     return (
-        <form action={handleSubmit}>
+        <form onSubmit={handleSubmit}>
             <div className="border-b border-gray-200 2xl:p-4 p-3">
                 <h2 className='font-bold 2xl:text-xl text-lg text-textPrimary'>Reports & Printing</h2>
             </div>
@@ -156,7 +166,8 @@ export default function ReportsAndPrintingForm({ user }: { user: any }) {
                             <Input type="datetime-local" name="startDate" label="Start Date" defaultValue={startDateTime()} />
                             <Input type="datetime-local" name="endDate" label="End Date" defaultValue={format(new Date, "yyyy-MM-dd'T'HH:mm")} />
                         </div>
-                        <Button type="submit" variant="primary" className="w-full block">Show Result</Button>
+                        <Button type="submit" variant="primary" className="w-full justify-center" loading={loading}>Show Result</Button>
+
                     </div>
                 </div>
             </div>

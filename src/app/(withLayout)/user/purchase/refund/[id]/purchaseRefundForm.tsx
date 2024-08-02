@@ -20,32 +20,39 @@ export default function PurchaseRefundForm({ data }: { data: any }) {
 
   const router = useRouter();
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
 
-    // Convert  fields as number
-    const quantity = (formData.get("quantity") ?? "") as string;
-    const quantityAsNumber: number = convertStringToNumber(quantity);
+    const formData = new FormData(event.currentTarget);
 
-    const payload = {
-      refundMethod: (formData.get("refundMethod") ?? "") as string,
-      quantity: quantityAsNumber,
-    };
+    try {
+      // Convert  fields as number
+      const quantity = (formData.get("quantity") ?? "") as string;
+      const quantityAsNumber: number = convertStringToNumber(quantity);
 
-    const nonEmptyPayload = removeEmptyFields(payload);
+      const payload = {
+        refundMethod: (formData.get("refundMethod") ?? "") as string,
+        quantity: quantityAsNumber,
+      };
 
-    const result = await refundPurchase(data?.BILLID, nonEmptyPayload);
-    if (result && result.success === true) {
-      await tagRevalidate("purchase");
-      router.back();
+      const nonEmptyPayload = removeEmptyFields(payload);
+
+      const result = await refundPurchase(data?.BILLID, nonEmptyPayload);
+      if (result && result.success === true) {
+        await tagRevalidate("purchase");
+        router.back();
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+
   };
 
   return (
     <>
       <div className="border border-gray-200 rounded-lg p-4 shadow">
-        <form action={handleSubmit} className="grid 2xl:gap-4 gap-3">
+        <form onSubmit={handleSubmit} className="grid 2xl:gap-4 gap-3">
           <div className="flex 2xl:gap-4 gap-3 lg:flex-row flex-col">
             <div className="lg:w-3/5 flex flex-col 2xl:gap-4 gap-3">
               <div className="grid lg:grid-cols-3  2xl:gap-4 gap-3">
@@ -78,7 +85,7 @@ export default function PurchaseRefundForm({ data }: { data: any }) {
                     name="supplier"
                     styles={reactSelectStyles}
                     value={{
-                      label: `${data?.supplier?.name} ⟶${data?.supplier?.contactNo} ⟶${data?.supplier?.brandInfo?.name}`,
+                      label: `${data?.supplier?.name} ⟶${data?.supplier?.contactNo} ⟶${data?.supplier?.brandInfo[0]?.name}`,
                       value: data?.supplier[0]?._id,
                     }}
                     isDisabled={true}
@@ -228,7 +235,7 @@ export default function PurchaseRefundForm({ data }: { data: any }) {
                       </div>
                     </div>
                   </div>
-                  <div className="text-right text-base mt-5">
+                  <div className="text-right text-base mt-5 flex items-center justify-end">
                     <Button
                       variant="primary-light"
                       className="mr-2"

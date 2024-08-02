@@ -17,34 +17,41 @@ export default function CustomerUpdateForm({ data }: { data: any }) {
 
   const router = useRouter()
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
-    // Convert age fields as number
-    const age = (formData.get("age") ?? "") as string;
-    const ageAsNumber: number = convertStringToNumber(age);
 
-    const payload = {
-      name: (formData.get("name") ?? "") as string,
-      age: ageAsNumber,
-      gender: (formData.get("gender") ?? "") as string,
-      contactNo: (formData.get("contactNo") ?? "") as string,
-      email: (formData.get("email") ?? "") as string,
-      address: (formData.get("address") ?? "") as string,
-      status: (formData.get("status") ?? "") as string,
-    };
+    const formData = new FormData(event.currentTarget);
 
-    const nonEmptyPayload = removeEmptyFields(payload);
-    const result = await updateCustomer(data._id!, nonEmptyPayload);
-    if (result && result.success === true) {
-      // Reset the form
-      if (formRef.current) {
-        formRef.current.reset();
+    try {
+      // Convert age fields as number
+      const age = (formData.get("age") ?? "") as string;
+      const ageAsNumber: number = convertStringToNumber(age);
+
+      const payload = {
+        name: (formData.get("name") ?? "") as string,
+        age: ageAsNumber,
+        gender: (formData.get("gender") ?? "") as string,
+        contactNo: (formData.get("contactNo") ?? "") as string,
+        email: (formData.get("email") ?? "") as string,
+        address: (formData.get("address") ?? "") as string,
+        status: (formData.get("status") ?? "") as string,
+      };
+
+      const nonEmptyPayload = removeEmptyFields(payload);
+      const result = await updateCustomer(data._id!, nonEmptyPayload);
+      if (result && result.success === true) {
+        // Reset the form
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+
+        await tagRevalidate("customer");
+        router.back()
       }
-
-      await tagRevalidate("customer");
-      router.back()
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const statusOptions = [
@@ -62,7 +69,7 @@ export default function CustomerUpdateForm({ data }: { data: any }) {
     <div className="border border-gray-200 rounded-lg p-4 shadow">
       <form
         ref={formRef}
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className="grid 2xl:gap-4 gap-3"
       >
         <div className="grid lg:grid-cols-3 2xl:gap-4 gap-3">

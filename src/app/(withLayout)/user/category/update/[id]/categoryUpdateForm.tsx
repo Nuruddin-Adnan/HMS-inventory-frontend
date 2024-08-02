@@ -15,25 +15,32 @@ export default function CategoryUpdateForm({ data }: { data: any }) {
 
   const router = useRouter()
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
-    const payload = {
-      name: (formData.get("name") ?? "") as string,
-      status: (formData.get("status") ?? "") as string,
-    };
 
-    const nonEmptyPayload = removeEmptyFields(payload);
-    const result = await updateCategory(data._id!, nonEmptyPayload);
-    if (result && result.success === true) {
-      // Reset the form
-      if (formRef.current) {
-        formRef.current.reset();
+    const formData = new FormData(event.currentTarget);
+
+    try {
+      const payload = {
+        name: (formData.get("name") ?? "") as string,
+        status: (formData.get("status") ?? "") as string,
+      };
+
+      const nonEmptyPayload = removeEmptyFields(payload);
+      const result = await updateCategory(data._id!, nonEmptyPayload);
+      if (result && result.success === true) {
+        // Reset the form
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+
+        await tagRevalidate("category");
+        router.back()
       }
-
-      await tagRevalidate("category");
-      redirect("/user/category");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const statusOptions = [
@@ -45,7 +52,7 @@ export default function CategoryUpdateForm({ data }: { data: any }) {
     <div className="border border-gray-200 rounded-lg p-4 shadow">
       <form
         ref={formRef}
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className="grid 2xl:gap-4 gap-3"
       >
         <Input
@@ -60,7 +67,7 @@ export default function CategoryUpdateForm({ data }: { data: any }) {
           label="Status*"
           defaultValue={data?.status}
         />
-        <div className="text-right">
+        <div className="text-right flex items-center justify-end">
           <Button
             type="reset"
             variant="danger"

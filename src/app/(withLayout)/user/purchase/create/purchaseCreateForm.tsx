@@ -9,13 +9,12 @@ import Modal from "@/components/ui/modal/Modal";
 import convertStringToNumber from "@/helpers/convertStringToNumber";
 import toastError from "@/helpers/toastError";
 import { removeEmptyFields } from "@/lib/removeEmptyFields";
-import { paymentMethodOptions, productUnitOptions } from "@/lib/selectOptions";
+import { paymentMethodOptions } from "@/lib/selectOptions";
 import tagRevalidate from "@/lib/tagRevalidate";
 import { reactSelectStyles } from "@/styles/reactSelectStyles";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import ReactSelect, { SelectInstance } from "react-select";
-import CreatableSelect from "react-select/creatable";
 
 export default function PurchaseCreateForm({
   products,
@@ -79,44 +78,51 @@ export default function PurchaseCreateForm({
     return filteredProduct[0]?.unit;
   };
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
 
-    // Convert  fields as number
-    const quantity = (formData.get("quantity") ?? "") as string;
-    const price = (formData.get("price") ?? "") as string;
-    const advance = (formData.get("advance") ?? "") as string;
+    const formData = new FormData(event.currentTarget);
 
-    const quantityAsNumber: number = convertStringToNumber(quantity);
-    const priceAsNumber: number = convertStringToNumber(price);
-    const advanceAsNumber: number = convertStringToNumber(advance);
+    try {
+      // Convert  fields as number
+      const quantity = (formData.get("quantity") ?? "") as string;
+      const price = (formData.get("price") ?? "") as string;
+      const advance = (formData.get("advance") ?? "") as string;
 
-    const payload = {
-      product: (formData.get("product") ?? "") as string,
-      supplier: (formData.get("supplier") ?? "") as string,
-      invoiceNo: (formData.get("invoiceNo") ?? "") as string,
-      lotNo: (formData.get("lotNo") ?? "") as string,
-      expiryDate: (formData.get("expiryDate") ?? "") as string,
-      unit: unit,
-      paymentMethod: (formData.get("paymentMethod") ?? "") as string,
-      quantity: quantityAsNumber,
-      price: priceAsNumber,
-      advance: advanceAsNumber,
-    };
+      const quantityAsNumber: number = convertStringToNumber(quantity);
+      const priceAsNumber: number = convertStringToNumber(price);
+      const advanceAsNumber: number = convertStringToNumber(advance);
 
-    const nonEmptyPayload = removeEmptyFields(payload);
-    const result = await createPurchase(nonEmptyPayload);
-    if (result && result.success === true) {
-      // Reset the form
-      if (formRef.current) {
-        formRef.current.reset();
+      const payload = {
+        product: (formData.get("product") ?? "") as string,
+        supplier: (formData.get("supplier") ?? "") as string,
+        invoiceNo: (formData.get("invoiceNo") ?? "") as string,
+        lotNo: (formData.get("lotNo") ?? "") as string,
+        expiryDate: (formData.get("expiryDate") ?? "") as string,
+        unit: unit,
+        paymentMethod: (formData.get("paymentMethod") ?? "") as string,
+        quantity: quantityAsNumber,
+        price: priceAsNumber,
+        advance: advanceAsNumber,
+      };
+
+      const nonEmptyPayload = removeEmptyFields(payload);
+      const result = await createPurchase(nonEmptyPayload);
+      if (result && result.success === true) {
+        // Reset the form
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+
+        await tagRevalidate("purchase");
+        await tagRevalidate("stock");
+        router.back();
       }
-
-      await tagRevalidate("purchase");
-      await tagRevalidate("stock");
-      redirect("/user/purchase");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+
   };
 
   const handleReset = () => {
@@ -177,7 +183,7 @@ export default function PurchaseCreateForm({
         </form>
         <form
           ref={formRef}
-          action={handleSubmit}
+          onSubmit={handleSubmit}
           className="grid 2xl:gap-4 gap-3"
         >
           <div className="flex 2xl:gap-4 gap-3 lg:flex-row flex-col">
@@ -191,11 +197,13 @@ export default function PurchaseCreateForm({
                   name="product"
                   options={productOptions}
                   styles={reactSelectStyles}
+                  isClearable={true}
                   value={product}
                   onChange={(value: any) => {
                     setProduct(value);
                     setProductUnit(value?.value);
                   }}
+                  required
                 />
               </label>
               <div className="grid grid-cols-2 2xl:gap-4 gap-3">
@@ -206,13 +214,14 @@ export default function PurchaseCreateForm({
                     name="supplier"
                     options={supplierOptions}
                     styles={reactSelectStyles}
+                    required
                   />
                 </label>
                 <Input type="text" name="invoiceNo" label="Invoice No" />
               </div>
               <div className="grid grid-cols-2 2xl:gap-4 gap-3">
                 <Input type="text" name="lotNo" label="Lot No" />
-                <Input type="date" name="expiryDate" label="Expiry Date" />
+                <Input type="date" name="expiryDate" label="Expiry Date" required />
               </div>
             </div>
             <div className="lg:w-2/5 2xl:gap-4 gap-3 lg:border-s lg:ps-4">
@@ -296,7 +305,7 @@ export default function PurchaseCreateForm({
                     </div>
                   </div>
 
-                  <div className="text-right text-base mt-5">
+                  <div className="text-right flex items-center justify-end mt-5 text-base">
                     <Button
                       type="reset"
                       variant="danger"

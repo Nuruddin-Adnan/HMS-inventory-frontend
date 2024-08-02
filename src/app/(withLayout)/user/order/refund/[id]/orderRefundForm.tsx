@@ -122,9 +122,13 @@ export default function OrderRefundForm({ data }: { data: any }) {
     }
   };
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+
     try {
-      setLoading(true);
       const payload = {
         items: selectedProducts,
         refundMethod: (formData.get("refundMethod") ?? "") as string,
@@ -135,11 +139,8 @@ export default function OrderRefundForm({ data }: { data: any }) {
       if (result && result.success === true) {
         await tagRevalidate("order");
         router.back();
-        setLoading(false);
-      } else {
-        setLoading(false);
       }
-    } catch (error) {
+    } finally {
       setLoading(false);
     }
   };
@@ -249,10 +250,10 @@ export default function OrderRefundForm({ data }: { data: any }) {
                     <tr
                       key={index}
                       className={`${product?.quantity === product?.refundQuantity
-                          ? "bg-red-500 bg-opacity-20 text-red-700"
-                          : product?.refundQuantity > 0
-                            ? "bg-yellow-500 bg-opacity-20 text-yellow-700"
-                            : ""
+                        ? "bg-red-500 bg-opacity-20 text-red-700"
+                        : product?.refundQuantity > 0
+                          ? "bg-yellow-500 bg-opacity-20 text-yellow-700"
+                          : ""
                         }`}
                     >
                       <td className="py-1 px-4 border text-center">
@@ -407,7 +408,7 @@ export default function OrderRefundForm({ data }: { data: any }) {
 
           <form
             // ref={formRef}
-            action={handleSubmit}
+            onSubmit={handleSubmit}
             className="lg:sticky bottom-5"
           >
             <div className="flex justify-between text-base whitespace-nowrap">
@@ -489,9 +490,9 @@ export default function OrderRefundForm({ data }: { data: any }) {
               <button
                 type="submit"
                 className="bg-red-500 text-white py-2 px-4 rounded w-full font-semibold disabled:bg-opacity-60 disabled:cursor-not-allowed"
-                disabled={selectedProducts.length > 0 ? false : true}
+                disabled={(selectedProducts.length > 0) ? loading : true}
               >
-                Refund
+                {loading ? 'Loading...' : 'Refund'}
               </button>
             </div>
           </form>
