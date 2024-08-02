@@ -140,7 +140,7 @@ export default function Sidebar({
                 className="flex-shrink-0"
               />
               <h2 className="truncate">
-                Medinova Pharmacy
+                {process.env.NEXT_PUBLIC_APP_NAME}
               </h2>
             </Link>
           </div>
@@ -259,12 +259,12 @@ export default function Sidebar({
           <p className="text-gray-300 text-center">
             Powered by
             <a
-              href="https://medisoftit.com"
+              href={process.env.NEXT_PUBLIC_POWERED_BY_LINK}
               className=" ml-1 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              medisoftit.com
+              {process.env.NEXT_PUBLIC_POWERED_BY}
             </a>
           </p>
         </div>

@@ -32,7 +32,7 @@ export default function InvoiceLg({ order }: { order: any }) {
           <div>
             <Image src={logo} alt="logo" className="max-w-[70px]" />
             <h1 className="mt-2 text-lg md:text-xl font-semibold text-blue-600 dark:text-white">
-              Medinova Pharmacy
+              {process.env.NEXT_PUBLIC_APP_NAME}
             </h1>
 
             <div className="mt-5">
@@ -352,9 +352,9 @@ export default function InvoiceLg({ order }: { order: any }) {
 
         <p className="mt-5 black">
           <span className="pr-1">Powered by:</span>{" "}
-          medisoftit.com
+          {process.env.NEXT_PUBLIC_POWERED_BY}
           <span className="pl-2 pr-1">Contact:</span>
-          {"01300635567"}
+          {process.env.NEXT_PUBLIC_POWERED_BY_CONTACT_NO}
         </p>
       </div>
     </>

@@ -158,9 +158,9 @@ export default function Home() {
         <a
           target="blank"
           className="underline italic text-primary"
-          href={"https://medisoftit.com"}
+          href={process.env.NEXT_PUBLIC_POWERED_BY_LINK}
         >
-          medisoftit.com
+          {process.env.NEXT_PUBLIC_POWERED_BY}
         </a>
       </footer>
     </main>

@@ -334,7 +334,7 @@ export default function SalesRefundTable({
             caption={
               <div className="pt-3">
                 <h1 className="hidden print:block text-black text-2xl font-bold">
-                  Medinova Pharmacy
+                  {process.env.NEXT_PUBLIC_APP_NAME}
                 </h1>
                 <h2 className="hidden print:block text-black text-xl font-bold underline">
                   Sales Refund Report
