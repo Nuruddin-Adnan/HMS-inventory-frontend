@@ -107,7 +107,7 @@ export default function ReportsAndPrintingForm({ user }: { user: any }) {
 
                 const startDateString = `${formData.get("startDate")}:00.000Z`;
                 const endDateString = `${formData.get("endDate")}:59.999Z`;
-
+              
                 // Create a new Date object
                 const startDate = new Date(startDateString);
                 const endDate = new Date(endDateString);

@@ -38,12 +38,12 @@ export default function InvoiceLg({ order }: { order: any }) {
             <div className="mt-5">
               <h3 className="text-lg font-semibold black">Bill to:</h3>
               {customer[0]?.name && (
-                <h3 className="text-base font-semibold black">
+                <h3 className="font-semibold black">
                   {customer[0]?.name}
                 </h3>
               )}
               {customer[0]?.address && (
-                <address className="mt-1 not-italic black">
+                <address className="not-italic black">
                   <span className="whitespace-pre-line">
                     {customer[0]?.address}
                   </span>
@@ -99,26 +99,7 @@ export default function InvoiceLg({ order }: { order: any }) {
           </div>
         </div>
 
-        {/* <div className="grid sm:grid-cols-2 gap-3">
-          <div>
-            <h3 className="text-lg font-semibold black">Bill to:</h3>
-            {customer[0]?.name && (
-              <h3 className="text-lg font-semibold black">
-                {customer[0]?.name}
-              </h3>
-            )}
-            {customer[0]?.address && (
-              <address className="mt-2 not-italic black">
-                <span className="whitespace-pre-line">
-                  {customer[0]?.address}
-                </span>
-                <br />
-                {customer[0]?.contactNo}
-              </address>
-            )}
-          </div>
-        </div> */}
-
+ 
         <div className="mt-2">
           <div className="border border-gray-300 p-3 rounded-lg ">
             <div className="hidden sm:grid sm:grid-cols-7 p-2 bg-gray-200">
@@ -234,44 +215,44 @@ export default function InvoiceLg({ order }: { order: any }) {
         </div>
 
         <div className="mt-4 flex sm:flex-row flex-col sm:justify-between items-center">
-          <div className="text-center md:w-full">
-            <h2 className="font-bold md:text-2xl text-lg whitespace-nowrap border-8 border-gray-700 border-double capitalize inline-block py-2 px-4 text-gray-700">
+          <div className="text-center w-full md:mb-0 mb-4">
+            <h2 className="font-bold md:text-xl text-lg whitespace-nowrap border-8 border-gray-700 border-double capitalize inline-block py-2 px-4 text-gray-700">
               {paymentStatus.replace("-", " ")}
             </h2>
           </div>
           <div className="w-full max-w-2xl sm:text-end space-y-2">
             <div className="grid grid-cols-2 sm:grid-cols-1 font-medium">
-              <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 black">Subtotal:</dt>
-                <dd className="col-span-2 black">৳ {subtotal?.toFixed(2)}</dd>
+              <dl className="flex gap-5 justify-end text-nowrap">
+                <dt className="black">Subtotal:</dt>
+                <dd className="w-20 shrink-0 pe-2 black text-end">৳ {subtotal?.toFixed(2)}</dd>
               </dl>
-              <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 black">Vat:</dt>
-                <dd className="col-span-2 black">৳ {vatAmount?.toFixed(2)}</dd>
+              <dl className="flex gap-5 justify-end text-nowrap">
+                <dt className="black">Vat:</dt>
+                <dd className="w-20 shrink-0 pe-2 black text-end">৳ {vatAmount?.toFixed(2)}</dd>
               </dl>
-              <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 black">Less:</dt>
-                <dd className="col-span-2 black">
+              <dl className="flex gap-5 justify-end text-nowrap">
+                <dt className="black">Less:</dt>
+                <dd className="w-20 shrink-0 pe-2 black text-end">
                   ৳ {discountAmount?.toFixed(2)}
                 </dd>
               </dl>
 
-              <dl className="grid sm:grid-cols-5 gap-x-3 font-semibold">
-                <dt className="col-span-3 black">Payable:</dt>
-                <dd className="col-span-2 black">৳ {total?.toFixed(2)}</dd>
+              <dl className="flex gap-5 justify-end text-nowrap font-semibold">
+                <dt className="black">Payable:</dt>
+                <dd className="w-20 shrink-0 pe-2 black text-end">৳ {total?.toFixed(2)}</dd>
               </dl>
 
               {refunds && refunds.length > 0 && (
                 <>
-                  <dl className="grid sm:grid-cols-5 gap-x-3">
-                    <dt className="col-span-3 black">Refund Total:</dt>
-                    <dd className="col-span-2 black">
+                  <dl className="flex gap-5 justify-end text-nowrap">
+                    <dt className="black">Refund Total:</dt>
+                    <dd className="w-20 shrink-0 pe-2 black text-end">
                       ৳ {refundTotal?.toFixed(2)}
                     </dd>
                   </dl>
-                  <dl className="grid sm:grid-cols-5 gap-x-3 border-t border-t-gray-500 font-semibold">
-                    <dt className="col-span-3 black">Net Payable:</dt>
-                    <dd className="col-span-2 black">
+                  <dl className="flex gap-5 justify-end text-nowrap border-t border-t-gray-500 font-semibold">
+                    <dt className="black">Net Payable:</dt>
+                    <dd className="w-20 shrink-0 pe-2 black text-end">
                       ৳{" "}
                       {(total?.toFixed(2) - refundTotal?.toFixed(2)).toFixed(2)}
                     </dd>
@@ -279,23 +260,23 @@ export default function InvoiceLg({ order }: { order: any }) {
                 </>
               )}
 
-              <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 black">Amount paid:</dt>
-                <dd className="col-span-2 black">৳ {received?.toFixed(2)}</dd>
+              <dl className="flex gap-5 justify-end text-nowrap">
+                <dt className="black">Amount paid:</dt>
+                <dd className="w-20 shrink-0 pe-2 black text-end">৳ {received?.toFixed(2)}</dd>
               </dl>
 
               {refunds && refunds.length > 0 && (
-                <dl className="grid sm:grid-cols-5 gap-x-3">
-                  <dt className="col-span-3 black">Amount Refund:</dt>
-                  <dd className="col-span-2 black">
+                <dl className="flex gap-5 justify-end text-nowrap">
+                  <dt className="black">Amount Refund:</dt>
+                  <dd className="w-20 shrink-0 pe-2 black text-end">
                     ৳ {refundAmount?.toFixed(2)}
                   </dd>
                 </dl>
               )}
 
-              <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 black">Due balance:</dt>
-                <dd className="col-span-2 black">৳ {due?.toFixed(2)}</dd>
+              <dl className="flex gap-5 justify-end text-nowrap">
+                <dt className="black">Due balance:</dt>
+                <dd className="w-20 shrink-0 pe-2 black text-end">৳ {due?.toFixed(2)}</dd>
               </dl>
             </div>
           </div>

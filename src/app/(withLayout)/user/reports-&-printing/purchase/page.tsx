@@ -13,6 +13,7 @@ export default async function Purchase({
     const limit = searchParams["limit"] ?? "1000";
 
     const { data, meta } = await getAllPurchases(`createdAt[gte]=${startDate}&createdAt[lte]=${endDate}&page=${page}&limit=${limit}`);
+   
 
     return (
         <PurchaseTable purchases={data} startDate={startDate} endDate={endDate} totalPages={meta.total ?? 0} limit={Number(limit)} />

@@ -29,7 +29,16 @@ const navigations = [
     headingClassName: "pl-4 pt-2 pb-4",
     navItems: [
       { name: "Dashboard", href: "/user/dashboard", icon: SquaresPlusIcon, roles: ["super_admin", "admin", "store_incharge"] },
-      { name: "Product", href: "/user/product", icon: ShoppingBagIcon, roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+      // { name: "Product", href: "/user/product", icon: ShoppingBagIcon, roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+      {
+        group: "Product",
+        items: [
+          { name: "All Products", href: "/user/product", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+          { name: "Low expired products", href: "/user/low-expired-product", roles: ["super_admin", "admin", , "store_incharge", "salesman"] },
+        ],
+        icon: ShoppingBagIcon,
+        roles: ["super_admin", "admin", "store_incharge", "salesman"],
+      },
       {
         group: "Stock",
         items: [
@@ -151,7 +160,7 @@ export default function Sidebar({
           <div className="space-y-0 mt-4 relative">
             <div className="absolute right-4 top-0">
               <button
-                className="rounded-full size-9 grid place-items-center bg-gray-900 xl:hidden"
+                className="rounded-full size-9 grid place-items-center bg-red-500 xl:hidden"
                 onClick={() => handleSidebarCollapsed()}
               >
                 <svg

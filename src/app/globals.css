@@ -40,11 +40,13 @@ body {
 /*   padding: 1rem; */
 }
 
+
 .sidebar.collapsed {
   left: auto;
   right: 100%;
   transition: all 0.2s linear;
 }
+
 
 .content-wrapper {
   width: auto;

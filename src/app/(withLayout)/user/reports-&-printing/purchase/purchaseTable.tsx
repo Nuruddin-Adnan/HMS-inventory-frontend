@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, {  useState } from "react";
 import { format } from "date-fns";
 import "core-js";
 import Table from "@/components/ui/table/Table";
 import { GroupByHelper } from "@/helpers/groupByHelper";
-import { useReactToPrint } from "react-to-print";
-import Invoice from "@/components/Invoice";
 import Link from "next/link";
 
 const pageStyle = `
@@ -33,37 +31,6 @@ export default function PurchaseTable({
   const [supplierBrand, setSupplierBrand] = useState<any>("All");
   const [paymentType, setPaymentType] = useState<any>("All");
 
-  // print setup
-  const [isPrinting, setIsPrinting] = useState(false);
-  const printRef = useRef(null);
-  const promiseResolveRef = useRef<((value: any) => void) | null>(null);
-  const [invoiceData, setInvoiceData] = useState<any>();
-
-  // We watch for the state to change here, and for the Promise resolve to be available
-  useEffect(() => {
-    if (isPrinting && promiseResolveRef.current) {
-      // Resolves the Promise, letting `react-to-print` know that the DOM updates are completed
-      promiseResolveRef.current(undefined);
-    }
-  }, [isPrinting]);
-
-  // print invoice
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
-    onBeforeGetContent: () => {
-      return new Promise((resolve) => {
-        promiseResolveRef.current = resolve;
-        setIsPrinting(true);
-      });
-    },
-    onAfterPrint: () => {
-      // Reset the Promise resolve so we can print again
-      promiseResolveRef.current = null;
-      setIsPrinting(false);
-    },
-    pageStyle: pageStyle,
-  });
-
 
   // filter start
   const dataGroupByEntryBy = GroupByHelper.groupBy(
@@ -72,13 +39,13 @@ export default function PurchaseTable({
   );
   const dataGroupByBrand = GroupByHelper.groupBy(
     purchases,
-    ({ supplier }: { supplier: any }) => supplier?.brandInfo?.name
+    ({ supplier }: { supplier: any }) => supplier?.brandInfo[0]?.name
   );
 
   const filteredData = purchases.filter(
     (item: any) => createdBy === "All" || item?.createdBy[0]?.name === createdBy
   ).filter(
-    (item: any) => supplierBrand === "All" || item?.supplier?.brandInfo?.name === supplierBrand
+    (item: any) => supplierBrand === "All" || item?.supplier?.brandInfo[0]?.name === supplierBrand
   ).filter(
     (item: any) =>
       paymentType === "All" ||
@@ -127,22 +94,11 @@ export default function PurchaseTable({
             {" "}
             {row?.supplier?.name} ({row?.supplier?.contactNo})
           </span>
-          <span className="block">{row?.supplier?.brandInfo?.name}</span>
+          <span className="block">{row?.supplier?.brandInfo[0]?.name}</span>
         </div>
       ),
     },
     { key: "invoiceNo", label: "Invoice No" },
-    {
-      key: "expiryDate",
-      label: "Expiry Date",
-      render: (row: any) => {
-        return (
-          <span className="whitespace-nowrap">
-            {format(new Date(row?.expiryDate), "dd/MM/yyyy")}
-          </span>
-        );
-      },
-    },
     { key: "unit", label: "Unit" },
     {
       key: "price",
@@ -190,28 +146,6 @@ export default function PurchaseTable({
       customClass: "text-right w-24",
       render: (row: any) => (
         <div className="text-right font-medium ">{row?.due}</div>
-      ),
-    },
-    {
-      key: "paymentStatus",
-      label: "Status",
-      customClass: "text-center print:hidden",
-      customDataClass: (row: any) => "print:hidden",
-      render: (row: any) => (
-        <div
-          className={
-            row?.paymentStatus === "paid"
-              ? "bg-[#28A745] bg-opacity-[.12] text-[#28A745] font-medium rounded-full text-center m-auto w-28"
-              : row?.paymentStatus.includes("refund")
-                ? "bg-[#FF0000] bg-opacity-[.12] text-[#FF0000] font-medium rounded-full text-center m-auto w-28 !py-0"
-                : "bg-[#FFC107] bg-opacity-[.12] text-[#917322] font-medium rounded-full text-center m-auto w-28 !py-0"
-          }
-        >
-          <span className="capitalize">
-            {" "}
-            {row?.paymentStatus && row?.paymentStatus.replace("-", " ")}
-          </span>
-        </div>
       ),
     },
   ];
@@ -361,13 +295,6 @@ export default function PurchaseTable({
         </div>
       </div>
 
-      {isPrinting && (
-        <div style={{ display: "none" }}>
-          <div ref={printRef}>
-            <Invoice order={invoiceData} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

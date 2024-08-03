@@ -19,6 +19,7 @@ import PaginationControls from "../PaginationControls";
 
 export default function Table({
   title,
+  titleClassName,
   caption,
   columns,
   data: initialData,
@@ -51,6 +52,7 @@ export default function Table({
   limit = 100
 }: {
   title?: React.ReactNode;
+  titleClassName?: any;
   caption?: React.ReactNode;
   columns: any[];
   data: any[];
@@ -214,13 +216,13 @@ export default function Table({
   return (
     <>
       {(title || search || print || create || backBtn) && (
-        <div className="sm:flex items-center justify-between border-b border-gray-200 2xl:p-4 p-3">
+        <div className="sm:flex items-center justify-between border-b border-gray-200 p-4">
           {title && (
-            <h2 className="font-bold 2xl:text-2xl text-lg text-textPrimary sm:py-2 py-2">
+            <h2 className={cn('font-bold 2xl:text-2xl text-lg text-textPrimary sm:mb-0 mb-3', titleClassName)}>
               {title}
             </h2>
           )}
-          <div className="flex space-x-2">
+          <div className="flex gap-x-2">
             {search && (
               <div className="relative">
                 <MagnifyingGlassIcon className="w-5 h-5 absolute left-1.5 top-1/2 -translate-y-1/2" />

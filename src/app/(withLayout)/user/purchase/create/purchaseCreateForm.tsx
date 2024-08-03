@@ -117,6 +117,7 @@ export default function PurchaseCreateForm({
 
         await tagRevalidate("purchase");
         await tagRevalidate("stock");
+        handleReset()
         router.back();
       }
     } finally {

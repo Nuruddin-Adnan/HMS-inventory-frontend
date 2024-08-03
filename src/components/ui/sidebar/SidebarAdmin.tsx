@@ -81,7 +81,7 @@ export default function SidebarAdmin({
           <div className="space-y-0 mt-4 relative">
             <div className="absolute right-4 top-0">
               <button
-                className="rounded-full size-9 grid place-items-center bg-gray-900 xl:hidden"
+                className="rounded-full size-9 grid place-items-center bg-red-500 xl:hidden"
                 onClick={() => handleSidebarCollapsed()}
               >
                 <svg
@@ -186,7 +186,7 @@ export default function SidebarAdmin({
 
         {/* Sidebar footer */}
         <div className="w-full p-4 border-t mt-5 border-t-gray-800 sticky bottom-0 bg-gray-900">
-          <p className="text-gray-300 text-xs">
+          <p className="text-gray-300 text-sm text-center">
             Powered by
             <a
               href={process.env.NEXT_PUBLIC_POWERED_BY_LINK}

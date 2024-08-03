@@ -126,8 +126,8 @@ export default function Home() {
       <div className="w-full sticky top-0">
         <Header />
       </div>
-      <div className="container mx-auto  md:p-6 p-3 max-w-6xl  my-4">
-        <div className="grid lg xl:grid-cols-5 md:grid-cols-4 grid-cols-3 2xl:gap-4 gap-1">
+      <div className="container mx-auto  md:p-6 p-3 2xl:max-w-6xl max-w-4xl my-4">
+        <div className="grid xl:grid-cols-5 md:grid-cols-4 grid-cols-3 2xl:gap-4 gap-1">
           {filteredItemsByRole.map((item, index) => (
             <Link
               key={index}
