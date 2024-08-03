@@ -21,6 +21,7 @@ import buy from "../../public/icon/buy-button.png";
 import report from "../../public/icon/report.png";
 import stock from "../../public/icon/in-stock.png";
 import shelves from "../../public/icon/shelves.png";
+import damagePproduct from "../../public/icon/damage-product.png";
 
 export default function Home() {
   const isUserLogin = isUserExist();
@@ -80,6 +81,7 @@ export default function Home() {
       roles: ["super_admin", "admin", "store_incharge", "salesman"]
     },
     { img: brand, text: "Brand", link: "/user/brand", status: "active", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
+    { img: damagePproduct, text: "Damage/Expire", link: "/user/damage-expire", status: "active", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
     {
       img: report,
       text: "Reports",
@@ -140,11 +142,11 @@ export default function Home() {
                 className={`text-center py-5 grid place-items-center rounded-full group bg-white hover:shadow-lg border  ${item.status === "deactive" ? "bg-gray-200 opacity-50" : ""
                   }`}
               >
-                <div>
+                <div className="w-full truncate lg:px-5 px-3">
                   <div className="2xl:w-20 2xl:h-20 md:w-14 md:h-14 w-8 h-8 group-hover:scale-110 transition-all rounded-full grid place-items-center mx-auto ">
                     <Image src={item.img} alt="icon" className="mx-auto" />
                   </div>
-                  <p className="mt-2 text-textPrimary 2xl:text-base md:text-sm text-xs font-bold  text-nowrap overflow-clip">
+                  <p className="mt-2 text-textPrimary 2xl:text-base md:text-sm  font-bold  text-nowrap overflow-clip truncate">
                     {item.text}
                   </p>
                 </div>

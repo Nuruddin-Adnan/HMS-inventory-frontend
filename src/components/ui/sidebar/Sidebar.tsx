@@ -35,6 +35,7 @@ const navigations = [
         items: [
           { name: "All Stocks", href: "/user/stock", roles: ["super_admin", "admin", "store_incharge", "salesman"] },
           { name: "Low Stocks", href: "/user/low-stock", roles: ["super_admin", "admin", , "store_incharge", "salesman"] },
+          { name: "Damage/Expired", href: "/user/damage-expire", roles: ["super_admin", "admin", , "store_incharge", "salesman"] },
         ],
         icon: CubeIcon,
         roles: ["super_admin", "admin", "store_incharge", "salesman"],

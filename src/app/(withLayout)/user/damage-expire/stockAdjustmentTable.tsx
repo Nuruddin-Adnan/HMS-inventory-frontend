@@ -26,9 +26,11 @@ export default function StockAdjustmentTable({ stockAdjusments }: { stockAdjusme
   const columns = [
     { key: "productName", label: "Product Name" },
     {
+      key: "brand", label: "Brand", render: (row: any) => <div>{row?.product?.brand}</div>,
+    },
+    {
       key: "unit",
       label: "Unit",
-      render: (row: any) => <div>{row?.product?.unit}</div>,
     },
     {
       key: "price",
@@ -36,7 +38,7 @@ export default function StockAdjustmentTable({ stockAdjusments }: { stockAdjusme
       customClass: "text-right w-24 pr-5",
       render: (row: any) => (
         <div className="text-right font-medium pr-4">
-          {row?.product?.price}
+          {row?.price}
         </div>
       ),
     },
@@ -50,7 +52,7 @@ export default function StockAdjustmentTable({ stockAdjusments }: { stockAdjusme
     },
     {
       key: "causes",
-      label: "Adjustment Causes",
+      label: "Causes",
       render: (row: any) => <div className="capitalize">{row?.causes}</div>,
     },
     {
@@ -80,7 +82,7 @@ export default function StockAdjustmentTable({ stockAdjusments }: { stockAdjusme
 
   const handleEdit = (rowKey: any) => {
     // Implement edit logic here
-    router.push(`/user/stock/update/${rowKey}`);
+    router.push(`/user/damage-expire/update/${rowKey}`);
   };
 
   const handleDelete = (rowKey: any) => {
@@ -111,7 +113,7 @@ export default function StockAdjustmentTable({ stockAdjusments }: { stockAdjusme
               {process.env.NEXT_PUBLIC_APP_NAME}
             </h1>
             <h2 className="hidden mb-2 print:block text-black text-xl font-bold underline">
-              Stock Adjusments
+              Damage, Expired & Lost
             </h2>
           </div>
         }
@@ -124,7 +126,7 @@ export default function StockAdjustmentTable({ stockAdjusments }: { stockAdjusme
         customTdClass="py-0.5"
         create={
           new Set(["super_admin", "admin", "store_incharge"]).has(role)
-            ? "/user/stock/create"
+            ? "/user/damage-expire/create"
             : undefined
         }
         onEdit={handleEdit}

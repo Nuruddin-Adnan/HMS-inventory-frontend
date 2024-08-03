@@ -17,7 +17,7 @@ export default async function UpdateStock({
     redirect("/");
   }
 
-  const Stock = await getSingleStock(params.id);
+  const stock = await getSingleStock(params.id);
   const products = await getAllProducts("status=active&fields=name genericName brand _id");
 
   return (
@@ -29,7 +29,7 @@ export default async function UpdateStock({
           </h2>
         </div>
         <div className="2xl:px-4 px-3 2xl:py-5 py-4">
-          <StockUpdateForm data={Stock.data} products={products?.data} />
+          <StockUpdateForm data={stock.data} products={products?.data} />
         </div>
       </div>
     </div>

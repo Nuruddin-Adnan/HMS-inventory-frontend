@@ -5,10 +5,7 @@ import { format } from "date-fns";
 import "core-js";
 import Table from "@/components/ui/table/Table";
 import { GroupByHelper } from "@/helpers/groupByHelper";
-import { toFixedIfNecessary } from "@/helpers/toFixedIfNecessary";
 import { useReactToPrint } from "react-to-print";
-import { getSingleOrderClient } from "@/api-services/order/getSingleOrderClient";
-import toastError from "@/helpers/toastError";
 import Invoice from "@/components/Invoice";
 import Link from "next/link";
 
@@ -67,19 +64,6 @@ export default function PurchaseTable({
     pageStyle: pageStyle,
   });
 
-  const handlePrintInvoice = async (invoiceNo: any) => {
-    if (invoiceNo.length >= 8) {
-      const result = await getSingleOrderClient(invoiceNo);
-      if (result && result.success === true) {
-        if (!result?.data) {
-          toastError("No order found!");
-        } else {
-          setInvoiceData(result?.data);
-          handlePrint();
-        }
-      }
-    }
-  };
 
   // filter start
   const dataGroupByEntryBy = GroupByHelper.groupBy(
@@ -117,7 +101,7 @@ export default function PurchaseTable({
     },
     {
       key: "BILLID",
-      label: "BILLID",
+      label: "ID",
       render: (row: any) => (
         <Link href={`/user/purchase/update/${row.BILLID}`} className="underline text-[#000186] print:no-underline">
           {row?.BILLID}
@@ -148,7 +132,6 @@ export default function PurchaseTable({
       ),
     },
     { key: "invoiceNo", label: "Invoice No" },
-    { key: "lotNo", label: "Lot No" },
     {
       key: "expiryDate",
       label: "Expiry Date",

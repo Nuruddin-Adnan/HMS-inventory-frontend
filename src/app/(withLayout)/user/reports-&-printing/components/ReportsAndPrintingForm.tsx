@@ -45,6 +45,7 @@ const listStyle: any = {
 };
 
 const listItems = [
+    { title: 'Damage/Expire', value: '/user/reports-&-printing/damge-expire', roles: ["super_admin", "admin", "store_incharge", "salesman"] },
     { title: 'Expense', value: '/user/reports-&-printing/expense', roles: ["super_admin", "admin", "store_incharge"] },
     { title: 'Purchase report', value: '/user/reports-&-printing/purchase', roles: ["super_admin", "admin", "store_incharge"] },
     { title: 'Purchase Report (Payment Wise)', value: '/user/reports-&-printing/purchase-payment-wise', roles: ["super_admin", "admin", "store_incharge"] },
