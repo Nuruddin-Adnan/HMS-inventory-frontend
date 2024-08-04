@@ -16,8 +16,9 @@ export default async function Order({
   const isDue = searchParams["isDue"] ?? "";
 
   const { data: orders, meta } = await getAllOrders(
-    `sort=-createdAt&page=${page}&limit=${limit}${query && `&search=${query}`}${paymentStatus && `&paymentStatus=${paymentStatus}`}${isDue && `&due[gte]=1`
-    }&fields=-createdBy -customer -updatedBy -items`
+    `sort=-createdAt&page=${page}&limit=${limit}${query && `&search=${query}`}${
+      paymentStatus && `&paymentStatus=${paymentStatus}`
+    }${isDue && `&due[gte]=1`}&fields=-createdBy -customer -updatedBy -items`
   );
 
   return (
@@ -25,7 +26,7 @@ export default async function Order({
       <div className="lg:hidden block pt-2 px-6 pb-4">
         <SearchControl placeholder="Search by name..." />
       </div>
-      <div className="pl-4 pr-8 flex justify-end -mb-16 gap-2">
+      <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
         <div className="lg:block hidden">
           <SearchControl placeholder="By invoice no..." />
         </div>
