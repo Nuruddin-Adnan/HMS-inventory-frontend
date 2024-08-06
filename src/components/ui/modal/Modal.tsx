@@ -77,12 +77,15 @@ export default function Modal({
                     className
                   )}
                 >
-                  <DialogTitle
-                    className={cn("flex gap-1 justify-between", titleClassName)}
-                  >
+                  <DialogTitle className="flex gap-1 justify-between">
                     <span>
                       {title && (
-                        <div className="text-lg font-medium leading-6 text-gray-900  -mt-1">
+                        <div
+                          className={cn(
+                            "text-lg font-medium leading-6 text-gray-900  -mt-1",
+                            titleClassName
+                          )}
+                        >
                           {title}
                         </div>
                       )}

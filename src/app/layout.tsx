@@ -56,6 +56,7 @@ const inter = localFont({
   ],
 })
 
+
 // const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"] });
 // const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 // const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
@@ -71,12 +72,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // <html lang="en" >
     <html lang="en" className={inter.className}>
       <body>
         {children}
         <ToastContainer />
       </body>
-    </html>
+    </html >
   );
 }

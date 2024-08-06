@@ -15,6 +15,9 @@
   }
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+
 *{
   margin: 0;
   padding: 0;
@@ -63,10 +66,15 @@ body {
 
 /* invoice-sm start */
 .invoice-sm {
-  font-family: Arial, Helvetica, sans-serif
+  /* font-family: Arial, Helvetica, sans-serif */
+  font-family: "Roboto Condensed", sans-serif;
+}
+/* End of invoice-sm */
+
+.barcode {
+  font-family: "Roboto Condensed", sans-serif;
 }
 
-/* End of invoice-sm */
 
 
 

@@ -135,7 +135,7 @@ export default function Home() {
         <Header />
       </div>
       <div className="container mx-auto  md:p-6 p-3 2xl:max-w-6xl max-w-4xl my-4">
-        <div className="grid xl:grid-cols-5 md:grid-cols-4 grid-cols-3 2xl:gap-4 gap-1">
+        <div className="grid 2xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 grid-cols-3 2xl:gap-4 gap-1">
           {filteredItemsByRole.map((item, index) => (
             <Link
               key={index}
@@ -147,14 +147,14 @@ export default function Home() {
               }
             >
               <div
-                className={`text-center py-5 grid place-items-center rounded-full group bg-white hover:shadow-lg border  ${item.status === "deactive" ? "bg-gray-200 opacity-50" : ""
+                className={`text-center py-6 grid place-items-center rounded-full group bg-white hover:shadow-lg border  ${item.status === "deactive" ? "bg-gray-200 opacity-50" : ""
                   }`}
               >
                 <div className="w-full truncate lg:px-5 px-3">
-                  <div className="2xl:w-20 2xl:h-20 md:w-14 md:h-14 w-8 h-8 group-hover:scale-110 transition-all rounded-full grid place-items-center mx-auto ">
+                  <div className="2xl:w-16 2xl:h-16 2xl:mb-1 md:w-14 md:h-14 w-8 h-8 group-hover:scale-110 transition-all rounded-full grid place-items-center mx-auto ">
                     <Image src={item.img} alt="icon" className="mx-auto" />
                   </div>
-                  <p className="2xl:mt-0 mt-2 text-textPrimary 2xl:text-base md:text-sm  font-bold  text-nowrap overflow-clip truncate">
+                  <p className="2xl:mt-0 mt-2 text-textPrimary 2xl:text-base text-sm  font-bold  text-nowrap overflow-clip truncate">
                     {item.text}
                   </p>
                 </div>
