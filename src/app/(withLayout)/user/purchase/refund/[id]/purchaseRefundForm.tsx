@@ -64,7 +64,7 @@ export default function PurchaseRefundForm({ data }: { data: any }) {
                     name="product"
                     styles={reactSelectStyles}
                     value={{
-                      label: `${data?.product[0]?.name} ⟶${data?.product[0]?.genericName} ⟶${data?.product[0]?.brand}`,
+                      label: `${data?.product[0]?.name} ${data?.product[0]?.genericName ? `⟶${data?.product[0]?.genericName}` : ''} ⟶${data?.product[0]?.brand}`,
                       value: data?.product[0]?._id,
                     }}
                     isDisabled={true}

@@ -30,7 +30,7 @@ export default async function Purchase({
   const { data: purchases, meta } = await getAllPurchases(
     `sort=-createdAt&page=${page}&limit=${limit}${query && `&search=${query}`}${supplier && `&supplier=${supplier}`
     }${paymentStatus && `&paymentStatus=${paymentStatus}`}${isDue && `&due[gte]=1`
-    }&fields=-createdBy -updatedBy`
+    }&fields=-createdBy -updatedBy -product.tag -product.brand -product.name`
   );
 
   const { data: suppliers } = await getAllSuppliers(

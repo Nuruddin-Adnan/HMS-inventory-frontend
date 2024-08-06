@@ -1,13 +1,16 @@
 "use client";
 
+import cn from "@/lib/cn";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
 export default function SearchControl({
   placeholder = "search...",
+  className
 }: {
   placeholder?: string;
+  className?: string;
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -35,7 +38,7 @@ export default function SearchControl({
           handleSearch(e.target.value);
         }}
         defaultValue={searchParams.get("query")?.toString()}
-        className="text-base block w-full border border-gray-200 rounded text-textPrimary placeholder:text-textSecondary py-1 pl-8 pr-2"
+        className={cn("text-base block w-full border border-gray-200 rounded text-textPrimary placeholder:text-textSecondary py-1 pl-8 pr-2", className)}
       />
     </div>
   );

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Search by Barcode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .product-info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Search Product by Barcode</h1>
+        <input type="text" id="barcodeInput" placeholder="Enter barcode">
+        <button onclick="searchProduct()">Search</button>
+        <div class="product-info" id="productInfo"></div>
+    </div>
+
+    <script>
+        async function searchProduct() {
+            const barcode = document.getElementById('barcodeInput').value;
+            const productInfo = document.getElementById('productInfo');
+
+            const apiKey = 'YOUR_API_KEY'; // Replace with your Barcode Lookup API key
+            const apiUrl = `https://api.barcodelookup.com/v3/products?barcode=${barcode}&key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.products && data.products.length > 0) {
+                    const product = data.products[0];
+                    productInfo.innerHTML = `
+                        <h2>${product.product_name}</h2>
+                        <p><strong>Brand:</strong> ${product.brand}</p>
+                        <p><strong>Category:</strong> ${product.category}</p>
+                        <p><strong>Description:</strong> ${product.description}</p>
+                        <img src="${product.images[0]}" alt="${product.product_name}" style="max-width: 100%;">
+                    `;
+                } else {
+                    productInfo.innerHTML = '<p>Product not found.</p>';
+                }
+            } catch (error) {
+                productInfo.innerHTML = '<p>Error fetching product information.</p>';
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>

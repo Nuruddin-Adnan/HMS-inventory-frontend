@@ -22,6 +22,7 @@ import report from "../../public/icon/report.png";
 import stock from "../../public/icon/in-stock.png";
 import shelves from "../../public/icon/shelves.png";
 import damagePproduct from "../../public/icon/damage-product.png";
+import barcode from "../../public/icon/barcode.png";
 
 export default function Home() {
   const isUserLogin = isUserExist();
@@ -111,6 +112,13 @@ export default function Home() {
       status: "active",
       roles: ["super_admin", "admin", "store_incharge", "salesman"]
     },
+    {
+      img: barcode,
+      text: "Barcode",
+      link: "/user/barcode",
+      status: "active",
+      roles: ["super_admin", "admin", "store_incharge", "salesman"]
+    },
 
     // Add more items as needed
   ];
@@ -146,7 +154,7 @@ export default function Home() {
                   <div className="2xl:w-20 2xl:h-20 md:w-14 md:h-14 w-8 h-8 group-hover:scale-110 transition-all rounded-full grid place-items-center mx-auto ">
                     <Image src={item.img} alt="icon" className="mx-auto" />
                   </div>
-                  <p className="mt-2 text-textPrimary 2xl:text-base md:text-sm  font-bold  text-nowrap overflow-clip truncate">
+                  <p className="2xl:mt-0 mt-2 text-textPrimary 2xl:text-base md:text-sm  font-bold  text-nowrap overflow-clip truncate">
                     {item.text}
                   </p>
                 </div>
