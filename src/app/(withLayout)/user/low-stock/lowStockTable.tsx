@@ -75,7 +75,7 @@ export default function LowStockTable({ stocks, totalPages,
         sort
         print
         search
-        tableHeightClass="h-[calc(100vh-176px)]"
+        tableHeightClass="h-[calc(100vh-166px)]"
         pagination
         totalPages={totalPages}
         limit={limit}

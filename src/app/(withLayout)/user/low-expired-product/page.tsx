@@ -50,43 +50,36 @@ export default async function LowExpiredProduct({
 
   if (isExpired) {
     api = await getExpiredProduct(
-      `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lt]=${currentDate}&fields=createdAt product supplier expiryDate productName invoiceNo lotNo quantity soldQuantity`
+      `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lt]=${currentDate}&fields=createdAt product supplier expiryDate productName invoiceNo lotNo quantity soldQuantity BILLID`
     );
   } else {
     api = await getExpiredProduct(
-      `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lte]=${date180DaysAfter}&expiryDate[gte]=${currentDate}&fields=createdAt product supplier expiryDate productName invoiceNo lotNo quantity soldQuantity`
+      `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lte]=${date180DaysAfter}&expiryDate[gte]=${currentDate}&fields=createdAt product supplier expiryDate productName invoiceNo lotNo quantity soldQuantity BILLID`
     );
   }
 
-  // if (isExpired) {
-  //   api = await getAllPurchases(
-  //     `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lt]=${currentDate}&fields=createdAt product.code supplier.brandInfo supplier.name supplier.contactNo expiryDate productName invoiceNo lotNo quantity soldQuantity`
-  //   );
-  // } else {
-  //   api = await getAllPurchases(
-  //     `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lte]=${date180DaysAfter}&expiryDate[gte]=${currentDate}&fields=createdAt product.code supplier.brandInfo supplier.name supplier.contactNo expiryDate productName invoiceNo lotNo quantity soldQuantity`
-  //   );
-  // }
-
   const { data: purchases, meta } = api
-
-
-
 
   return (
     <div className="card py-4">
-      <div className="lg:hidden block pt-2 px-6 pb-4">
-        <SearchControl placeholder="Search by name..." />
-      </div>
-      <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
-        <div className="lg:block hidden">
-          <SearchControl placeholder="By name, lot & invoice..." />
+      <div className="flex lg:flex-row flex-col lg:justify-between lg:items-center gap-4 px-4">
+        <h2 className="text-red-500 lg:text-xl text-lg font-bold">{isExpired ? 'Date expired product' : 'Low date expired product'}</h2>
+        <div>
+          {/* <div className="lg:hidden block pt-2 px-6 pb-4">
+            <SearchControl placeholder="Search by name..." />
+          </div> */}
+          {/* <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2"> */}
+          <div className="flex justify-end gap-2">
+            <div className="w-full">
+              <SearchControl placeholder="By name, lot & invoice..." />
+            </div>
+            <PaginationControls totalPages={meta.total ?? 0} limit={100} />
+            <FilterProductExpire />
+          </div>
         </div>
-        <PaginationControls totalPages={meta.total ?? 0} limit={100} />
-        <FilterProductExpire />
       </div>
-      <div className="px-4">
-        <LowExpireProductTable isExpired={isExpired} purchases={purchases} />
+      <div className="p-4">
+        <LowExpireProductTable purchases={purchases} userRole={user?.role} />
       </div>
     </div>
   );

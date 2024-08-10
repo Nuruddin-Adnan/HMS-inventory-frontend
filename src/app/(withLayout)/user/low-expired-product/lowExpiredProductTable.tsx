@@ -1,17 +1,38 @@
 "use client";
 
+import { markAsSoldPurchase } from "@/api-services/purchase/markAsSoldPurchase";
+import Button from "@/components/ui/button/Button";
 import Table from "@/components/ui/table/Table";
+import tagRevalidate from "@/lib/tagRevalidate";
 import { format } from "date-fns";
 import React from "react";
+import Swal from "sweetalert2";
 
 export default function LowExpiredProductTable({
   purchases,
-  isExpired
+  userRole,
 }: {
   purchases: any[],
-  isExpired: any;
+  userRole: any,
 }) {
 
+  const handleMarkAsRead = (rowKey: any) => {
+    // Implement logic here
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Mark as sold!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await markAsSoldPurchase(rowKey);
+        await tagRevalidate("purchase");
+      }
+    });
+  };
 
   const columns = [
     {
@@ -81,21 +102,28 @@ export default function LowExpiredProductTable({
     },
   ];
 
+  if (["super_admin", "admin", "store_incharge"].includes(userRole)) {
+    columns.push({
+      key: "action",
+      label: "Action",
+      render: (row: any) => {
+        return (
+          <Button
+            variant="danger"
+            onClick={() => handleMarkAsRead(row?.BILLID)}
+            className="py-1.5"
+          >
+            Mark as sold
+          </Button>
+        );
+      },
+    });
+  }
+
   return (
     <div>
       {/* Table component */}
       <Table
-        title={<span className="text-red-500">{isExpired ? 'Date expired product' : 'Low date expired product'}</span>}
-        caption={
-          <div>
-            <h1 className="hidden print:block pt-3 text-black text-2xl font-bold">
-              {process.env.NEXT_PUBLIC_APP_NAME}
-            </h1>
-            <h2 className="hidden mb-2 print:block text-black text-xl font-bold underline">
-              {isExpired ? 'Date expired product' : 'Low date expired product'}
-            </h2>
-          </div>
-        }
         columns={columns}
         data={purchases}
         uniqueKey="BILLID"
@@ -105,7 +133,8 @@ export default function LowExpiredProductTable({
         tableStriped
         responsive
         sort
-        tableHeightClass="h-[calc(100vh-170px)]"
+        tableHeightClass="h-[calc(100vh-185px)]"
+        tableHover
       />
     </div>
   );
