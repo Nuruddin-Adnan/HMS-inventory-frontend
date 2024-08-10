@@ -35,6 +35,7 @@ type Product = {
   discountPercent?: number;
   stripQuantity?: number;
   total?: number;
+  purchaseBILLID?: any;
 };
 
 const pageStyle = `
@@ -58,6 +59,7 @@ export default function POSPForm({
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const [products, setProducts] = useState<Product[]>([]);
+  const [purchaseProducts, setPurchaseProducts] = useState<any[]>([])
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [invoiceNo, setInvoiceNo] = useState<any>(null);
   const [isPrint, setIsPrint] = useState<boolean>(
@@ -104,6 +106,7 @@ export default function POSPForm({
       const existingProductIndex = products.findIndex(
         (p) => p?._id === product?._id
       );
+
       if (existingProductIndex > -1) {
         const updatedProducts = [...products];
 
@@ -132,14 +135,44 @@ export default function POSPForm({
             total,
           },
         ]);
+
         setProductCode("");
+      }
+
+      // set the purchase product to update the sold quantity
+      const existingPurchaseProductIndex = purchaseProducts.findIndex(
+        (p) => p?._id === product?._id && p?.purchaseBILLID === product?.purchaseBILLID
+      );
+
+      if (existingPurchaseProductIndex > -1) {
+        // Increase the quantity of the existing product
+        const updatedProducts = purchaseProducts.map((p, index) => {
+          if (index === existingPurchaseProductIndex) {
+            return {
+              ...p,
+              quantity: (p.quantity || 0) + (product?.stripQuantity ?? 1),
+            };
+          }
+          return p;
+        });
+
+        setPurchaseProducts(updatedProducts);
+      } else {
+        const quantity = product?.stripQuantity ?? 1;
+        setPurchaseProducts([
+          ...purchaseProducts,
+          {
+            ...product,
+            quantity: quantity,
+          }
+        ])
       }
 
       // reset the total discount
       setDiscountPercent(0);
       setDiscountTotal(0);
     },
-    [products]
+    [products, purchaseProducts]
   );
 
   // We watch for the state to change here, and for the Promise resolve to be available
@@ -196,14 +229,39 @@ export default function POSPForm({
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
-      const foundProducts = productsList.filter(
-        (p: any) => p.code === productCode
-      );
+      // check the producCode is empty or not
+      if (productCode.trim() === '') {
+        return false
+      }
+
+      let foundProducts: any
+      let purchaseBILLID: any
+
+      if (!productCode.includes('/')) {
+        foundProducts = productsList.filter(
+          (p: any) => p.code === productCode
+        );
+      } else {
+        const barcode = productCode.replace('/', '')//remove the identifier symbol ('/')
+        // Extract the productTag
+        const productTag = barcode.slice(0, 8);
+        // Extract the purchaseBILLID
+        if (barcode.length > 8) {
+          purchaseBILLID = barcode.slice(-7);
+        }
+
+        foundProducts = productsList.filter(
+          (p: any) => p.tag === productTag
+        );
+      }
+
+
       if (foundProducts.length > 1) {
         setDuplicateProducts(foundProducts);
         setShowDuplicateModal(true);
       } else if (foundProducts.length === 1) {
         const product = foundProducts[0];
+        product.purchaseBILLID = purchaseBILLID//set the purchase BILLID
 
         if (product) {
           addProduct(product);
@@ -215,18 +273,101 @@ export default function POSPForm({
     }
   };
 
+  // const handleProductCodeKeyDown = (
+  //   e: React.KeyboardEvent<HTMLInputElement>
+  // ) => {
+  //   if (e.key === "Enter") {
+  //     const foundProducts = productsList.filter(
+  //       (p: any) => p.code === productCode
+  //     );
+  //     if (foundProducts.length > 1) {
+  //       setDuplicateProducts(foundProducts);
+  //       setShowDuplicateModal(true);
+  //     } else if (foundProducts.length === 1) {
+  //       const product = foundProducts[0];
+
+  //       if (product) {
+  //         addProduct(product);
+  //         setProductCode("");
+  //       }
+  //     } else {
+  //       toastError("Product not found");
+  //     }
+  //   }
+  // };
+
+
   const updateQuantity = (index: number, quantity: number) => {
     const updatedProducts = [...products];
+
     if (quantity >= 1) {
+      // Update the quantity in the main products array
       updatedProducts[index].quantity = quantity;
+
+      // Find the product in the purchaseProducts array
+      const findProduct = products[index];
+      const filteredProducts = purchaseProducts.filter(
+        (item: any) => item?._id === findProduct?._id
+      );
+
+      // Get the last index of the filtered products
+      const lastIndex = filteredProducts.length - 1;
+
+      // Update the quantity in the last matching purchase product
+      if (lastIndex >= 0) {
+        const updatedPurchaseProducts = [...purchaseProducts];
+        const purchaseProductIndex = purchaseProducts.findIndex(
+          (item: any) => item?._id === filteredProducts[lastIndex]?._id
+        );
+
+        if (purchaseProductIndex >= 0) {
+          updatedPurchaseProducts[purchaseProductIndex].quantity = quantity;
+        }
+
+        // Update the state with the new purchase products array
+        setPurchaseProducts(updatedPurchaseProducts);
+      }
+
+      // Update the state with the new products array
       setProducts(updatedProducts);
     }
   };
 
+  // const updateQuantity = (index: number, quantity: number) => {
+  //   const updatedProducts = [...products];
+  //   if (quantity >= 1) {
+  //     updatedProducts[index].quantity = quantity;
+
+
+  //     // update purchase product quantity
+  //     const updatedPurchaseProducts = [...purchaseProducts];
+  //     const findProduct = products[index]
+  //     const filteredProducts = purchaseProducts.filter((item: any) => item?._id === findProduct?._id)
+  //     // Get the last index
+  //     const lastIndex = filteredProducts.length - 1;
+
+  //     filteredProducts[lastIndex].quantity = quantity;
+
+  //     setProducts(updatedProducts);
+
+  //     //update purchaseProducts logic here
+
+  //   }
+  // };
+
   const deleteProduct = (index: number) => {
     const updatedProducts = [...products];
     updatedProducts.splice(index, 1);
+
+
+    // delete from purchaseProduct
+    const findProduct = products[index]
+    const filteredProduct = purchaseProducts.filter((item: any) => item?._id !== findProduct?._id)
+    setPurchaseProducts(filteredProduct);
+
+    // set product items
     setProducts(updatedProducts);
+
   };
 
   const handleGetSingleCustomer = async (formData: FormData) => {
@@ -290,6 +431,15 @@ export default function POSPForm({
         quantity: item.quantity,
         discountPercent: item.discountPercent,
         total: item?.total,
+        purchaseBILLID: item?.purchaseBILLID
+      };
+    });
+
+    const purchaseItems = purchaseProducts.filter(item => item.hasOwnProperty('purchaseBILLID')).map((item) => {
+      return {
+        product: item._id,
+        quantity: item.quantity,
+        purchaseBILLID: item?.purchaseBILLID
       };
     });
 
@@ -312,6 +462,7 @@ export default function POSPForm({
       const payload = {
         CUSID: customer?.CUSID,
         items: orderItems,
+        purchaseItems: purchaseItems,
         discountPercent: discountPercentAsNumber,
         discountAmount: discountAmountAsNumber,
         vatPercent: vatPercentAsNumber,
@@ -371,6 +522,7 @@ export default function POSPForm({
     setDiscountPercent(0);
     setVatPercent(tax?.tax || 0);
     setInvoiceNo("");
+    setPurchaseProducts([])
 
     if (productCodeInputRef.current) {
       productCodeInputRef.current.select();

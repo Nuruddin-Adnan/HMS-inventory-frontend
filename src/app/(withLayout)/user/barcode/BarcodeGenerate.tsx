@@ -3,7 +3,6 @@
 import Barcode from "react-barcode";
 import { useRef, useState } from "react";
 import Button from "@/components/ui/button/Button";
-import { PrinterIcon } from "@heroicons/react/24/outline";
 import { useReactToPrint } from "react-to-print";
 import Table from "@/components/ui/table/Table";
 import { format } from "date-fns";
@@ -24,6 +23,9 @@ export default function BarcodeGenerate({ purchases }: { purchases: any }) {
   const [isOpen, setIsOpen] = useState(false);
   const [purchase, setPurchase] = useState<any>();
   const [quantity, setQuantity] = useState<number>(1);
+
+
+
 
   function openModal() {
     setIsOpen(true);
@@ -94,21 +96,26 @@ export default function BarcodeGenerate({ purchases }: { purchases: any }) {
         <div className="whitespace-nowrap">{row?.product[0]?.brand}</div>
       ),
     },
+    { key: "quantity", label: "Qty" },
     { key: "invoiceNo", label: "Invoice No" },
     { key: "lotNo", label: "Lot No" },
     {
       key: "barcode",
       label: "Barcode",
+      customClass: "text-center",
       render: (row: any) => (
-        <Barcode
-          value={`${row?.product[0]?.tag}/${row?.BILLID}`}
-          height={24}
-          margin={0}
-          width={0.9}
-          displayValue={true}
-          fontSize={12}
-          textAlign="center"
-        />
+        <div className="w-[38mm] grid place-items-center mx-auto">
+          <Barcode
+            value={`${row?.product[0]?.tag}${row?.BILLID}`}
+            height={24}
+            margin={2}
+            textMargin={1}
+            fontSize={10}
+            width={0.9}
+            displayValue={true}
+            textAlign="center"
+          />
+        </div>
       ),
     },
     {
@@ -153,22 +160,22 @@ export default function BarcodeGenerate({ purchases }: { purchases: any }) {
                 <h2 className="font-bold leading-none truncate text-nowrap">
                   {process.env.NEXT_PUBLIC_APP_NAME}
                 </h2>
-                <p className="truncate text-nowrap font-medium">
+                <p className="truncate text-nowrap font-medium text-[9px]">
                   {purchase?.productName}
                 </p>
                 <div className="grid place-items-center">
                   <Barcode
-                    value={`${purchase?.product[0]?.tag}${purchase?.BILLID}`}
+                    value={`/${purchase?.product[0]?.tag}${purchase?.BILLID}`}
                     height={30}
                     margin={0}
                     marginLeft={1}
                     width={0.9}
                     displayValue={false}
-                    fontSize={10}
+                    textMargin={0}
                     textAlign="center"
                   />
                 </div>
-                <p className="leading-none font-medium">{`${purchase?.product[0]?.tag}/${purchase?.BILLID}`}</p>
+                <p className="leading-none font-semibold">{`${purchase?.product[0]?.tag}${purchase?.BILLID}`}</p>
                 <p className="font-bold truncate">
                   Price: {purchase?.product[0]?.price} TK + VAT
                 </p>

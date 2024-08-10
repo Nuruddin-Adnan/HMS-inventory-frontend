@@ -5,6 +5,7 @@ import { getUserServer } from "@/lib/user";
 import { redirect } from "next/navigation";
 import LowExpireProductTable from "./lowExpiredProductTable";
 import FilterProductExpire from "@/components/FilterProductExpire";
+import { getExpiredProduct } from "@/api-services/purchase/getExpiredProduct";
 
 export default async function LowExpiredProduct({
   searchParams,
@@ -48,16 +49,27 @@ export default async function LowExpiredProduct({
   let api: any
 
   if (isExpired) {
-    api = await getAllPurchases(
-      `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lt]=${currentDate}&fields=createdAt product.code supplier.brandInfo supplier.name supplier.contactNo expiryDate productName invoiceNo lotNo`
+    api = await getExpiredProduct(
+      `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lt]=${currentDate}&fields=createdAt product supplier expiryDate productName invoiceNo lotNo quantity soldQuantity`
     );
   } else {
-    api = await getAllPurchases(
-      `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lte]=${date180DaysAfter}&expiryDate[gte]=${currentDate}&fields=createdAt product.code supplier.brandInfo supplier.name supplier.contactNo expiryDate productName invoiceNo lotNo`
+    api = await getExpiredProduct(
+      `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lte]=${date180DaysAfter}&expiryDate[gte]=${currentDate}&fields=createdAt product supplier expiryDate productName invoiceNo lotNo quantity soldQuantity`
     );
   }
 
+  // if (isExpired) {
+  //   api = await getAllPurchases(
+  //     `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lt]=${currentDate}&fields=createdAt product.code supplier.brandInfo supplier.name supplier.contactNo expiryDate productName invoiceNo lotNo quantity soldQuantity`
+  //   );
+  // } else {
+  //   api = await getAllPurchases(
+  //     `sort=expiryDate&page=${page}&limit=${limit}${query && `&search=${query}`}&expiryDate[lte]=${date180DaysAfter}&expiryDate[gte]=${currentDate}&fields=createdAt product.code supplier.brandInfo supplier.name supplier.contactNo expiryDate productName invoiceNo lotNo quantity soldQuantity`
+  //   );
+  // }
+
   const { data: purchases, meta } = api
+
 
 
 

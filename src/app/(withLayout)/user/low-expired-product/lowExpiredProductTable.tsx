@@ -31,7 +31,7 @@ export default function LowExpiredProductTable({
       render: (row: any) => (
         <div className="whitespace-nowrap">
           {row?.productName} <br />
-          Code: {row?.product[0]?.code}
+          Code: {row?.product?.code}
         </div>
       ),
     },
@@ -44,7 +44,7 @@ export default function LowExpiredProductTable({
             {" "}
             {row?.supplier?.name} ({row?.supplier?.contactNo})
           </span>
-          <span className="block">{row?.supplier?.brandInfo[0]?.name}</span>
+          <span className="block">{row?.supplier?.brand?.name}</span>
         </div>
       ),
     },
@@ -58,6 +58,24 @@ export default function LowExpiredProductTable({
           <span className="whitespace-nowrap">
             {format(new Date(row?.expiryDate), "dd/MM/yyyy")}
           </span>
+        );
+      },
+    },
+    {
+      key: "quantity",
+      label: "Qty",
+      render: (row: any) => {
+        return (
+          <span className="text-green-500 font-bold"> {row?.quantity} </span>
+        );
+      },
+    },
+    {
+      key: "soldQuantity",
+      label: "Sold",
+      render: (row: any) => {
+        return (
+          <span className="text-red-500 font-bold"> {row?.soldQuantity} </span>
         );
       },
     },

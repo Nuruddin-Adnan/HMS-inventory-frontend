@@ -49,6 +49,8 @@ export default function ProductUpdateForm({
     productName = data?.name
       .replace(`(${data?.formulation})`, '')
       .trim();
+  } else {
+    productName = data?.name;
   }
 
   // remove strength from name

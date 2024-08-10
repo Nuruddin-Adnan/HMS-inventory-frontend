@@ -22,7 +22,7 @@ export default async function Purchase({
 
   const { data: purchases } = await getAllPurchases(
     `sort=-createdAt&page=${page}&limit=${limit}${query && `&search=${query}`
-    }&fields=createdAt BILLID product.tag product.brand product.price product.code productName invoiceNo lotNo`
+    }&fields=createdAt BILLID product.tag product.brand product.price product.code quantity productName invoiceNo lotNo`
   );
 
   return (
