@@ -472,6 +472,10 @@ export default function POSPForm({
 
       const nonEmptyPayload = removeEmptyFields(payload);
 
+      if (!nonEmptyPayload.purchaseItems) {
+        nonEmptyPayload.purchaseItems = [] as never
+      }
+
       const result = await createOrder(nonEmptyPayload);
       if (result && result.success === true) {
         setInvoiceData(result?.data);
