@@ -1,1 +1,4 @@
-### stock adjustment create and update
+### purchage product search with async select. 
+    use loadOptions
+
+    

@@ -14,7 +14,7 @@ export default async function Stock({
 
   const { data: stocks, meta } = await getAllStocks(
     `sort=status -createdAt&page=${page}&limit=${limit}${query && `&search=${query}`
-    }&fields=-createdBy -updatedBy`
+    }&fields=-createdBy -updatedBy&nestedFilter=true`
   );
 
   return (
@@ -23,11 +23,11 @@ export default async function Stock({
         Stocks
       </h2>
       <div className="lg:hidden block pt-2 px-6 pb-4">
-        <SearchControl placeholder="Search by name & code..." />
+        <SearchControl placeholder="By name & generic name..." />
       </div>
       <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
         <div className="lg:block hidden">
-          <SearchControl placeholder="Search by name..." />
+          <SearchControl placeholder="By name & generic name..." />
         </div>
         <PaginationControls totalPages={meta.total ?? 0} limit={100} />
       </div>

@@ -134,8 +134,8 @@ export default function Home() {
       <div className="w-full sticky top-0">
         <Header />
       </div>
-      <div className="container mx-auto  md:p-6 p-3 2xl:max-w-6xl max-w-4xl my-4">
-        <div className="grid 2xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 grid-cols-3 2xl:gap-4 gap-1">
+      <div className="container mx-auto 2xl:p-6 p-3 2xl:max-w-6xl max-w-4xl 2xl:my-4">
+        <div className="grid 2xl:grid-cols-5 lg:grid-cols-5 md:grid-cols-4 grid-cols-3 2xl:gap-3 md:gap-2 gap-1">
           {filteredItemsByRole.map((item, index) => (
             <Link
               key={index}
@@ -151,7 +151,7 @@ export default function Home() {
                   }`}
               >
                 <div className="w-full truncate lg:px-5 px-3">
-                  <div className="2xl:w-16 2xl:h-16 2xl:mb-1 md:w-14 md:h-14 w-8 h-8 group-hover:scale-110 transition-all rounded-full grid place-items-center mx-auto ">
+                  <div className="2xl:w-14 2xl:h-14 2xl:mb-1 md:w-12 md:h-12 w-8 h-8 group-hover:scale-110 transition-all rounded-full grid place-items-center mx-auto ">
                     <Image src={item.img} alt="icon" className="mx-auto" />
                   </div>
                   <p className="2xl:mt-0 mt-2 text-textPrimary 2xl:text-base text-sm  font-bold  text-nowrap overflow-clip truncate">

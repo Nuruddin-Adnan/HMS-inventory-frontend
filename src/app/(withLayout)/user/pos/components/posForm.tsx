@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import ReactSelect from "react-select";
+import ReactSelect, { SelectInstance } from "react-select";
+import AsyncSelect from 'react-select/async';
 import { DuplicateProductModal } from "./duplicateProductModal";
 import toastError from "@/helpers/toastError";
 import { MinusIcon, PlusIcon, PrinterIcon } from "@heroicons/react/24/outline";
@@ -20,6 +21,7 @@ import Invoice from "@/components/Invoice";
 import { toFixedIfNecessary } from "@/helpers/toFixedIfNecessary";
 import Checkbox from "@/components/ui/form/Checkbox";
 import { getAllCustomersClient } from "@/api-services/customer/getAllCustomersClient";
+import { getAllStocksClient } from "@/api-services/stock/getAllStocksClient";
 
 type Product = {
   _id: string;
@@ -40,16 +42,15 @@ type Product = {
 
 const pageStyle = `
 @page{
-    size: portrait;
+    size: 80mm auto;
+    margin: 0px;
 }`;
 
 export default function POSPForm({
-  productsList,
   tax,
   permissions,
   user,
 }: {
-  productsList: any;
   tax: any;
   permissions: any;
   user: any;
@@ -58,9 +59,9 @@ export default function POSPForm({
   const customerFormRef = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const productSelectRef = useRef<SelectInstance | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [purchaseProducts, setPurchaseProducts] = useState<any[]>([])
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [invoiceNo, setInvoiceNo] = useState<any>(null);
   const [isPrint, setIsPrint] = useState<boolean>(
     localStorage.getItem("isPrint") === "true" ? true : false
@@ -80,11 +81,27 @@ export default function POSPForm({
   const promiseResolveRef = useRef<((value: any) => void) | null>(null);
   const [invoiceData, setInvoiceData] = useState<any>();
 
-  const productOptions = productsList.map((product: any) => ({
-    value: product?._id,
-    label: `${product?.name} ${product?.genericName ? `⟶${product?.genericName}` : ""
-      } ⟶${product?.brand}`,
-  }));
+  // Product options fetch
+  const loadProductOptions = async (inputValue: string) => {
+    if (!inputValue.trim()) return []; // Return empty array for empty input
+    try {
+
+      // Fetch data from backend based on input value
+      const { data: stocks } = await getAllStocksClient(
+        `search=${inputValue}&status=active&sort=name&nestedFilter=true&fields=product&limit=20`
+      );
+
+      return stocks.map((stock: any) => ({
+        label: `${stock?.product[0]?.name} ${stock?.product[0]?.genericName ? `⟶${stock?.product[0]?.genericName}` : ""
+          } ⟶${stock?.product[0]?.brand}`,
+        value: stock?.product[0],
+      }));
+    } catch (error) {
+      toastError(error);
+      return [];
+    }
+  };
+
 
   const subtotal: number = products.reduce(
     (sum: number, item: any) => sum + item.total * item.quantity,
@@ -103,74 +120,76 @@ export default function POSPForm({
 
   const addProduct = useCallback(
     (product: Product) => {
-      const existingProductIndex = products.findIndex(
-        (p) => p?._id === product?._id
-      );
+      if (product) {
+        const existingProductIndex = products.findIndex(
+          (p) => p?._id === product?._id
+        );
 
-      if (existingProductIndex > -1) {
-        const updatedProducts = [...products];
+        if (existingProductIndex > -1) {
+          const updatedProducts = [...products];
 
-        updatedProducts[existingProductIndex].quantity! +=
-          product?.stripQuantity ?? 1;
-        setProducts(updatedProducts);
-        setProductCode("");
-      } else {
-        const price = product.price;
-        const unit = product.unit;
-        const discountPercent = product?.discountPercent ?? 0;
-        const discount = price * (discountPercent / 100);
-        const total = price - discount;
+          updatedProducts[existingProductIndex].quantity! +=
+            product?.stripQuantity ?? 1;
+          setProducts(updatedProducts);
+          setProductCode("");
+        } else {
+          const price = product.price;
+          const unit = product.unit;
+          const discountPercent = product?.discountPercent ?? 0;
+          const discount = price * (discountPercent / 100);
+          const total = price - discount;
 
-        const quantity = product?.stripQuantity ?? 1;
+          const quantity = product?.stripQuantity ?? 1;
 
-        setProducts([
-          ...products,
-          {
-            ...product,
-            quantity: quantity,
-            unit,
-            price,
-            discountPercent,
-            subtotal: price,
-            total,
-          },
-        ]);
+          setProducts([
+            ...products,
+            {
+              ...product,
+              quantity: quantity,
+              unit,
+              price,
+              discountPercent,
+              subtotal: price,
+              total,
+            },
+          ]);
 
-        setProductCode("");
+          setProductCode("");
+        }
+
+        // set the purchase product to update the sold quantity
+        const existingPurchaseProductIndex = purchaseProducts.findIndex(
+          (p) => p?._id === product?._id && p?.purchaseBILLID === product?.purchaseBILLID
+        );
+
+        if (existingPurchaseProductIndex > -1) {
+          // Increase the quantity of the existing product
+          const updatedProducts = purchaseProducts.map((p, index) => {
+            if (index === existingPurchaseProductIndex) {
+              return {
+                ...p,
+                quantity: (p.quantity || 0) + (product?.stripQuantity ?? 1),
+              };
+            }
+            return p;
+          });
+
+          setPurchaseProducts(updatedProducts);
+        } else {
+          const quantity = product?.stripQuantity ?? 1;
+          setPurchaseProducts([
+            ...purchaseProducts,
+            {
+              ...product,
+              quantity: quantity,
+            }
+          ])
+        }
+
+        // reset the total discount
+        setDiscountPercent(0);
+        setDiscountTotal(0);
       }
-
-      // set the purchase product to update the sold quantity
-      const existingPurchaseProductIndex = purchaseProducts.findIndex(
-        (p) => p?._id === product?._id && p?.purchaseBILLID === product?.purchaseBILLID
-      );
-
-      if (existingPurchaseProductIndex > -1) {
-        // Increase the quantity of the existing product
-        const updatedProducts = purchaseProducts.map((p, index) => {
-          if (index === existingPurchaseProductIndex) {
-            return {
-              ...p,
-              quantity: (p.quantity || 0) + (product?.stripQuantity ?? 1),
-            };
-          }
-          return p;
-        });
-
-        setPurchaseProducts(updatedProducts);
-      } else {
-        const quantity = product?.stripQuantity ?? 1;
-        setPurchaseProducts([
-          ...purchaseProducts,
-          {
-            ...product,
-            quantity: quantity,
-          }
-        ])
-      }
-
-      // reset the total discount
-      setDiscountPercent(0);
-      setDiscountTotal(0);
     },
     [products, purchaseProducts]
   );
@@ -201,31 +220,8 @@ export default function POSPForm({
     pageStyle: pageStyle,
   });
 
-  useEffect(() => {
-    if (selectedProduct) {
-      const product = productsList.find(
-        (p: any) => p?._id === selectedProduct?.value
-      );
 
-      if (product) {
-        addProduct(product);
-        setSelectedProduct(null);
-      }
-    }
-  }, [selectedProduct, addProduct, productsList]);
-
-  const handleAddProduct = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const product = productsList.find(
-      (p: any) => p?._id === selectedProduct?.value
-    );
-    if (product) {
-      addProduct(product);
-      setSelectedProduct(null);
-    }
-  };
-
-  const handleProductCodeKeyDown = (
+  const handleProductCodeKeyDown = async (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
@@ -238,9 +234,8 @@ export default function POSPForm({
       let purchaseBILLID: any
 
       if (!productCode.includes('/')) {
-        foundProducts = productsList.filter(
-          (p: any) => p.code === productCode
-        );
+        const { data } = await getAllStocksClient(`product.code=${productCode}&nestedFilter=true&fields=product&limit=10`)
+        foundProducts = data?.map((stock: any) => stock?.product[0])
       } else {
         const barcode = productCode.replace('/', '')//remove the identifier symbol ('/')
         // Extract the productTag
@@ -249,10 +244,8 @@ export default function POSPForm({
         if (barcode.length > 8) {
           purchaseBILLID = barcode.slice(-7);
         }
-
-        foundProducts = productsList.filter(
-          (p: any) => p.tag === productTag
-        );
+        const { data } = await getAllStocksClient(`product.tag=${productTag}&nestedFilter=true&fields=product&limit=10`)
+        foundProducts = data?.map((stock: any) => stock?.product[0])
       }
 
 
@@ -272,30 +265,6 @@ export default function POSPForm({
       }
     }
   };
-
-  // const handleProductCodeKeyDown = (
-  //   e: React.KeyboardEvent<HTMLInputElement>
-  // ) => {
-  //   if (e.key === "Enter") {
-  //     const foundProducts = productsList.filter(
-  //       (p: any) => p.code === productCode
-  //     );
-  //     if (foundProducts.length > 1) {
-  //       setDuplicateProducts(foundProducts);
-  //       setShowDuplicateModal(true);
-  //     } else if (foundProducts.length === 1) {
-  //       const product = foundProducts[0];
-
-  //       if (product) {
-  //         addProduct(product);
-  //         setProductCode("");
-  //       }
-  //     } else {
-  //       toastError("Product not found");
-  //     }
-  //   }
-  // };
-
 
   const updateQuantity = (index: number, quantity: number) => {
     const updatedProducts = [...products];
@@ -332,28 +301,6 @@ export default function POSPForm({
       setProducts(updatedProducts);
     }
   };
-
-  // const updateQuantity = (index: number, quantity: number) => {
-  //   const updatedProducts = [...products];
-  //   if (quantity >= 1) {
-  //     updatedProducts[index].quantity = quantity;
-
-
-  //     // update purchase product quantity
-  //     const updatedPurchaseProducts = [...purchaseProducts];
-  //     const findProduct = products[index]
-  //     const filteredProducts = purchaseProducts.filter((item: any) => item?._id === findProduct?._id)
-  //     // Get the last index
-  //     const lastIndex = filteredProducts.length - 1;
-
-  //     filteredProducts[lastIndex].quantity = quantity;
-
-  //     setProducts(updatedProducts);
-
-  //     //update purchaseProducts logic here
-
-  //   }
-  // };
 
   const deleteProduct = (index: number) => {
     const updatedProducts = [...products];
@@ -520,7 +467,6 @@ export default function POSPForm({
     setProductCode("");
     setProducts([]);
     setCustomer(null);
-    setSelectedProduct(null);
     setReceived(0);
     setDiscountTotal(0);
     setDiscountPercent(0);
@@ -528,6 +474,9 @@ export default function POSPForm({
     setInvoiceNo("");
     setPurchaseProducts([])
 
+    if (productSelectRef.current) {
+      productSelectRef.current.clearValue();
+    }
     if (productCodeInputRef.current) {
       productCodeInputRef.current.select();
     }
@@ -599,17 +548,19 @@ export default function POSPForm({
               Search Product
             </h2>
             <span className="font-bold sm:inline-block hidden">:</span>
-            <form onSubmit={handleAddProduct} className="w-full">
-              <div className="flex items-center gap-2">
-                <ReactSelect
-                  value={selectedProduct}
-                  onChange={setSelectedProduct}
-                  options={productOptions}
-                  className="w-full"
-                  placeholder="Select a product"
-                />
-              </div>
-            </form>
+            <div className="w-full">
+              <AsyncSelect
+                ref={productSelectRef}
+                isClearable={true}
+                cacheOptions
+                defaultOptions
+                loadOptions={loadProductOptions}
+                className="w-full"
+                onChange={(value: any) => addProduct(value?.value)}
+                placeholder="Select a product"
+                required
+              />
+            </div>
           </div>
 
           <div className="border-t border-gray-300 pt-2 mt-2 ">

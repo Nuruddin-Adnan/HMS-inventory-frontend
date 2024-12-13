@@ -1,39 +1,29 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { loginUser } from "@/api-services/auth/loginUser";
 import Input from "@/components/ui/form/Input";
-import { useRouter } from "next/navigation";
 import logo from "../../../public/logo.svg";
 import Image from "next/image";
-import Cookies from "js-cookie";
-import { useState } from "react";
-import Button from "@/components/ui/button/Button";
+import { useFormState } from "react-dom";
+import { createUser } from "./actions";
+import { SubmitButton } from "./submit-button";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+const initialState = {
+  message: "",
+};
 
 export default function Login() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [state, formAction] = useFormState(createUser, initialState);
+
   const router = useRouter();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setLoading(true);
-
-    const formData = new FormData(event.currentTarget);
-    const payload = {
-      email: (formData.get("email") ?? "") as string,
-      password: (formData.get("password") ?? "") as string,
-    };
-
-    try {
-      const result = await loginUser(payload);
-
-      if (result && result.success === true) {
-        const token = result.data.accessToken;
-        Cookies.set("accessToken", token);
-        router.push("/", { scroll: false });
-      }
-    } finally {
-      setLoading(false);
+  // Inside your `useFormState` handler:
+  useEffect(() => {
+    if (state.message === "Login successful") {
+      router.push("/");
     }
-  };
+  }, [state.message]);
 
   return (
     <main className="grid place-items-center h-screen bg-[#E9EFF2]">
@@ -47,22 +37,25 @@ export default function Login() {
           </p>
         </div>
         <div className="sm:p-8 p-4 shadow-lg rounded-2xl bg-white mt-4">
-          <form onSubmit={handleSubmit} className="grid space-y-5">
+          <form action={formAction} className="grid space-y-3">
             <Input
               type="text"
               name="email"
               placeholder="user name"
               label="Username"
-              className="py-2"
+              className="py-1.5"
             />
             <Input
               type="password"
               name="password"
               placeholder="password"
               label="Password"
-              className="py-2"
+              className="py-1.5"
             />
-            <Button type="submit" variant="primary" className="justify-center font-bold text-base" loading={loading}>Login</Button>
+            <p aria-live="polite" className={state?.message === 'Login successful' ? 'text-green-600' : 'text-red-500'}>
+              {state?.message}
+            </p>
+            <SubmitButton />
           </form>
         </div>
       </div>

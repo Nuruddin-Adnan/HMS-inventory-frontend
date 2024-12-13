@@ -14,7 +14,7 @@ import toastError from "@/helpers/toastError";
 const pageStyle = `
 @page{
     size: 38mm 25mm;
-    margin: 30px;  
+    margin: 0px;  
 }
 `;
 

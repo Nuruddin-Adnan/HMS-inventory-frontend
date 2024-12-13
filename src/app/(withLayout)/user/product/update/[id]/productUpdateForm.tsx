@@ -42,23 +42,6 @@ export default function ProductUpdateForm({
     data?.discountPercent
   );
 
-  let productName = ''
-
-  // remove formulation from name
-  if (data?.formulation) {
-    productName = data?.name
-      .replace(`(${data?.formulation})`, '')
-      .trim();
-  } else {
-    productName = data?.name;
-  }
-
-  // remove strength from name
-  if (data?.strength) {
-    productName = productName
-      .replace(data?.strength, '')
-      .trim();
-  }
 
   const router = useRouter();
 
@@ -164,7 +147,7 @@ export default function ProductUpdateForm({
               type="text"
               name="name"
               label="Product Name*"
-              defaultValue={productName}
+              defaultValue={data?.name}
               autoFocus
             />
           </div>

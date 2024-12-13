@@ -87,12 +87,11 @@ export default function CustomerCreateForm() {
           <Input type="email" name="email" label="Email Address" />
         </div>
         <Textarea label="Address" name="address" />
-        <div className="text-right">
+        <div className="text-right flex gap-2 justify-end">
           <Button
             type="button"
             variant="danger"
             onClick={() => router.back()}
-            className="me-2"
           >
             Back
           </Button>

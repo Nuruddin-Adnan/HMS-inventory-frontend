@@ -42,11 +42,11 @@ export default async function Product({
         Product
       </h2>
       <div className="lg:hidden block pt-2 px-6 pb-4">
-        <SearchControl placeholder="Search by name & code..." />
+        <SearchControl placeholder="By name, generic, code, tag..." />
       </div>
       <div className="pl-4 pr-8 flex justify-end -mb-12 gap-2">
         <div className="lg:block hidden">
-          <SearchControl placeholder="By name, code & tag..." />
+          <SearchControl placeholder="By name, generic, code, tag..." />
         </div>
         <PaginationControls totalPages={meta.total ?? 0} limit={100} />
         <FilterProduct
