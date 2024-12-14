@@ -147,7 +147,7 @@ export default function Home() {
               }
             >
               <div
-                className={`text-center py-6 grid place-items-center rounded-full group bg-white hover:shadow-lg border  ${item.status === "deactive" ? "bg-gray-200 opacity-50" : ""
+                className={`text-center 2xl:py-6 py-4 grid place-items-center rounded-full group bg-white hover:shadow-lg border  ${item.status === "deactive" ? "bg-gray-200 opacity-50" : ""
                   }`}
               >
                 <div className="w-full truncate lg:px-5 px-3">
@@ -163,7 +163,7 @@ export default function Home() {
           ))}
         </div>
       </div>
-      <footer className="text-center pb-5 md:pt-10 md:text-base">
+      <footer className="text-center pb-5 2xl:pt-10 md:text-base">
         Powered By{" "}
         <a
           target="blank"

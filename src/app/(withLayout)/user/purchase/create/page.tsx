@@ -1,7 +1,6 @@
 import React from "react";
 import { getUserServer } from "@/lib/user";
 import { redirect } from "next/navigation";
-import { getAllProducts } from "@/api-services/product/getAllProducts";
 import { getAllSuppliers } from "@/api-services/supplier/getAllSuppliers";
 import PurchaseCreateForm from "./purchaseCreateForm";
 
@@ -13,15 +12,11 @@ export default async function CreatePurchase() {
     redirect("/");
   }
 
-  const productPromise = getAllProducts(
-    "status=active&fields=name unit brand genericName code"
-  );
   const supplierPromise = getAllSuppliers(
     "status=active&fields=name brand contactNo"
   );
 
-  const [products, suppliers] = await Promise.all([
-    productPromise,
+  const [suppliers] = await Promise.all([
     supplierPromise,
   ]);
 
@@ -35,7 +30,6 @@ export default async function CreatePurchase() {
         </div>
         <div className="2xl:px-4 px-3 2xl:py-5 py-4">
           <PurchaseCreateForm
-            products={products?.data}
             suppliers={suppliers?.data}
           />
         </div>

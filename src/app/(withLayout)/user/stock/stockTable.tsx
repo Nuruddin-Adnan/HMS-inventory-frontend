@@ -149,6 +149,7 @@ export default function StockTable({ stocks }: { stocks: any[] }) {
         }
         responsive
         tableStriped
+        tableHover
         sort
         print
         tableHeightClass="h-[calc(100vh-170px)]"

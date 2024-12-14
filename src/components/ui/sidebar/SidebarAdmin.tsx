@@ -118,12 +118,13 @@ export default function SidebarAdmin({
                         key={index}
                         href={item.href}
                         className={
-                          pathname.startsWith(item.href)
-                            ? "flex items-center py-2 px-4  bg-gray-700 text-white"
-                            : "flex items-center py-2 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
+                          // pathname.startsWith(item.href)
+                          pathname === item.href
+                            ? "flex items-center 2xl:py-1.5 py-1 px-4  bg-gray-700 text-white"
+                            : "flex items-center 2xl:py-1.5 py-1 px-4 transition duration-200 hover:bg-gray-700 hover:text-white"
                         }
                       >
-                        <item.icon className="h-6 w-6 mr-2" />
+                        <item.icon className="2xl:h-6 2xl:w-6 w-5 h-5 mr-2" />
                         {item.name}
                       </Link>
                     );
@@ -132,10 +133,10 @@ export default function SidebarAdmin({
                       <Disclosure as="div" key={index}>
                         {({ open }) => (
                           <>
-                            <DisclosureButton className="w-full py-1.5 px-4 flex justify-between leading-7 transition duration-200 hover:bg-gray-700 hover:text-white">
-                              <div className="flex">
+                            <DisclosureButton className="w-full 2xl:py-1.5 py-1 px-4 flex justify-between leading-7 transition duration-200 hover:bg-gray-700 hover:text-white">
+                              <div className="flex items-center">
                                 <div>
-                                  <item.icon className="h-6 w-6 mr-2" />
+                                  <item.icon className="2xl:h-6 2xl:w-6 w-5 h-5 mr-2" />
                                 </div>
                                 <span className="text-start">{item.group}</span>
                               </div>
@@ -157,13 +158,14 @@ export default function SidebarAdmin({
                                 />
                               </svg>
                             </DisclosureButton>
-                            <DisclosurePanel className="space-y-0 px-4">
+                            <DisclosurePanel className="space-y-0 pl-4">
                               {item.items.map((item: any) => (
                                 <Link
                                   key={item.name}
                                   href={item.href}
                                   className={
-                                    pathname.startsWith(item.href)
+                                    // pathname.startsWith(item.href)
+                                    pathname === item.href
                                       ? "block pl-4 py-0.5 text-sm leading-7  bg-gray-700 text-white border-l border-l-gray-600"
                                       : "block pl-4 py-0.5 text-sm leading-7 transition duration-200 hover:bg-gray-700 text-gray-400 hover:text-white border-l border-l-gray-600"
                                   }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import ReactSelect, { SelectInstance } from "react-select";
+import { SelectInstance } from "react-select";
 import AsyncSelect from 'react-select/async';
 import { DuplicateProductModal } from "./duplicateProductModal";
 import toastError from "@/helpers/toastError";

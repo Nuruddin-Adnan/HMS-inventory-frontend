@@ -11,9 +11,10 @@ import { removeEmptyFields } from "@/lib/removeEmptyFields";
 import tagRevalidate from "@/lib/tagRevalidate";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
-import ReactSelect, { SelectInstance } from "react-select";
+import { SelectInstance } from "react-select";
+import AsyncSelect from 'react-select/async';
 
-export default function StockCreateForm({ products }: { products: any }) {
+export default function StockCreateForm() {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [productCode, setProductCode] = useState<any>();
@@ -61,7 +62,8 @@ export default function StockCreateForm({ products }: { products: any }) {
     if (result && result.success === true) {
       if (result?.data.length === 1) {
         setProduct({
-          label: `${result?.data[0]?.name} ⟶${result?.data[0]?.brand}`,
+          label: `${result?.data[0]?.name} ${result?.data[0]?.genericName ? `⟶${result?.data[0]?.genericName}` : ""
+            } ⟶${result?.data[0]?.brand}`,
           value: result?.data[0]?._id,
         });
       } else if (result?.data.length > 1) {
@@ -109,25 +111,28 @@ export default function StockCreateForm({ products }: { products: any }) {
     }
   };
 
-  // const handleReset = () => {
-  //   setProductCode("");
-  //   setProduct({
-  //     label: "",
-  //     value: "",
-  //   });
-  //   if (formRef.current) {
-  //     formRef.current.reset();
-  //   }
-  //   if (productSelectRef.current) {
-  //     productSelectRef.current.clearValue();
-  //   }
-  // };
+  // Product options fetch
+  const loadProductOptions = async (inputValue: string) => {
+    if (!inputValue.trim()) return []; // Return empty array for empty input
+    try {
 
-  const productOptions = products.map((product: any) => ({
-    value: product?._id,
-    label: `${product?.name} ${product?.genericName ? `⟶${product?.genericName}` : ""
-      } ⟶${product?.brand}`,
-  }));
+      // Fetch data from backend based on input value
+      const { data: products } = await getAllProductsClient(
+        `search=${inputValue}&status=active&sort=name&nestedFilter=true&limit=20&fields=name unit brand genericName code`
+      );
+
+      return products.map((item: any) => {
+        return {
+          label: `${item?.name} ${item?.genericName ? `⟶${item?.genericName}` : ""
+            } ⟶${item?.brand}`,
+          value: item?._id,
+        };
+      });
+    } catch (error) {
+      toastError(error);
+      return [];
+    }
+  };
 
   return (
     <>
@@ -160,13 +165,18 @@ export default function StockCreateForm({ products }: { products: any }) {
         >
           <label>
             <span className="text-textPrimary font-semibold block pb-0.5">Product Name</span>
-            <ReactSelect
+            <AsyncSelect
               ref={productSelectRef}
+              isClearable={true}
               name="product"
-              options={productOptions}
               styles={reactSelectStyles}
+              cacheOptions
+              defaultOptions
+              loadOptions={loadProductOptions}
               value={product}
               onChange={(value: any) => setProduct(value)}
+              placeholder="Select a product"
+              required
             />
           </label>
           <div className="grid grid-cols-2 2xl:gap-4 gap-3">
@@ -205,7 +215,8 @@ export default function StockCreateForm({ products }: { products: any }) {
                   className="flex items-center w-full p-2 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-gray-200 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-gray-200 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-gray-200 active:text-blue-gray-900"
                   onClick={() => {
                     setProduct({
-                      label: `${product?.name} ⟶${product?.brand}`,
+                      label: `${product?.name} ${product?.genericName ? `⟶${product?.genericName}` : ""
+                        } ⟶${product?.brand}`,
                       value: product?._id,
                     });
                     closeModal();

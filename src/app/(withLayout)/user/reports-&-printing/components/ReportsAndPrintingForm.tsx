@@ -24,7 +24,7 @@ const listStyle: any = {
         userSelect: 'none',
         transition: 'background-color 0.3s',
         display: 'block',
-        padding: '7px 10px 7px 30px',
+        padding: '5px 8px 5px 30px',
         fontWeight: 600,
         width: '100%',
         textAlign: 'left',
@@ -107,7 +107,7 @@ export default function ReportsAndPrintingForm({ user }: { user: any }) {
 
                 const startDateString = `${formData.get("startDate")}:00.000Z`;
                 const endDateString = `${formData.get("endDate")}:59.999Z`;
-              
+
                 // Create a new Date object
                 const startDate = new Date(startDateString);
                 const endDate = new Date(endDateString);

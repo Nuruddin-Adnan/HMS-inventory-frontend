@@ -22,7 +22,7 @@ export default async function UpdateStock({
 
   return (
     <div>
-      <div className="card mx-auto">
+      <div className="card mx-auto max-w-5xl">
         <div className="border-b border-gray-200 2xl:p-4 p-3">
           <h2 className="font-bold 2xl:text-2xl text-xl text-textPrimary">
             Update Stock

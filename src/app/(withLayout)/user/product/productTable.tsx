@@ -181,6 +181,7 @@ export default function ProductTable({ products }: { products: any[] }) {
         }
         responsive
         tableStriped
+        tableHover
         sort
         print
         tableHeightClass="h-[calc(100vh-170px)]"

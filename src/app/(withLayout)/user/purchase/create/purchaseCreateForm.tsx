@@ -15,22 +15,21 @@ import { reactSelectStyles } from "@/styles/reactSelectStyles";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import ReactSelect, { SelectInstance } from "react-select";
+import AsyncSelect from 'react-select/async';
 
 export default function PurchaseCreateForm({
-  products,
   suppliers,
 }: {
-  products: any;
   suppliers: any;
 }) {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [productCode, setProductCode] = useState<any>();
-  const [product, setProduct] = useState({
+  const [product, setProduct] = useState<any>({
     label: "",
     value: "",
   });
-  const [unit, setUnit] = useState<string>();
+  // const [unit, setUnit] = useState<string>();
   const [searchProduct, setSearchProduct] = useState<any>([]);
   const formRef = useRef<HTMLFormElement>(null);
   const productSelectRef = useRef<SelectInstance | null>(null);
@@ -52,15 +51,14 @@ export default function PurchaseCreateForm({
 
   const handleProductSearchByCode = async (formData: FormData) => {
     const result = await getAllProductsClient(
-      `code=${formData.get("code")}&status=active&sort=-createdAt&limit=10`
+      `code=${formData.get("code")}&status=active&sort=-createdAt&limit=10&fields=name unit brand genericName code`
     );
     if (result && result.success === true) {
       if (result?.data.length === 1) {
         setProduct({
           label: `${result?.data[0]?.name}, ${result?.data[0]?.genericName} ⟶${result?.data[0]?.brand}`,
-          value: result?.data[0]?._id,
+          value: result?.data[0],
         });
-        setProductUnit(result?.data[0]?._id);
       } else if (result?.data.length > 1) {
         setSearchProduct(result?.data); // Set the product search by code result
         openModal(); // open modal to select one of the product
@@ -68,14 +66,6 @@ export default function PurchaseCreateForm({
         toastError("No product found!");
       }
     }
-  };
-
-  const setProductUnit = (productId: any) => {
-    const filteredProduct = products.filter(
-      (product: any) => product?._id === productId
-    );
-    setUnit(filteredProduct[0]?.unit);
-    return filteredProduct[0]?.unit;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -95,12 +85,12 @@ export default function PurchaseCreateForm({
       const advanceAsNumber: number = convertStringToNumber(advance);
 
       const payload = {
-        product: (formData.get("product") ?? "") as string,
+        product: product?.value?._id,
         supplier: (formData.get("supplier") ?? "") as string,
         invoiceNo: (formData.get("invoiceNo") ?? "") as string,
         lotNo: (formData.get("lotNo") ?? "") as string,
         expiryDate: (formData.get("expiryDate") ?? "") as string,
-        unit: unit,
+        unit: product?.value?.unit,
         paymentMethod: (formData.get("paymentMethod") ?? "") as string,
         quantity: quantityAsNumber,
         price: priceAsNumber,
@@ -143,13 +133,28 @@ export default function PurchaseCreateForm({
     }
   };
 
-  const productOptions = products.map((item: any) => {
-    return {
-      label: `${item?.name} ${item?.genericName ? `⟶${item?.genericName}` : ""
-        } ⟶${item?.brand}`,
-      value: item?._id,
-    };
-  });
+  // Product options fetch
+  const loadProductOptions = async (inputValue: string) => {
+    if (!inputValue.trim()) return []; // Return empty array for empty input
+    try {
+
+      // Fetch data from backend based on input value
+      const { data: products } = await getAllProductsClient(
+        `search=${inputValue}&status=active&sort=name&nestedFilter=true&limit=20&fields=name unit brand genericName code`
+      );
+
+      return products.map((item: any) => {
+        return {
+          label: `${item?.name} ${item?.genericName ? `⟶${item?.genericName}` : ""
+            } ⟶${item?.brand}`,
+          value: item,
+        };
+      });
+    } catch (error) {
+      toastError(error);
+      return [];
+    }
+  };
 
   const supplierOptions = suppliers.map((item: any) => {
     return {
@@ -193,17 +198,19 @@ export default function PurchaseCreateForm({
                 <span className="text-textPrimary font-semibold block pb-0.5">
                   Product Name*
                 </span>
-                <ReactSelect
+                <AsyncSelect
                   ref={productSelectRef}
-                  name="product"
-                  options={productOptions}
-                  styles={reactSelectStyles}
                   isClearable={true}
+                  name="product"
+                  styles={reactSelectStyles}
+                  cacheOptions
+                  defaultOptions
+                  loadOptions={loadProductOptions}
                   value={product}
                   onChange={(value: any) => {
                     setProduct(value);
-                    setProductUnit(value?.value);
                   }}
+                  placeholder="Select a product"
                   required
                 />
               </label>
@@ -229,7 +236,7 @@ export default function PurchaseCreateForm({
               <div className="grid lg:gap-52 gap-16">
                 <div className="grid  gap-3">
                   <p className="flex gap-5 font-bold border py-1 px-2 bg-blue-500 bg-opacity-20 text-blue-700 rounded">
-                    Unit: <span>{unit}</span>
+                    Unit: <span>{product?.value?.unit}</span>
                   </p>
                   <Input
                     type="number"
@@ -356,9 +363,8 @@ export default function PurchaseCreateForm({
                   onClick={() => {
                     setProduct({
                       label: `${product?.name} ⟶${product?.brand}`,
-                      value: product?._id,
+                      value: product,
                     });
-                    setProductUnit(product?._id);
                     closeModal();
                   }}
                 >

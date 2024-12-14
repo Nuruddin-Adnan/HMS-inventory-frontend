@@ -1,7 +1,6 @@
 import React from "react";
 import { getUserServer } from "@/lib/user";
 import { redirect } from "next/navigation";
-import { getAllStocks } from "@/api-services/stock/getAllStocks";
 import StockAdjustmentCreateForm from "./stockAdjustmentCreateForm";
 
 export default async function CreateStockAdjustment() {
@@ -12,8 +11,6 @@ export default async function CreateStockAdjustment() {
     redirect("/");
   }
 
-  const products = await getAllStocks("status=active&fields=product.name product.brand product.unit product.price product._id quantity");
-
   return (
     <div>
       <div className="card mx-auto max-w-5xl">
@@ -23,7 +20,7 @@ export default async function CreateStockAdjustment() {
           </h2>
         </div>
         <div className="2xl:px-4 px-3 2xl:py-5 py-4">
-          <StockAdjustmentCreateForm products={products?.data} />
+          <StockAdjustmentCreateForm />
         </div>
       </div>
     </div>
