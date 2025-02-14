@@ -101,7 +101,7 @@ export default function ProductTable({ products }: { products: any[] }) {
       render: (row: any) => {
         return (
           <span className="whitespace-nowrap">
-            {format(new Date(row?.createdAt), "dd/MM/yyyy p")}
+            {row?.createdAt && format(new Date(row?.createdAt), "dd/MM/yyyy p")}
           </span>
         );
       },
